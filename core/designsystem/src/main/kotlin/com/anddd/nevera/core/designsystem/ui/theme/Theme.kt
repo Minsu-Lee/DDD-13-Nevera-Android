@@ -9,6 +9,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.color.DarkNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.LightNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.LocalNeveraColors
 import com.anddd.nevera.core.designsystem.ui.theme.color.NeveraColor
+import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
 
 @Composable
 fun NeveraTheme(
@@ -35,4 +36,7 @@ object NeveraTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalNeveraColors.current
+
+    val spacing: NeveraSpacing
+        get() = NeveraSpacing
 }
