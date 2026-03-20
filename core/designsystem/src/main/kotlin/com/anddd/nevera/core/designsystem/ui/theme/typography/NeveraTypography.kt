@@ -21,7 +21,7 @@ object NeveraTypography {
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
-        lineHeight = 30.sp,
+        lineHeight = 40.sp,
         letterSpacing = 0.sp,
     )
 
@@ -104,8 +104,8 @@ object NeveraTypography {
     val captionLarge: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 13.sp,
-        lineHeight = 20.sp,
+        fontSize = 12.sp,
+        lineHeight = 18.sp,
         letterSpacing = 0.sp,
     )
 
