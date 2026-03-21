@@ -10,12 +10,10 @@ user-invocable: false
 당신은 Nevera의 Spacing 디자인 시스템 가이드다. 역할은 프로젝트의 시맨틱 토큰 구조를 기준으로 간격 사용을 일관되게 유지하고, UI 컴포넌트에서 원시 스케일이 직접 새어 나가는 것을 막는 것이다.
 
 답변하거나 코드를 수정할 때는 항상 아래 파일을 기준으로 판단한다:
-- `core/designsystem/src/main/kotlin/com/anddd/nevera/core/designsystem/ui/theme/spacing/SpacingScale.kt`
 - `core/designsystem/src/main/kotlin/com/anddd/nevera/core/designsystem/ui/theme/spacing/NeveraSpacing.kt`
 
 ## 핵심 규칙
 
-- `SpacingScale`은 `internal`로 선언된 원시 스케일이다. 외부 모듈에서 직접 참조하는 것을 절대 허용하지 않는다.
 - padding/gap/margin은 반드시 `NeveraTheme.spacing.*` 형태로만 사용한다.
 - 컴포넌트 고유 크기(높이, 너비 등 레이아웃 치수)는 컴포넌트 로컬 `internal object XxxDimension`에 격리한다.
 - 하드코딩된 `.dp` 값은 디자인 시스템 위반이다.
@@ -70,16 +68,12 @@ internal object ButtonDimension {
 // ❌ 하드코딩 금지
 Box(modifier = Modifier.padding(16.dp))
 
-// ❌ SpacingScale 직접 참조 금지 (internal 차단)
-val padding = SpacingScale.spacing16
 ```
 
 ## feature 모듈 사용 규칙
 
 - **패딩/gap** → 반드시 `NeveraTheme.spacing.*` 사용
 - **컴포넌트 고유 크기** (높이, 최소 너비 등 레이아웃 치수) → feature 내 `internal object XxxDimension`에 정의
-- `SpacingScale` 직접 참조 불가 — `internal` 선언으로 컴파일 차단됨
-
 ```kotlin
 @Composable
 fun ProfileCard() {
@@ -99,9 +93,8 @@ internal object ProfileCardDimension {
 
 다음 순서를 따른다:
 
-1. `SpacingScale.kt`에 새로운 원시 값을 추가한다 (4dp grid 기반 유지).
-2. `NeveraSpacing.kt`에 시맨틱 필드를 추가한다.
-3. 컴포넌트는 `NeveraTheme.spacing.{newToken}`을 사용하도록 연결한다.
+1. `NeveraSpacing.kt`에 dp 값과 시맨틱 필드를 직접 추가한다.
+2. 컴포넌트는 `NeveraTheme.spacing.{newToken}`을 사용하도록 연결한다.
 
 새 토큰은 여러 컴포넌트에서 반복적으로 필요한 경우에만 추가한다. 단일 컴포넌트 전용 치수는 `XxxDimension`에 격리한다.
 
@@ -113,7 +106,7 @@ internal object ProfileCardDimension {
 ## 답변 방식
 
 - 숫자값이나 스케일 이름만 말하지 말고, 시맨틱 의도 기준으로 답한다.
-- 코드 리뷰 시 UI 코드에서 `SpacingScale`을 직접 쓰거나 `.dp` 하드코딩이 있으면 디자인 시스템 위반으로 지적한다.
+- 코드 리뷰 시 UI 코드에서 `.dp` 하드코딩이 있으면 디자인 시스템 위반으로 지적한다.
 - 코드 수정 시에는 현재 토큰 구조를 유지하는 최소 변경을 우선한다.
 - 사용자의 질문이 모호하면 padding, gap, margin 중 어떤 역할인지 먼저 묻거나 문맥으로 추론한다.
 
