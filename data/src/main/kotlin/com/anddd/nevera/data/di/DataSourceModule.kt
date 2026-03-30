@@ -1,7 +1,12 @@
 package com.anddd.nevera.data.di
 
+import com.anddd.nevera.data.datasource.DbTestDataSource
+import com.anddd.nevera.data.datasource.FakeDbTestDataSourceImpl
 import com.anddd.nevera.data.datasource.FakeUserDataSourceImpl
+import com.anddd.nevera.data.datasource.LocalDbTestDataSource
 import com.anddd.nevera.data.datasource.LocalUserDataSource
+import com.anddd.nevera.data.datasource.RemoteDbTestDataSource
+import com.anddd.nevera.data.datasource.RemoteDbTestDataSourceImpl
 import com.anddd.nevera.data.datasource.RemoteUserDataSourceImpl
 import com.anddd.nevera.data.datasource.RemoteUserDataSource
 import com.anddd.nevera.data.datasource.UserDataSource
@@ -24,4 +29,14 @@ internal abstract class DataSourceModule {
     @Singleton
     @RemoteUserDataSource
     abstract fun bindRemoteUserDataSource(impl: RemoteUserDataSourceImpl): UserDataSource
+
+    @Binds
+    @Singleton
+    @LocalDbTestDataSource
+    abstract fun bindLocalDbTestDataSource(impl: FakeDbTestDataSourceImpl): DbTestDataSource
+
+    @Binds
+    @Singleton
+    @RemoteDbTestDataSource
+    abstract fun bindRemoteDbTestDataSource(impl: RemoteDbTestDataSourceImpl): DbTestDataSource
 }
