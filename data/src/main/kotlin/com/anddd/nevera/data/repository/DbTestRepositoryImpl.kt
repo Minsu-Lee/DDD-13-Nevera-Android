@@ -1,7 +1,7 @@
 package com.anddd.nevera.data.repository
 
 import com.anddd.nevera.core.common.ApiResult
-import com.anddd.nevera.core.network.ApiCallExecutor
+import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.DbTestDataSource
 import com.anddd.nevera.data.datasource.RemoteDbTestDataSource
 import com.anddd.nevera.data.mapper.toDomain

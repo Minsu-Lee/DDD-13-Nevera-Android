@@ -1,8 +1,9 @@
-package com.anddd.nevera.core.network
+package com.anddd.nevera.core.network.auth
 
 import com.anddd.nevera.core.common.ApiResponse
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.core.common.NetworkError
+import com.anddd.nevera.core.network.BuildConfig
 import com.google.gson.Gson
 import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
