@@ -16,6 +16,6 @@ internal class TokenProviderAdapter @Inject constructor(
     override suspend fun getAccessToken(): String? = tokenRepository.getToken()
     override suspend fun getRefreshToken(): String? = tokenRepository.getRefreshToken()
     override suspend fun saveTokens(accessToken: String, refreshToken: String) =
-        tokenRepository.saveSession(accessToken, refreshToken, tokenRepository.getUserId() ?: "")
+        tokenRepository.saveTokens(accessToken, refreshToken)
     override suspend fun clearTokens() = tokenRepository.clearSession()
 }

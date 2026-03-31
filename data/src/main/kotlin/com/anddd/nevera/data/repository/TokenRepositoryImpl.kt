@@ -30,6 +30,14 @@ internal class TokenRepositoryImpl @Inject constructor(
         }
     }
 
+    // 토큰 갱신 시 userId는 변경되지 않으므로 accessToken/refreshToken만 덮어쓴다.
+    override suspend fun saveTokens(accessToken: String, refreshToken: String) {
+        dataStore.edit { prefs ->
+            prefs[KEY_TOKEN] = accessToken
+            prefs[KEY_REFRESH_TOKEN] = refreshToken
+        }
+    }
+
     override suspend fun getSession(): Triple<String?, String?, String?> {
         val prefs = dataStore.data.first()
         return Triple(prefs[KEY_TOKEN], prefs[KEY_REFRESH_TOKEN], prefs[KEY_USER_ID])

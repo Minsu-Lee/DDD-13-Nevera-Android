@@ -2,6 +2,7 @@ package com.anddd.nevera.domain.repository
 
 interface TokenRepository {
     suspend fun saveSession(accessToken: String, refreshToken: String, userId: String)
+    suspend fun saveTokens(accessToken: String, refreshToken: String)
     suspend fun getSession(): Triple<String?, String?, String?>
     suspend fun getToken(): String?
     suspend fun getRefreshToken(): String?
