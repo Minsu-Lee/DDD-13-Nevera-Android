@@ -28,8 +28,9 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
                 NetworkError.UnknownError(message = "Empty response body")
             )
 
+            val error = body.error
             // 200 응답이어도 body.error가 존재하면 서버 비즈니스 에러로 처리
-            body.error?.let { error ->
+            if (body.result == null && error != null) {
                 return ApiResult.Error(
                     NetworkError.HttpError(
                         code = error.code ?: -1,
