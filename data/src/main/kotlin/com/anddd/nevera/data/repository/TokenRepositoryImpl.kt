@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.anddd.nevera.domain.model.Session
 import com.anddd.nevera.domain.repository.TokenRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
@@ -38,9 +39,13 @@ internal class TokenRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSession(): Triple<String?, String?, String?> {
+    override suspend fun getSession(): Session {
         val prefs = dataStore.data.first()
-        return Triple(prefs[KEY_TOKEN], prefs[KEY_REFRESH_TOKEN], prefs[KEY_USER_ID])
+        return Session(
+            accessToken = prefs[KEY_TOKEN],
+            refreshToken = prefs[KEY_REFRESH_TOKEN],
+            userId = prefs[KEY_USER_ID]
+        )
     }
 
     override suspend fun getToken(): String? =
