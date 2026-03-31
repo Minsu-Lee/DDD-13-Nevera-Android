@@ -1,0 +1,91 @@
+package com.anddd.nevera.core.network
+
+import com.anddd.nevera.core.common.ApiResponse
+import com.anddd.nevera.core.common.ApiResult
+import com.anddd.nevera.core.common.NetworkError
+import com.google.gson.Gson
+import kotlinx.coroutines.CancellationException
+import retrofit2.HttpException
+import java.io.IOException
+import java.net.SocketTimeoutException
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/**
+ * API 호출의 공통 에러 처리를 담당하는 실행기.
+ *
+ * Repository에서 직접 예외를 처리하는 대신 이 클래스에 위임하여,
+ * 에러 변환 로직을 네트워크 레이어 안에 캡슐화한다.
+ * Gson은 DI로 주입받아 errorBody 파싱에 재사용한다.
+ */
+@Singleton
+class ApiCallExecutor @Inject constructor(private val gson: Gson) {
+
+    suspend operator fun <T> invoke(block: suspend () -> ApiResponse<T>?): ApiResult<T> {
+        return try {
+            val body = block() ?: return ApiResult.Error(
+                NetworkError.UnknownError(message = "Empty response body")
+            )
+
+            // 200 응답이어도 body.error가 존재하면 서버 비즈니스 에러로 처리
+            body.error?.let { error ->
+                return ApiResult.Error(
+                    NetworkError.HttpError(
+                        code = error.code ?: -1,
+                        message = error.message ?: "Empty Message"
+                    )
+                )
+            }
+
+            val result = body.result
+            if (result != null) {
+                ApiResult.Success(result)
+            } else {
+                ApiResult.Error(
+                    NetworkError.UnknownError(message = "Empty result")
+                )
+            }
+        } catch (e: CancellationException) {
+            // 코루틴 취소는 재전파하여 구조화된 동시성을 유지
+            throw e
+        } catch (e: SocketTimeoutException) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace()
+            }
+            ApiResult.Error(
+                NetworkError.TimeoutError()
+            )
+        } catch (e: HttpException) {
+            // 200 외 상태코드에서도 서버가 JSON 에러 바디를 내려주므로 파싱 시도.
+            // 파싱 실패 시 HTTP 상태코드/메시지로 fallback.
+            val errorBody = e.response()?.errorBody()?.string()
+            val apiError = errorBody?.let {
+                runCatching { gson.fromJson(it, ApiResponse::class.java)?.error }
+                    .getOrNull()
+            }
+            ApiResult.Error(
+                NetworkError.HttpError(
+                    code = apiError?.code ?: e.code(),
+                    message = apiError?.message ?: e.message()
+                )
+            )
+        } catch (e: IOException) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace()
+            }
+            ApiResult.Error(
+                NetworkError.NetworkConnectionError()
+            )
+        } catch (t: Throwable) {
+            if (BuildConfig.DEBUG) {
+                t.printStackTrace()
+            }
+            ApiResult.Error(
+                NetworkError.UnknownError(
+                    message = t.message,
+                    throwable = t
+                )
+            )
+        }
+    }
+}
