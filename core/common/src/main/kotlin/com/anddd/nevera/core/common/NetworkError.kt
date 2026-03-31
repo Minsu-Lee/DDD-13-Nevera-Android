@@ -9,22 +9,20 @@ sealed interface NetworkError {
      */
     data class HttpError(
         override val code: Int,
-        override val message: String? = null
+        override val message: String? = null,
+        val throwable: Throwable? = null
     ) : NetworkError
 
     data class NetworkConnectionError(
         override val code: Int? = null,
-        override val message: String? = "네트워크 연결 오류"
+        override val message: String? = "네트워크 연결 오류",
+        val throwable: Throwable? = null
     ) : NetworkError
 
     data class TimeoutError(
         override val code: Int? = null,
-        override val message: String? = "요청 시간이 초과되었습니다."
-    ) : NetworkError
-
-    data class SerializationError(
-        override val code: Int? = null,
-        override val message: String? = "응답 파싱에 실패했습니다."
+        override val message: String? = "요청 시간이 초과되었습니다.",
+        val throwable: Throwable? = null
     ) : NetworkError
 
     data class UnknownError(

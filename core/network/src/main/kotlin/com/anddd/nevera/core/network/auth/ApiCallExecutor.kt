@@ -54,7 +54,7 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
                 e.printStackTrace()
             }
             ApiResult.Error(
-                NetworkError.TimeoutError()
+                NetworkError.TimeoutError(throwable = e)
             )
         } catch (e: HttpException) {
             // 200 외 상태코드에서도 서버가 JSON 에러 바디를 내려주므로 파싱 시도.
@@ -67,7 +67,8 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
             ApiResult.Error(
                 NetworkError.HttpError(
                     code = apiError?.code ?: e.code(),
-                    message = apiError?.message ?: e.message()
+                    message = apiError?.message ?: e.message(),
+                    throwable = e
                 )
             )
         } catch (e: IOException) {
@@ -75,7 +76,7 @@ class ApiCallExecutor @Inject constructor(private val gson: Gson) {
                 e.printStackTrace()
             }
             ApiResult.Error(
-                NetworkError.NetworkConnectionError()
+                NetworkError.NetworkConnectionError(throwable = e)
             )
         } catch (t: Throwable) {
             if (BuildConfig.DEBUG) {
