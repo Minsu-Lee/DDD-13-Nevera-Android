@@ -8,9 +8,9 @@ import dagger.Lazy
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
+import retrofit2.HttpException
 import javax.inject.Inject
 
 /**
@@ -22,6 +22,10 @@ import javax.inject.Inject
  * 3. 갱신 성공 → 새 토큰으로 원래 요청 재시도
  * 4. refresh API가 401을 반환하면 세션 만료로 간주하고 토큰을 삭제한 뒤 세션 만료 이벤트를 발행
  * 5. 그 외 갱신 실패는 예외를 그대로 전파 (apiCall이 변환)
+ *
+ * [AuthApi]는 [AuthInterceptor]가 없는 전용 [okhttp3.OkHttpClient]를 사용한다.
+ * refresh 요청이 동일한 인터셉터를 통과하면 [refreshMutex]를 보유한 채 다시 mutex 획득을 시도하는
+ * 데드락이 발생할 수 있기 때문이다.
  *
  * [TokenProvider]와 [AuthApi]는 Dagger [Lazy]로 주입한다.
  * OkHttpClient 생성 시점에 이 인터셉터가 먼저 만들어지면서 아직 완성되지 않은
@@ -52,15 +56,6 @@ internal class AuthInterceptor @Inject constructor(
             refreshMutex.withLock {
                 val tokenAfterLock = tokenProvider.get().getAccessToken()
 
-                // refresh API에서 401을 받은 첫 번째 요청만 세션 만료 처리.
-                // clearTokens() 이후에는 accessToken도 null이 되므로,
-                // 대기 중이던 후속 요청들은 이 분기를 타지 않는다.
-                if (tokenAfterLock != null && request.url.isRefreshTokenRequest()) {
-                    tokenProvider.get().clearTokens()
-                    sessionEventBus.emitSessionExpired()
-                    return@withLock response
-                }
-
                 if (tokenAfterLock != null && tokenAfterLock != tokenBefore) {
                     // response 불필요
                     response.close()
@@ -78,14 +73,21 @@ internal class AuthInterceptor @Inject constructor(
                     // response 불필요
                     response.close()
 
-                    val newTokens = authApi.get().refresh(RefreshRequest(refreshToken))
-                    tokenProvider.get().saveTokens(newTokens.accessToken, newTokens.refreshToken)
-
-                    return@withLock chain.proceed(
-                        request.newBuilder()
-                            .header("Authorization", "Bearer ${newTokens.accessToken}")
-                            .build()
-                    )
+                    try {
+                        val newTokens = authApi.get().refresh(RefreshRequest(refreshToken))
+                        tokenProvider.get().saveTokens(newTokens.accessToken, newTokens.refreshToken)
+                        return@withLock chain.proceed(
+                            request.newBuilder()
+                                .header("Authorization", "Bearer ${newTokens.accessToken}")
+                                .build()
+                        )
+                    } catch (e: HttpException) {
+                        if (e.code() == UNAUTHORIZED_STATUS_CODE) {
+                            tokenProvider.get().clearTokens()
+                            sessionEventBus.emitSessionExpired()
+                        }
+                        throw e
+                    }
                 } else {
                     return@withLock response
                 }
@@ -93,12 +95,7 @@ internal class AuthInterceptor @Inject constructor(
         }
     }
 
-    private fun HttpUrl.isRefreshTokenRequest(): Boolean {
-        return encodedPath == REFRESH_TOKEN_PATH
-    }
-
     companion object {
         internal const val UNAUTHORIZED_STATUS_CODE = 401
-        private const val REFRESH_TOKEN_PATH = "/auth/refresh"
     }
 }
