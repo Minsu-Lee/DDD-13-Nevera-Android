@@ -22,6 +22,9 @@ object NetworkModule {
 
     private val loggingInterceptor: HttpLoggingInterceptor =
         HttpLoggingInterceptor().apply {
+            // 헤더 데이터 마스킹 처리
+            redactHeader("Authorization")
+            redactHeader("Cookie")
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                     else HttpLoggingInterceptor.Level.NONE
         }
