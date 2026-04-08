@@ -1,8 +1,8 @@
-package com.anddd.nevera.domain.repository
+package com.anddd.nevera.data.datasource
 
 import com.anddd.nevera.domain.model.LoginProvider
 
-interface TokenRepository {
+internal interface TokenDataSource {
     suspend fun getAccessToken(): String?
     suspend fun setAccessToken(accessToken: String)
     suspend fun getRefreshToken(): String?
