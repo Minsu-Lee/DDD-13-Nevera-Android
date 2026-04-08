@@ -22,16 +22,14 @@ internal class UserRepositoryImpl @Inject constructor(
     override suspend fun signup(
         email: String,
         password: String,
-        passwordCheck: String,
-        name: String,
-        passwordMatch: Boolean
+        name: String
     ): ApiResult<Unit> {
-        return apiCall { authDataSource.signup(email, password, passwordCheck, name, passwordMatch) }
+        return apiCall { authDataSource.signup(email, password, name) }
             .mapSuccess { Unit }
     }
 
-    override suspend fun snsLogin(idToken: String): ApiResult<LoginResult> {
-        return apiCall { authDataSource.snsLogin(idToken) }
+    override suspend fun login(idToken: String): ApiResult<LoginResult> {
+        return apiCall { authDataSource.login(idToken) }
             .mapSuccess { it.toDomain() }
     }
 

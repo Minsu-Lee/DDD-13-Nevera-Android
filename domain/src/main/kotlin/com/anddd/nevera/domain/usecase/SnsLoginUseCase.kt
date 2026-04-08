@@ -13,7 +13,7 @@ class SnsLoginUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(token: String): ApiResult<LoginResult> {
-        val result = authRepository.snsLogin(token)
+        val result = authRepository.login(token)
         if (result is ApiResult.Success) {
             tokenRepository.setTokens(
                 result.data.accessToken,

@@ -8,11 +8,9 @@ internal interface UserDataSource {
     suspend fun signup(
         email: String,
         password: String,
-        passwordCheck: String,
-        name: String,
-        passwordMatch: Boolean
+        name: String
     ): ApiResponse<String>
-    suspend fun snsLogin(idToken: String): ApiResponse<TokenResponse>
+    suspend fun login(idToken: String): ApiResponse<TokenResponse>
     suspend fun emailRequest(email: String): ApiResponse<String>
     suspend fun emailVerify(email: String, authCode: String): ApiResponse<String>
     suspend fun logout(): ApiResponse<String>

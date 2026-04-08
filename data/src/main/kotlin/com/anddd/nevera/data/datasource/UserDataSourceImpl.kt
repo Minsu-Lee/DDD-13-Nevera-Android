@@ -26,21 +26,13 @@ internal class UserDataSourceImpl @Inject constructor(
     override suspend fun signup(
         email: String,
         password: String,
-        passwordCheck: String,
-        name: String,
-        passwordMatch: Boolean
+        name: String
     ): ApiResponse<String> {
-        val request = SignupRequest(
-            email,
-            password,
-            passwordCheck,
-            name,
-            passwordMatch
-        )
+        val request = SignupRequest(email, password, name)
         return userApi.signup(request)
     }
 
-    override suspend fun snsLogin(idToken: String): ApiResponse<TokenResponse> {
+    override suspend fun login(idToken: String): ApiResponse<TokenResponse> {
         val request = SnsLoginRequest(idToken)
         return userApi.googleLogin(request)
     }
