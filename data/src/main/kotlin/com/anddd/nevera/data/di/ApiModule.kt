@@ -1,5 +1,7 @@
 package com.anddd.nevera.data.di
 
+import com.anddd.nevera.core.network.di.AuthOkHttpClient
+import com.anddd.nevera.data.api.AuthApi
 import com.anddd.nevera.data.api.UserApi
 import dagger.Module
 import dagger.Provides
@@ -14,6 +16,12 @@ internal object ApiModule {
 
     @Provides
     @Singleton
+    fun provideAuthApi(@AuthOkHttpClient retrofit: Retrofit): AuthApi =
+        retrofit.create(AuthApi::class.java)
+
+    @Provides
+    @Singleton
     fun provideUserApi(retrofit: Retrofit): UserApi =
         retrofit.create(UserApi::class.java)
+
 }

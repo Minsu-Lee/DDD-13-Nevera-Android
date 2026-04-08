@@ -6,7 +6,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,15 +13,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+/**
+ * [AuthInterceptor] 내에서 token refresh API 호출에 사용하는 전용 네트워크 인스턴스 모음.
+ * [AuthInterceptor]를 포함하지 않아 refresh 요청이 인터셉터를 재진입하는 데드락을 방지한다.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+internal object AuthNetworkModule {
 
     private const val TIMEOUT_SECONDS = 30L
 
     private val loggingInterceptor: HttpLoggingInterceptor =
         HttpLoggingInterceptor().apply {
-            // 헤더 데이터 마스킹 처리
             redactHeader("Authorization")
             redactHeader("Cookie")
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
@@ -31,15 +33,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideGson(): Gson = Gson()
-
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(
-        @AuthInterceptorQualifier authInterceptor: Interceptor
-    ): OkHttpClient =
+    @AuthOkHttpClient
+    fun provideAuthOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
@@ -48,7 +44,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit =
+    @AuthOkHttpClient
+    fun provideAuthRetrofit(
+        @AuthOkHttpClient okHttpClient: OkHttpClient,
+        gson: Gson,
+    ): Retrofit =
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)

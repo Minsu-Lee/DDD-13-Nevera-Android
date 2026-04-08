@@ -12,8 +12,10 @@ internal fun UserResponse.toDomain(): User = User(
     email = email
 )
 
+// TODO :: 임시
 internal fun LoginResponse.toDomain(loginType: LoginType): LoginResult = LoginResult(
     user = user.toDomain(),
-    token = token,
+    token = accessToken,
+    refreshToken = refreshToken,
     loginType = loginType
 )
