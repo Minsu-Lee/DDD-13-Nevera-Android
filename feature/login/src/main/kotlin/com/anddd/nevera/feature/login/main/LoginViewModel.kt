@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.domain.usecase.EmailLoginUseCase
-import com.anddd.nevera.domain.usecase.SignupUseCase
 import com.anddd.nevera.domain.usecase.SnsLoginUseCase
 import com.anddd.nevera.domain.usecase.ValidateEmailUseCase
 import com.anddd.nevera.domain.usecase.ValidatePasswordUseCase
@@ -25,7 +24,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val emailLoginUseCase: EmailLoginUseCase,
-    private val signupUseCase: SignupUseCase,
     private val snsLoginUseCase: SnsLoginUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
@@ -68,30 +66,6 @@ class LoginViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     _uiState.update { it.copy(status = LoginStatus.Idle) }
                     _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "로그인에 실패했습니다."))
-                }
-            }
-        }
-    }
-
-    fun signup(email: String, password: String, name: String) {
-        if (!validateInputs(email, password) && name.isNotEmpty()) return
-
-        viewModelScope.launch {
-            _uiState.update { it.copy(status = LoginStatus.Loading) }
-            when (val result = signupUseCase(email, password, name)) {
-                is ApiResult.Success -> {
-                    _uiState.update {
-                        it.copy(
-                            email = "",
-                            password = "",
-                            status = LoginStatus.Idle
-                        )
-                    }
-                    _sideEffect.send(LoginSideEffect.ShowToast("회원가입이 완료되었습니다."))
-                }
-                is ApiResult.Error -> {
-                    _uiState.update { it.copy(status = LoginStatus.Idle) }
-                    _sideEffect.send(LoginSideEffect.ShowErrorToast(result.error.message ?: "회원가입에 실패했습니다."))
                 }
             }
         }
