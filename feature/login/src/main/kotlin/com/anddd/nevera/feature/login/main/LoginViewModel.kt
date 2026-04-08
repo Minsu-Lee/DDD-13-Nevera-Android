@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.domain.usecase.EmailLoginUseCase
 import com.anddd.nevera.domain.usecase.SnsLoginUseCase
+import com.anddd.nevera.domain.usecase.ValidateEmailUseCase
+import com.anddd.nevera.domain.usecase.ValidatePasswordUseCase
 import com.anddd.nevera.domain.usecase.validator.EmailValidationResult
 import com.anddd.nevera.domain.usecase.validator.PasswordValidationResult
 import com.anddd.nevera.feature.login.main.model.LoginSideEffect
@@ -22,7 +24,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val emailLoginUseCase: EmailLoginUseCase,
-    private val snsLoginUseCase: SnsLoginUseCase
+    private val snsLoginUseCase: SnsLoginUseCase,
+    private val validateEmailUseCase: ValidateEmailUseCase,
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -32,11 +36,11 @@ class LoginViewModel @Inject constructor(
     val sideEffect = _sideEffect.receiveAsFlow()
 
     fun onEmailChange(email: String) {
-        _uiState.update { it.copy(emailValidation = emailLoginUseCase.validateEmail(email)) }
+        _uiState.update { it.copy(emailValidation = validateEmailUseCase(email)) }
     }
 
     fun onPasswordChange(password: String) {
-        _uiState.update { it.copy(passwordValidation = emailLoginUseCase.validatePassword(password)) }
+        _uiState.update { it.copy(passwordValidation = validatePasswordUseCase(password)) }
     }
 
     fun login(email: String, password: String) {
@@ -56,8 +60,8 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun validateInputs(email: String, password: String): Boolean {
-        val emailResult = emailLoginUseCase.validateEmail(email)
-        val passwordResult = emailLoginUseCase.validatePassword(password)
+        val emailResult = validateEmailUseCase(email)
+        val passwordResult = validatePasswordUseCase(password)
         _uiState.update { it.copy(emailValidation = emailResult, passwordValidation = passwordResult) }
         return emailResult == EmailValidationResult.Valid && passwordResult is PasswordValidationResult.Valid
     }
