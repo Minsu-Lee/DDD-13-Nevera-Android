@@ -1,7 +1,7 @@
 package com.anddd.nevera.data.datasource
 
-import com.anddd.nevera.core.common.ApiResponse
-import com.anddd.nevera.core.common.ApiError
+import com.anddd.nevera.core.network.model.ApiResponse
+import com.anddd.nevera.core.network.model.ApiError
 import com.anddd.nevera.data.model.LoginResponse
 import com.anddd.nevera.data.model.UserResponse
 import kotlinx.coroutines.delay

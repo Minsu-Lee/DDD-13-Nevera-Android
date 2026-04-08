@@ -1,4 +1,4 @@
-package com.anddd.nevera.core.common
+package com.anddd.nevera.core.network.model
 
 data class ApiResponse<T>(
     val result: T?,

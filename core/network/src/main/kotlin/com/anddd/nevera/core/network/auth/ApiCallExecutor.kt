@@ -1,6 +1,6 @@
 package com.anddd.nevera.core.network.auth
 
-import com.anddd.nevera.core.common.ApiResponse
+import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.network.BuildConfig
