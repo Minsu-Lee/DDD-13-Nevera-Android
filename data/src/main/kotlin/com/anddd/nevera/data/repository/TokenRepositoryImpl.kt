@@ -6,20 +6,20 @@ import com.anddd.nevera.domain.repository.TokenRepository
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
-    private val sessionDataSource: TokenDataSource
+    private val tokenDataSource: TokenDataSource
 ) : TokenRepository {
 
     override suspend fun getAccessToken(): String? =
-        sessionDataSource.getAccessToken()
+        tokenDataSource.getAccessToken()
 
     override suspend fun setAccessToken(accessToken: String) =
-        sessionDataSource.setAccessToken(accessToken)
+        tokenDataSource.setAccessToken(accessToken)
 
     override suspend fun getRefreshToken(): String? =
-        sessionDataSource.getRefreshToken()
+        tokenDataSource.getRefreshToken()
 
     override suspend fun setRefreshToken(refreshToken: String) =
-        sessionDataSource.setRefreshToken(refreshToken)
+        tokenDataSource.setRefreshToken(refreshToken)
 
     override suspend fun setTokens(accessToken: String, refreshToken: String) {
         setAccessToken(accessToken)
@@ -27,12 +27,12 @@ internal class TokenRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getProvider(): LoginProvider? {
-        return sessionDataSource.getProvider()
+        return tokenDataSource.getProvider()
     }
 
     override suspend fun setProvider(provider: LoginProvider) {
-        sessionDataSource.setProvider(provider)
+        tokenDataSource.setProvider(provider)
     }
 
-    override suspend fun clearLoginData() = sessionDataSource.clearLoginData()
+    override suspend fun clearLoginData() = tokenDataSource.clearLoginData()
 }
