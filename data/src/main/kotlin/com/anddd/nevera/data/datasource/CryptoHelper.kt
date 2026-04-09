@@ -21,8 +21,8 @@ internal class CryptoHelper @Inject constructor(
 
     fun decrypt(value: String): String {
         val combined = Base64.getDecoder().decode(value)
-        require(combined.size > GCM_IV_LENGTH) {
-            "Invalid encrypted data: too short to contain IV"
+        require(combined.size >= MIN_ENCRYPTED_LENGTH) {
+            "Invalid encrypted data: too short to contain IV and auth tag"
         }
         val iv = combined.copyOfRange(0, GCM_IV_LENGTH)
         val encrypted = combined.copyOfRange(GCM_IV_LENGTH, combined.size)
@@ -34,5 +34,6 @@ internal class CryptoHelper @Inject constructor(
     companion object {
         private const val GCM_IV_LENGTH = 12
         private const val GCM_TAG_BITS = 128
+        private const val MIN_ENCRYPTED_LENGTH = GCM_IV_LENGTH + GCM_TAG_BITS / 8
     }
 }
