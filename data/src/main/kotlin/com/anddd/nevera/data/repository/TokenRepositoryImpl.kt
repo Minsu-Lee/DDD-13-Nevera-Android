@@ -22,8 +22,7 @@ internal class TokenRepositoryImpl @Inject constructor(
         tokenDataSource.setRefreshToken(refreshToken)
 
     override suspend fun setTokens(accessToken: String, refreshToken: String) {
-        setAccessToken(accessToken)
-        setRefreshToken(refreshToken)
+        tokenDataSource.setTokens(accessToken, refreshToken)
     }
 
     override suspend fun getProvider(): LoginProvider? {
