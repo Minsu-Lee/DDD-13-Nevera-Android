@@ -56,7 +56,17 @@ class SignupViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 password = password,
-                passwordValidation = validatePasswordUseCase(password)
+                passwordValidation = validatePasswordUseCase(password),
+                isPasswordMatched = password == it.confirmPassword
+            )
+        }
+    }
+
+    fun onConfirmPasswordChange(confirmPassword: String) {
+        _uiState.update {
+            it.copy(
+                confirmPassword = confirmPassword,
+                isPasswordMatched = it.password == confirmPassword
             )
         }
     }
@@ -72,6 +82,8 @@ class SignupViewModel @Inject constructor(
             _uiState.update { it.copy(emailValidation = emailResult) }
             return
         }
+        // 인증코드 초기화
+        _uiState.update { it.copy(authCode = "") }
 
         viewModelScope.launch {
             _uiState.update { it.copy(status = SignupStatus.Loading) }
@@ -126,7 +138,7 @@ class SignupViewModel @Inject constructor(
             _sideEffect.trySend(SignupSideEffect.ShowToast("이메일 인증을 완료해주세요."))
             return
         }
-        if (!validateInputs(state.email, state.password)) return
+        if (!validateInputs(state.email, state.password, state.confirmPassword)) return
 
         viewModelScope.launch {
             _uiState.update { it.copy(status = SignupStatus.Loading) }
@@ -143,10 +155,23 @@ class SignupViewModel @Inject constructor(
         }
     }
 
-    private fun validateInputs(email: String, password: String): Boolean {
+    private fun validateInputs(email: String, password: String, confirmPassword: String): Boolean {
         val emailResult = validateEmailUseCase(email)
         val passwordResult = validatePasswordUseCase(password)
-        _uiState.update { it.copy(emailValidation = emailResult, passwordValidation = passwordResult) }
-        return emailResult == EmailValidationResult.Valid && passwordResult is PasswordValidationResult.Valid
+        val isPasswordMatched = password == confirmPassword
+        _uiState.update {
+            it.copy(
+                emailValidation = emailResult,
+                passwordValidation = passwordResult,
+                isPasswordMatched = isPasswordMatched
+            )
+        }
+        if (!isPasswordMatched) {
+            _sideEffect.trySend(SignupSideEffect.ShowToast("비밀번호가 일치하지 않습니다."))
+        }
+        return emailResult == EmailValidationResult.Valid &&
+            passwordResult is PasswordValidationResult.Valid &&
+            isPasswordMatched &&
+            confirmPassword.isNotBlank()
     }
 }

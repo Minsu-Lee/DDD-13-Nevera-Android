@@ -7,10 +7,12 @@ data class SignupUiState(
     val status: SignupStatus = SignupStatus.Idle,
     val email: String = "",
     val password: String = "",
+    val confirmPassword: String = "",
     val name: String = "",
     val authCode: String = "",
     val emailValidation: EmailValidationResult? = null,
     val passwordValidation: PasswordValidationResult? = null,
+    val isPasswordMatched: Boolean = false,
     val isEmailRequestSent: Boolean = false,
     val isEmailVerified: Boolean = false
 )

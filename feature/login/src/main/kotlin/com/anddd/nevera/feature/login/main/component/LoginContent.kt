@@ -16,10 +16,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.domain.usecase.validator.EmailValidationResult
 import com.anddd.nevera.domain.usecase.validator.PasswordValidationError
@@ -37,6 +45,7 @@ internal fun LoginContent(
     onSignupClick: () -> Unit,
     onGoogleLoginClick: () -> Unit
 ) {
+    var isPasswordVisible by remember { mutableStateOf(false) }
     val emailError = emailValidation.toErrorMessage()
     val passwordErrors = passwordValidation.toErrorMessages()
 
@@ -55,6 +64,7 @@ internal fun LoginContent(
             label = { Text("이메일") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             isError = emailError != null,
             supportingText = if (emailError != null) {
                 { ValidationErrorText(emailError) }
@@ -67,8 +77,19 @@ internal fun LoginContent(
             label = { Text("비밀번호") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (isPasswordVisible) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
             isError = passwordErrors.isNotEmpty(),
+            trailingIcon = {
+                PasswordVisibilityToggle(
+                    visible = isPasswordVisible,
+                    enabled = true,
+                    onToggle = { isPasswordVisible = !isPasswordVisible }
+                )
+            },
             supportingText = if (passwordErrors.isNotEmpty()) {
                 { ValidationErrorText(passwordErrors.first()) }
             } else null
@@ -117,6 +138,24 @@ private fun ValidationErrorText(message: String) {
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.bodySmall
     )
+}
+
+@Composable
+private fun PasswordVisibilityToggle(
+    visible: Boolean,
+    enabled: Boolean,
+    onToggle: () -> Unit
+) {
+    TextButton(
+        onClick = onToggle,
+        enabled = enabled,
+        modifier = Modifier.padding(end = 4.dp)
+    ) {
+        Text(
+            text = if (visible) "숨김" else "보기",
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
 }
 
 private fun EmailValidationResult?.toErrorMessage(): String? = when (this) {
