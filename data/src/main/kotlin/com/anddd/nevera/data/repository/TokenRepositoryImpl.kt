@@ -33,5 +33,13 @@ internal class TokenRepositoryImpl @Inject constructor(
         tokenDataSource.setProvider(provider)
     }
 
-    override suspend fun clearLoginData() = tokenDataSource.clearLoginData()
+    override suspend fun setLoginInfo(
+        accessToken: String,
+        refreshToken: String,
+        provider: LoginProvider
+    ) {
+        tokenDataSource.setLoginInfo(accessToken, refreshToken, provider)
+    }
+
+    override suspend fun clearLoginInfo() = tokenDataSource.clearLoginInfo()
 }

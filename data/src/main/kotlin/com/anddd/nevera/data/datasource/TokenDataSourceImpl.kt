@@ -48,20 +48,32 @@ internal class TokenDataSourceImpl @Inject constructor(
     override suspend fun getProvider(): LoginProvider? =
         LoginProvider.toProvider(decryptOrNull(KEY_LOGIN_PROVIDER))
 
+    override suspend fun setProvider(provider: LoginProvider) {
+        dataStore.edit { it[KEY_LOGIN_PROVIDER] = cryptoHelper.encrypt(provider.providerName) }
+    }
+
+    override suspend fun setLoginInfo(
+        accessToken: String,
+        refreshToken: String,
+        provider: LoginProvider
+    ) {
+        dataStore.edit {
+            it[KEY_ACCESS_TOKEN] = cryptoHelper.encrypt(accessToken)
+            it[KEY_REFRESH_TOKEN] = cryptoHelper.encrypt(refreshToken)
+            it[KEY_LOGIN_PROVIDER] = cryptoHelper.encrypt(provider.providerName)
+        }
+    }
+
+    override suspend fun clearLoginInfo() {
+        dataStore.edit { it.clear() }
+    }
+
     private suspend fun decryptOrNull(key: Preferences.Key<String>): String? =
         dataStore.data.first()[key]?.let { encrypted ->
             runCatching { cryptoHelper.decrypt(encrypted) }
                 .onFailure { dataStore.edit { it.remove(key) } }
                 .getOrNull()
         }
-
-    override suspend fun setProvider(provider: LoginProvider) {
-        dataStore.edit { it[KEY_LOGIN_PROVIDER] = cryptoHelper.encrypt(provider.providerName) }
-    }
-
-    override suspend fun clearLoginData() {
-        dataStore.edit { it.clear() }
-    }
 
     companion object {
         private val KEY_ACCESS_TOKEN = stringPreferencesKey("access_token")

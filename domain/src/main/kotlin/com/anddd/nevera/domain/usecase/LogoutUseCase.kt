@@ -12,7 +12,7 @@ class LogoutUseCase @Inject constructor(
     suspend operator fun invoke(): ApiResult<Unit> {
         val result = userRepository.logout()
         if (result is ApiResult.Success) {
-            tokenRepository.clearLoginData()
+            tokenRepository.clearLoginInfo()
         }
         return result
     }

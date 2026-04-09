@@ -85,7 +85,7 @@ internal class AuthInterceptor @Inject constructor(
                         )
                     } catch (e: HttpException) {
                         if (e.code() == UNAUTHORIZED_STATUS_CODE) {
-                            tokenDataSource.get().clearLoginData()
+                            tokenDataSource.get().clearLoginInfo()
                             sessionEventBus.emitSessionExpired()
                         }
                         throw e

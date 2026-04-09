@@ -15,11 +15,11 @@ class EmailLoginUseCase @Inject constructor(
     suspend operator fun invoke(email: String, password: String): ApiResult<LoginResult> {
         val result = userRepository.loginWithEmail(email, password)
         if (result is ApiResult.Success) {
-            tokenRepository.setTokens(
+            tokenRepository.setLoginInfo(
                 accessToken = result.data.accessToken,
-                refreshToken = result.data.refreshToken
+                refreshToken = result.data.refreshToken,
+                provider = LoginProvider.EMAIL
             )
-            tokenRepository.setProvider(LoginProvider.EMAIL)
         }
         return result
     }

@@ -12,7 +12,7 @@ class WithdrawUseCase @Inject constructor(
     suspend operator fun invoke(): ApiResult<Unit> {
         val result = userRepository.withdraw()
         if (result is ApiResult.Success) {
-            tokenRepository.clearLoginData()
+            tokenRepository.clearLoginInfo()
         }
         return result
     }

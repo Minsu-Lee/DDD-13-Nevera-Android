@@ -10,5 +10,10 @@ internal interface TokenDataSource {
     suspend fun setTokens(accessToken: String, refreshToken: String)
     suspend fun getProvider(): LoginProvider?
     suspend fun setProvider(provider: LoginProvider)
-    suspend fun clearLoginData()
+    suspend fun setLoginInfo(
+        accessToken: String,
+        refreshToken: String,
+        provider: LoginProvider
+    )
+    suspend fun clearLoginInfo()
 }

@@ -15,11 +15,11 @@ class SnsLoginUseCase @Inject constructor(
     suspend operator fun invoke(token: String): ApiResult<LoginResult> {
         val result = userRepository.loginWithGoogle(token)
         if (result is ApiResult.Success) {
-            tokenRepository.setTokens(
-                result.data.accessToken,
-                result.data.refreshToken
+            tokenRepository.setLoginInfo(
+                accessToken = result.data.accessToken,
+                refreshToken = result.data.refreshToken,
+                provider = LoginProvider.GOOGLE
             )
-            tokenRepository.setProvider(LoginProvider.GOOGLE)
         }
         return result
     }
