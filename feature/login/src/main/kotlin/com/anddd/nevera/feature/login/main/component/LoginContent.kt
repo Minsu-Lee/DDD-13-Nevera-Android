@@ -201,7 +201,7 @@ private fun LoginContentPreview() {
 private fun LoginContentErrorPreview() {
     NeveraTheme {
         LoginContent(
-            email = "test@example.com",
+            email = "invalid-email",
             password = "short",
             emailValidation = EmailValidationResult.InvalidFormat,
             passwordValidation = PasswordValidationResult.Invalid(
