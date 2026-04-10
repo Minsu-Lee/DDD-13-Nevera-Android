@@ -87,7 +87,6 @@ internal fun LoginContent(
             trailingIcon = {
                 PasswordVisibilityToggle(
                     visible = isPasswordVisible,
-                    enabled = true,
                     onToggle = { isPasswordVisible = !isPasswordVisible }
                 )
             },
@@ -144,12 +143,10 @@ private fun ValidationErrorText(message: String) {
 @Composable
 private fun PasswordVisibilityToggle(
     visible: Boolean,
-    enabled: Boolean,
     onToggle: () -> Unit
 ) {
     TextButton(
         onClick = onToggle,
-        enabled = enabled,
         modifier = Modifier.padding(end = 4.dp)
     ) {
         Text(
