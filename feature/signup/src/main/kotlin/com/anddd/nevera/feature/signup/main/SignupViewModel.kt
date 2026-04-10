@@ -46,6 +46,7 @@ class SignupViewModel @Inject constructor(
             it.copy(
                 email = email,
                 emailValidation = validateEmailUseCase(email),
+                authCode = "",
                 isEmailRequestSent = false,
                 isEmailVerified = false
             )
