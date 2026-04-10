@@ -106,8 +106,13 @@ class SignupViewModel @Inject constructor(
     }
 
     fun verifyAuthCode() {
-        val requestedEmail = _uiState.value.email
-        val requestedAuthCode = _uiState.value.authCode
+        val state = _uiState.value
+        if (state.authCode.isBlank()) {
+            _sideEffect.trySend(SignupSideEffect.ShowToast("인증 코드를 입력해주세요."))
+            return
+        }
+        val requestedEmail = state.email
+        val requestedAuthCode = state.authCode
         viewModelScope.launch {
             _uiState.update { it.copy(status = SignupStatus.Loading) }
             when (val result = emailVerifyUseCase(requestedEmail, requestedAuthCode)) {
