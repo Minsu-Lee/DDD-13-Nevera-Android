@@ -56,16 +56,16 @@ internal fun SignupContent(
     onVerifyAuthCode: () -> Unit,
     onSignupClick: () -> Unit
 ) {
-    var isPasswordVisible by remember { mutableStateOf(false) }
-    var isConfirmPasswordVisible by remember { mutableStateOf(false) }
-    val isLoading = status is SignupStatus.Loading
-    val emailError = emailValidation.toErrorMessage()
-    val isEmailValid = emailValidation == EmailValidationResult.Valid
-    val passwordErrors = passwordValidation.toErrorMessages()
-    val confirmPasswordError =
-        if (confirmPassword.isNotBlank() && !isPasswordMatched) "비밀번호가 일치하지 않습니다" else null
-    val canRequestEmailVerification = !isLoading && !isEmailVerified && isEmailValid
-    val canVerifyAuthCode = !isLoading && !isEmailVerified && authCode.isNotBlank()
+    val flags = rememberSignupUiFlags(
+        name = name,
+        authCode = authCode,
+        confirmPassword = confirmPassword,
+        emailValidation = emailValidation,
+        passwordValidation = passwordValidation,
+        isPasswordMatched = isPasswordMatched,
+        isEmailVerified = isEmailVerified,
+        status = status
+    )
 
     Column(
         modifier = Modifier
@@ -74,145 +74,230 @@ internal fun SignupContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "회원가입", style = MaterialTheme.typography.headlineMedium)
+        SignupHeader()
         Spacer(modifier = Modifier.height(32.dp))
 
-        OutlinedTextField(
-            value = name,
-            onValueChange = onNameChange,
-            label = { Text("이름") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            enabled = !isLoading
+        NameSection(
+            name = name,
+            isLoading = flags.isLoading,
+            onNameChange = onNameChange
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Top
-        ) {
-            OutlinedTextField(
-                value = email,
-                onValueChange = onEmailChange,
-                label = { Text("이메일") },
-                modifier = Modifier.weight(1f),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                enabled = !isLoading,
-                isError = emailError != null,
-                supportingText = if (emailError != null) {
-                    { ValidationErrorText(emailError) }
-                } else null
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            OutlinedButton(
-                onClick = onRequestEmailVerification,
-                enabled = canRequestEmailVerification,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            ) {
-                Text("인증 요청")
-            }
-        }
+        EmailSection(
+            email = email,
+            emailError = flags.emailError,
+            canRequestEmailVerification = flags.canRequestEmailVerification,
+            isLoading = flags.isLoading,
+            onEmailChange = onEmailChange,
+            onRequestEmailVerification = onRequestEmailVerification
+        )
 
         if (isEmailRequestSent) {
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    value = authCode,
-                    onValueChange = onAuthCodeChange,
-                    label = { Text("인증 코드") },
-                    modifier = Modifier.weight(1f),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    enabled = !isLoading && !isEmailVerified
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                OutlinedButton(
-                    onClick = onVerifyAuthCode,
-                    enabled = canVerifyAuthCode
-                ) {
-                    Text(if (isEmailVerified) "인증 완료" else "인증 확인")
-                }
-            }
+            AuthCodeSection(
+                authCode = authCode,
+                isLoading = flags.isLoading,
+                isEmailVerified = isEmailVerified,
+                canVerifyAuthCode = flags.canVerifyAuthCode,
+                onAuthCodeChange = onAuthCodeChange,
+                onVerifyAuthCode = onVerifyAuthCode
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = onPasswordChange,
-            label = { Text("비밀번호") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            visualTransformation = if (isPasswordVisible) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
-            },
-            enabled = !isLoading,
-            isError = passwordErrors.isNotEmpty(),
-            trailingIcon = {
-                PasswordVisibilityToggle(
-                    visible = isPasswordVisible,
-                    onToggle = { isPasswordVisible = !isPasswordVisible }
-                )
-            },
-            supportingText = if (passwordErrors.isNotEmpty()) {
-                { ValidationErrorText(passwordErrors.first()) }
-            } else null
+        PasswordSection(
+            password = password,
+            passwordErrors = flags.passwordErrors,
+            isLoading = flags.isLoading,
+            onPasswordChange = onPasswordChange
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = onConfirmPasswordChange,
-            label = { Text("비밀번호 재입력") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            visualTransformation = if (isConfirmPasswordVisible) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
-            },
-            enabled = !isLoading,
-            isError = confirmPasswordError != null,
-            trailingIcon = {
-                PasswordVisibilityToggle(
-                    visible = isConfirmPasswordVisible,
-                    onToggle = { isConfirmPasswordVisible = !isConfirmPasswordVisible }
-                )
-            },
-            supportingText = if (confirmPasswordError != null) {
-                { ValidationErrorText(confirmPasswordError) }
-            } else null
+        ConfirmPasswordSection(
+            confirmPassword = confirmPassword,
+            confirmPasswordError = flags.confirmPasswordError,
+            isLoading = flags.isLoading,
+            onConfirmPasswordChange = onConfirmPasswordChange
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
-            onClick = onSignupClick,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = isEmailVerified &&
-                !isLoading &&
-                name.isNotBlank() &&
-                passwordErrors.isEmpty() &&
-                confirmPassword.isNotBlank() &&
-                isPasswordMatched
+        SignupSubmitSection(
+            canSignup = flags.canSignup,
+            onSignupClick = onSignupClick
+        )
+    }
+}
+
+@Composable
+private fun SignupHeader() {
+    Text(text = "회원가입", style = MaterialTheme.typography.headlineMedium)
+}
+
+@Composable
+private fun NameSection(
+    name: String,
+    isLoading: Boolean,
+    onNameChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = name,
+        onValueChange = onNameChange,
+        label = { Text("이름") },
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        enabled = !isLoading
+    )
+}
+
+@Composable
+private fun EmailSection(
+    email: String,
+    emailError: String?,
+    canRequestEmailVerification: Boolean,
+    isLoading: Boolean,
+    onEmailChange: (String) -> Unit,
+    onRequestEmailVerification: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
+    ) {
+        OutlinedTextField(
+            value = email,
+            onValueChange = onEmailChange,
+            label = { Text("이메일") },
+            modifier = Modifier.weight(1f),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            enabled = !isLoading,
+            isError = emailError != null,
+            supportingText = if (emailError != null) {
+                { ValidationErrorText(emailError) }
+            } else null
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        OutlinedButton(
+            onClick = onRequestEmailVerification,
+            enabled = canRequestEmailVerification,
+            modifier = Modifier.align(Alignment.CenterVertically)
         ) {
-            Text("회원가입")
+            Text("인증 요청")
         }
     }
 }
 
 @Composable
-private fun ValidationErrorText(message: String) {
-    Text(
-        text = message,
-        color = MaterialTheme.colorScheme.error,
-        style = MaterialTheme.typography.bodySmall
+private fun AuthCodeSection(
+    authCode: String,
+    isLoading: Boolean,
+    isEmailVerified: Boolean,
+    canVerifyAuthCode: Boolean,
+    onAuthCodeChange: (String) -> Unit,
+    onVerifyAuthCode: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = authCode,
+            onValueChange = onAuthCodeChange,
+            label = { Text("인증 코드") },
+            modifier = Modifier.weight(1f),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            enabled = !isLoading && !isEmailVerified
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        OutlinedButton(
+            onClick = onVerifyAuthCode,
+            enabled = canVerifyAuthCode
+        ) {
+            Text(if (isEmailVerified) "인증 완료" else "인증 확인")
+        }
+    }
+}
+
+@Composable
+private fun PasswordSection(
+    password: String,
+    passwordErrors: List<String>,
+    isLoading: Boolean,
+    onPasswordChange: (String) -> Unit
+) {
+    var isPasswordVisible by remember { mutableStateOf(false) }
+    OutlinedTextField(
+        value = password,
+        onValueChange = onPasswordChange,
+        label = { Text("비밀번호") },
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        visualTransformation = if (isPasswordVisible) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
+        enabled = !isLoading,
+        isError = passwordErrors.isNotEmpty(),
+        trailingIcon = {
+            PasswordVisibilityToggle(
+                visible = isPasswordVisible,
+                onToggle = { isPasswordVisible = !isPasswordVisible }
+            )
+        },
+        supportingText = if (passwordErrors.isNotEmpty()) {
+            { ValidationErrorText(passwordErrors.first()) }
+        } else null
     )
+}
+
+@Composable
+private fun ConfirmPasswordSection(
+    confirmPassword: String,
+    confirmPasswordError: String?,
+    isLoading: Boolean,
+    onConfirmPasswordChange: (String) -> Unit
+) {
+    var isConfirmPasswordVisible by remember { mutableStateOf(false) }
+    OutlinedTextField(
+        value = confirmPassword,
+        onValueChange = onConfirmPasswordChange,
+        label = { Text("비밀번호 재입력") },
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        visualTransformation = if (isConfirmPasswordVisible) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
+        enabled = !isLoading,
+        isError = confirmPasswordError != null,
+        trailingIcon = {
+            PasswordVisibilityToggle(
+                visible = isConfirmPasswordVisible,
+                onToggle = { isConfirmPasswordVisible = !isConfirmPasswordVisible }
+            )
+        },
+        supportingText = if (confirmPasswordError != null) {
+            { ValidationErrorText(confirmPasswordError) }
+        } else null
+    )
+}
+
+@Composable
+private fun SignupSubmitSection(
+    canSignup: Boolean,
+    onSignupClick: () -> Unit
+) {
+    Button(
+        onClick = onSignupClick,
+        modifier = Modifier.fillMaxWidth(),
+        enabled = canSignup
+    ) {
+        Text("회원가입")
+    }
 }
 
 @Composable
@@ -229,6 +314,61 @@ private fun PasswordVisibilityToggle(
             style = MaterialTheme.typography.labelMedium
         )
     }
+}
+
+@Composable
+private fun ValidationErrorText(message: String) {
+    Text(
+        text = message,
+        color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.bodySmall
+    )
+}
+
+private data class SignupUiFlags(
+    val isLoading: Boolean,
+    val emailError: String?,
+    val canRequestEmailVerification: Boolean,
+    val passwordErrors: List<String>,
+    val confirmPasswordError: String?,
+    val canVerifyAuthCode: Boolean,
+    val canSignup: Boolean
+)
+
+@Composable
+private fun rememberSignupUiFlags(
+    name: String,
+    authCode: String,
+    confirmPassword: String,
+    emailValidation: EmailValidationResult?,
+    passwordValidation: PasswordValidationResult?,
+    isPasswordMatched: Boolean,
+    isEmailVerified: Boolean,
+    status: SignupStatus
+): SignupUiFlags {
+    val isLoading = status is SignupStatus.Loading
+    val emailError = emailValidation.toErrorMessage()
+    val isEmailValid = emailValidation == EmailValidationResult.Valid
+    val passwordErrors = passwordValidation.toErrorMessages()
+    val confirmPasswordError =
+        if (confirmPassword.isNotBlank() && !isPasswordMatched) "비밀번호가 일치하지 않습니다" else null
+    val canRequestEmailVerification = !isLoading && !isEmailVerified && isEmailValid
+    val canVerifyAuthCode = !isLoading && !isEmailVerified && authCode.isNotBlank()
+    val canSignup = isEmailVerified &&
+        !isLoading &&
+        name.isNotBlank() &&
+        passwordErrors.isEmpty() &&
+        confirmPassword.isNotBlank() &&
+        isPasswordMatched
+    return SignupUiFlags(
+        isLoading = isLoading,
+        emailError = emailError,
+        canRequestEmailVerification = canRequestEmailVerification,
+        passwordErrors = passwordErrors,
+        confirmPasswordError = confirmPasswordError,
+        canVerifyAuthCode = canVerifyAuthCode,
+        canSignup = canSignup
+    )
 }
 
 private fun EmailValidationResult?.toErrorMessage(): String? = when (this) {
