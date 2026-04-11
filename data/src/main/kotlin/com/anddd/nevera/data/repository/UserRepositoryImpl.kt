@@ -6,6 +6,7 @@ import com.anddd.nevera.core.network.auth.ApiCallExecutor
 import com.anddd.nevera.data.datasource.UserDataSource
 import com.anddd.nevera.data.mapper.toDomain
 import com.anddd.nevera.domain.model.LoginResult
+import com.anddd.nevera.domain.model.MessageResult
 import com.anddd.nevera.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -23,9 +24,9 @@ internal class UserRepositoryImpl @Inject constructor(
         email: String,
         password: String,
         name: String
-    ): ApiResult<Unit> {
+    ): ApiResult<MessageResult> {
         return apiCall { authDataSource.signup(email, password, name) }
-            .mapSuccess { Unit }
+            .mapSuccess { it.toDomain() }
     }
 
     override suspend fun loginWithGoogle(idToken: String): ApiResult<LoginResult> {
@@ -33,23 +34,23 @@ internal class UserRepositoryImpl @Inject constructor(
             .mapSuccess { it.toDomain() }
     }
 
-    override suspend fun emailRequest(email: String): ApiResult<Unit> {
+    override suspend fun emailRequest(email: String): ApiResult<MessageResult> {
         return apiCall { authDataSource.emailRequest(email) }
-            .mapSuccess { Unit }
+            .mapSuccess { it.toDomain() }
     }
 
-    override suspend fun emailVerify(email: String, authCode: String): ApiResult<Unit> {
+    override suspend fun emailVerify(email: String, authCode: String): ApiResult<MessageResult> {
         return apiCall { authDataSource.emailVerify(email, authCode) }
-            .mapSuccess { Unit }
+            .mapSuccess { it.toDomain() }
     }
 
-    override suspend fun logout(): ApiResult<Unit> {
+    override suspend fun logout(): ApiResult<MessageResult> {
         return apiCall { authDataSource.logout() }
-            .mapSuccess { Unit }
+            .mapSuccess { it.toDomain() }
     }
 
-    override suspend fun withdraw(): ApiResult<Unit> {
+    override suspend fun withdraw(): ApiResult<MessageResult> {
         return apiCall { authDataSource.withdraw() }
-            .mapSuccess { Unit }
+            .mapSuccess { it.toDomain() }
     }
 }

@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.datasource
 
 import com.anddd.nevera.core.network.model.ApiResponse
+import com.anddd.nevera.data.model.auth.MessageResponse
 import com.anddd.nevera.data.model.auth.TokenResponse
 
 internal interface UserDataSource {
@@ -9,10 +10,10 @@ internal interface UserDataSource {
         email: String,
         password: String,
         name: String
-    ): ApiResponse<String>
+    ): ApiResponse<MessageResponse>
     suspend fun loginWithGoogle(idToken: String): ApiResponse<TokenResponse>
-    suspend fun emailRequest(email: String): ApiResponse<String>
-    suspend fun emailVerify(email: String, authCode: String): ApiResponse<String>
-    suspend fun logout(): ApiResponse<String>
-    suspend fun withdraw(): ApiResponse<String>
+    suspend fun emailRequest(email: String): ApiResponse<MessageResponse>
+    suspend fun emailVerify(email: String, authCode: String): ApiResponse<MessageResponse>
+    suspend fun logout(): ApiResponse<MessageResponse>
+    suspend fun withdraw(): ApiResponse<MessageResponse>
 }

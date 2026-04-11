@@ -2,6 +2,7 @@ package com.anddd.nevera.domain.repository
 
 import com.anddd.nevera.core.common.ApiResult
 import com.anddd.nevera.domain.model.LoginResult
+import com.anddd.nevera.domain.model.MessageResult
 
 interface UserRepository {
     suspend fun loginWithEmail(email: String, password: String): ApiResult<LoginResult>
@@ -9,10 +10,10 @@ interface UserRepository {
         email: String,
         password: String,
         name: String
-    ): ApiResult<Unit>
+    ): ApiResult<MessageResult>
     suspend fun loginWithGoogle(idToken: String): ApiResult<LoginResult>
-    suspend fun emailRequest(email: String): ApiResult<Unit>
-    suspend fun emailVerify(email: String, authCode: String): ApiResult<Unit>
-    suspend fun logout(): ApiResult<Unit>
-    suspend fun withdraw(): ApiResult<Unit>
+    suspend fun emailRequest(email: String): ApiResult<MessageResult>
+    suspend fun emailVerify(email: String, authCode: String): ApiResult<MessageResult>
+    suspend fun logout(): ApiResult<MessageResult>
+    suspend fun withdraw(): ApiResult<MessageResult>
 }
