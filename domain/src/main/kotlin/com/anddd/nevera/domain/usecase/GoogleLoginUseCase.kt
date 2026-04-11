@@ -7,7 +7,7 @@ import com.anddd.nevera.domain.repository.UserRepository
 import com.anddd.nevera.domain.repository.TokenRepository
 import javax.inject.Inject
 
-class SnsLoginUseCase @Inject constructor(
+class GoogleLoginUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository
 ) {
