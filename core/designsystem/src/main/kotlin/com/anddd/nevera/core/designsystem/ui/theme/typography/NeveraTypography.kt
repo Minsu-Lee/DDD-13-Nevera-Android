@@ -16,41 +16,65 @@ private val PretendardFamily = FontFamily(
 )
 
 object NeveraTypography {
-    // Display — 최상위 타이틀, 히어로 영역
-    val display: TextStyle = TextStyle(
+    // Headline — 페이지 단위 타이틀, 모듈 단위 역할 강조
+    val headlineLarge: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 32.sp,
-        lineHeight = 40.sp,
-        letterSpacing = 0.sp,
+        fontSize = 26.sp,
+        lineHeight = 36.sp,
+        letterSpacing = (-0.2).sp,
     )
 
-    // Heading — 화면/섹션 제목
-    val heading1: TextStyle = TextStyle(
+    val headlineMedium: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
-        lineHeight = 32.sp,
-        letterSpacing = 0.sp,
+        lineHeight = 34.sp,
+        letterSpacing = (-0.2).sp,
     )
 
-    val heading2: TextStyle = TextStyle(
+    val headlineSmall: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp,
+        lineHeight = 30.sp,
+        letterSpacing = (-0.2).sp,
     )
 
-    val heading3: TextStyle = TextStyle(
+    // Title — 버튼명, 섹션, 카드, 리스트 제목
+    val titleLarge: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
-        lineHeight = 26.sp,
+        lineHeight = 27.sp,
         letterSpacing = 0.sp,
     )
 
-    // Body — 본문 텍스트
+    val titleMedium: TextStyle = TextStyle(
+        fontFamily = PretendardFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.sp,
+    )
+
+    val titleSmall: TextStyle = TextStyle(
+        fontFamily = PretendardFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
+        lineHeight = 23.sp,
+        letterSpacing = 0.sp,
+    )
+
+    val titleXSmall: TextStyle = TextStyle(
+        fontFamily = PretendardFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 21.sp,
+        letterSpacing = 0.sp,
+    )
+
+    // Body — 본문 텍스트 및 일반적인 정보 전달 콘텐츠
     val bodyLarge: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Normal,
@@ -62,12 +86,21 @@ object NeveraTypography {
     val bodyMedium: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 22.sp,
+        fontSize = 15.sp,
+        lineHeight = 23.sp,
         letterSpacing = 0.sp,
     )
 
     val bodySmall: TextStyle = TextStyle(
+        fontFamily = PretendardFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 21.sp,
+        letterSpacing = 0.sp,
+    )
+
+    // Caption — 버튼, 태그 등 UI 요소 설명 및 기능 전달
+    val captionLarge: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 13.sp,
@@ -75,43 +108,9 @@ object NeveraTypography {
         letterSpacing = 0.sp,
     )
 
-    // Label — 버튼, 탭, 입력 레이블
-    val labelLarge: TextStyle = TextStyle(
-        fontFamily = PretendardFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 22.sp,
-        letterSpacing = 0.sp,
-    )
-
-    val labelMedium: TextStyle = TextStyle(
-        fontFamily = PretendardFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.sp,
-    )
-
-    val labelSmall: TextStyle = TextStyle(
-        fontFamily = PretendardFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 18.sp,
-        letterSpacing = 0.sp,
-    )
-
-    // Caption — 보조 설명, 타임스탬프
-    val captionLarge: TextStyle = TextStyle(
-        fontFamily = PretendardFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 18.sp,
-        letterSpacing = 0.sp,
-    )
-
     val captionMedium: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
         lineHeight = 18.sp,
         letterSpacing = 0.sp,
@@ -121,7 +120,7 @@ object NeveraTypography {
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 11.sp,
-        lineHeight = 16.sp,
+        lineHeight = 17.sp,
         letterSpacing = 0.sp,
     )
 }
