@@ -41,7 +41,7 @@ object NeveraTypography {
         letterSpacing = (-0.2).sp,
     )
 
-    // Title — 버튼명, 섹션, 카드, 리스트 제목
+    // Title — 섹션, 카드, 리스트 제목
     val titleLarge: TextStyle = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.SemiBold,
