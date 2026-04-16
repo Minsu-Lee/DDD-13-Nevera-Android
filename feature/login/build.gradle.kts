@@ -14,10 +14,10 @@ val localProperties = Properties().apply {
     }
 }
 
-fun Properties.requireNotBlank(key: String): String =
+fun Properties.getOrEnv(key: String): String =
     getProperty(key)?.trim()?.takeIf { it.isNotEmpty() }
         ?: System.getenv(key)?.trim()?.takeIf { it.isNotEmpty() }
-        ?: error("local.properties 또는 환경변수에 $key 가 없습니다")
+        ?: ""
 
 
 android {
@@ -27,7 +27,7 @@ android {
     defaultConfig {
         minSdk = 30
 
-        val googleClientId = localProperties.requireNotBlank("GOOGLE_WEB_CLIENT_ID")
+        val googleClientId = localProperties.getOrEnv("GOOGLE_WEB_CLIENT_ID")
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleClientId\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
