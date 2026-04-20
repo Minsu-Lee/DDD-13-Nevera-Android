@@ -1,6 +1,8 @@
 package com.anddd.nevera
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
 import com.anddd.nevera.core.network.auth.SessionEventBus
 import dagger.hilt.android.HiltAndroidApp
@@ -9,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.anddd.nevera.core.notification.R as NotificationR
 
 @HiltAndroidApp
 class NeveraApplication : Application() {
@@ -20,7 +23,18 @@ class NeveraApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        createNotificationChannel()
         observeSessionExpired()
+    }
+
+    private fun createNotificationChannel() {
+        val channel = NotificationChannel(
+            getString(NotificationR.string.default_notification_channel_id),
+            getString(NotificationR.string.default_notification_channel_name),
+            NotificationManager.IMPORTANCE_DEFAULT,
+        )
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     /**
@@ -33,11 +47,9 @@ class NeveraApplication : Application() {
     private fun observeSessionExpired() {
         applicationScope.launch {
             sessionEventBus.sessionExpiredEvent.collect {
-                startActivity(
-                    Intent(this@NeveraApplication, MainActivity::class.java).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    }
-                )
+                Intent(this@NeveraApplication, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }.let(::startActivity)
             }
         }
     }

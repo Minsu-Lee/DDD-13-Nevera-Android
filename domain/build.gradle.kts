@@ -13,6 +13,7 @@ tasks.test {
 dependencies {
     implementation(project(":core:common"))
     implementation(libs.javax.inject)
+    implementation(libs.coroutines.core)
 
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.jupiter.engine)
