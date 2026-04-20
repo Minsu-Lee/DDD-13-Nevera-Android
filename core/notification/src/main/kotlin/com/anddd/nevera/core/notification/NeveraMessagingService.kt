@@ -24,11 +24,6 @@ class NeveraMessagingService : FirebaseMessagingService() {
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    override fun onDestroy() {
-        super.onDestroy()
-        serviceScope.cancel()
-    }
-
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         serviceScope.launch {
@@ -94,6 +89,11 @@ class NeveraMessagingService : FirebaseMessagingService() {
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(type.ordinal, notification)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceScope.cancel()
     }
 
     companion object {
