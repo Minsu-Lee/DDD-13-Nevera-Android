@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
+import com.anddd.nevera.domain.model.notification.logFcmSyncFailure
 import com.anddd.nevera.domain.usecase.notification.UpdateFcmTokenUseCase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -15,7 +17,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 @AndroidEntryPoint
 class NeveraMessagingService : FirebaseMessagingService() {
@@ -27,7 +28,15 @@ class NeveraMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         serviceScope.launch {
-            updateFcmTokenUseCase(token)
+            runCatching {
+                updateFcmTokenUseCase(token)
+            }.onSuccess { result ->
+                result.logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
+            }.onFailure {
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, "FCM 토큰 업데이트 실패", it)
+                }
+            }
         }
     }
 

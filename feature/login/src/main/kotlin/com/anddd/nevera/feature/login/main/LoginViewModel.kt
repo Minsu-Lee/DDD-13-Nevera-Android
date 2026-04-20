@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
-import com.anddd.nevera.domain.model.common.CommonError
-import com.anddd.nevera.domain.model.notification.FcmTokenError
+import com.anddd.nevera.domain.model.notification.logFcmSyncFailure
 import com.anddd.nevera.domain.model.validation.EmailValidationResult
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import com.anddd.nevera.domain.usecase.auth.EmailLoginUseCase
@@ -111,31 +110,12 @@ class LoginViewModel @Inject constructor(
                 Firebase.messaging.token.await()
             }
         }.onSuccess { result ->
-            result.onFailure(::logFcmSyncFailure)
+            result.logFcmSyncFailure(TAG, BuildConfig.DEBUG, Log::w)
         }.onFailure { throwable ->
             if (BuildConfig.DEBUG) {
                 Log.e(TAG, throwable.message, throwable)
             }
         }
-    }
-
-    private fun logFcmSyncFailure(error: FcmTokenError) {
-        if (!BuildConfig.DEBUG) return
-
-        val message = when (error) {
-            FcmTokenError.MemberNotFound -> "FCM 동기화 실패: MEMBER_NOT_FOUND(status=404, code=2041, message=존재하지 않는 사용자입니다.)"
-            FcmTokenError.TokenNotFound -> "FCM 동기화 실패: FCM_TOKEN_NOT_FOUND(status=404, code=2051, message=FCM 토큰이 등록되지 않은 사용자입니다.)"
-            FcmTokenError.InvalidToken -> "FCM 동기화 실패: FCM_TOKEN_INVALID(status=400, code=2052, message=유효하지 않은 FCM 토큰입니다.)"
-            FcmTokenError.SendError -> "FCM 동기화 실패: FCM_SEND_ERROR(status=500, code=2053, message=푸시 알림 전송 중 오류가 발생했습니다.)"
-            is FcmTokenError.Common -> when (val commonError = error.error) {
-                CommonError.NetworkUnavailable -> "FCM 동기화 실패: 네트워크 연결을 확인해주세요."
-                CommonError.Timeout -> "FCM 동기화 실패: 요청 시간이 초과되었습니다."
-                CommonError.Unauthorized -> "FCM 동기화 실패: 인증되지 않은 요청입니다."
-                is CommonError.ServerError -> "FCM 동기화 실패: 서버 오류(${commonError.message})"
-                CommonError.Unknown -> "FCM 동기화 실패: 알 수 없는 오류가 발생했습니다."
-            }
-        }
-        Log.w(TAG, message)
     }
 
     fun handleGoogleLoginFailure(throwable: Throwable) {
