@@ -12,15 +12,16 @@ class UpdateFcmTokenUseCase @Inject constructor(
     private val tokenRepository: TokenRepository,
 ) {
 
-    suspend operator fun invoke(newToken: String): NeveraResult<Unit, FcmTokenError> {
-        val storedToken = fcmTokenRepository.getFcmToken()
-        if (newToken == storedToken) return NeveraResult.Success(Unit)
+    suspend operator fun invoke(newFcmToken: String): NeveraResult<Unit, FcmTokenError> {
+        val storedFcmToken = fcmTokenRepository.getFcmToken()
+        val isSyncNeeded = fcmTokenRepository.isSyncNeeded()
+        if (!isSyncNeeded && newFcmToken == storedFcmToken) return NeveraResult.Success(Unit)
 
-        fcmTokenRepository.markTokenForSync(newToken)
+        fcmTokenRepository.markTokenForSync(newFcmToken)
 
         tokenRepository.getAccessToken() ?: return NeveraResult.Success(Unit)  // 미로그인이면 여기서 종료
 
-        return fcmTokenRepository.registerFcmToken(newToken)
-            .onSuccess { fcmTokenRepository.setNeedsSync(false) }
+        return fcmTokenRepository.registerFcmToken(newFcmToken)
+            .onSuccess { fcmTokenRepository.clearSyncNeeded() }
     }
 }

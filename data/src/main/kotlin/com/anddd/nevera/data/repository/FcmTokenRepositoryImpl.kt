@@ -20,26 +20,22 @@ internal class FcmTokenRepositoryImpl @Inject constructor(
         return fcmTokenDataSource.getFcmToken()
     }
 
-    override suspend fun saveFcmToken(token: String) {
-        fcmTokenDataSource.saveFcmToken(token)
+    override suspend fun markTokenForSync(token: String) {
+        fcmTokenDataSource.markTokenForSync(token)
+    }
+
+    override suspend fun clearSyncNeeded() {
+        fcmTokenDataSource.setNeedsSync(false)
     }
 
     override suspend fun isSyncNeeded(): Boolean {
         return fcmTokenDataSource.isSyncNeeded()
     }
 
-    override suspend fun setNeedsSync(value: Boolean) {
-        fcmTokenDataSource.setNeedsSync(value)
-    }
-
-    override suspend fun markTokenForSync(token: String) {
-        fcmTokenDataSource.markTokenForSync(token)
-    }
-
     override suspend fun registerFcmToken(token: String): NeveraResult<Unit, FcmTokenError> {
         return apiCall { notificationDataSource.registerFcmToken(token) }
             .map(
-                onSuccess = { Unit },
+                onSuccess = { },
                 onFailure = { it.toFcmTokenError() },
             )
     }
