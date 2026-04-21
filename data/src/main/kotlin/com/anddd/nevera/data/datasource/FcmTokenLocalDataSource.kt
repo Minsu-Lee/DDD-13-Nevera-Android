@@ -6,4 +6,5 @@ internal interface FcmTokenLocalDataSource {
     suspend fun isSyncNeeded(): Boolean
     suspend fun setNeedsSync(value: Boolean)
     suspend fun markTokenForSync(token: String)
+    suspend fun clearFcmData()
 }
