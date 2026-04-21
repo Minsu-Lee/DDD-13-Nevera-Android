@@ -13,7 +13,7 @@ import com.anddd.nevera.data.datasource.RefreshDataSourceImpl
 import com.anddd.nevera.data.datasource.TokenDataSource
 import com.anddd.nevera.data.datasource.UserDataSourceImpl
 import com.anddd.nevera.data.datasource.UserDataSource
-import com.anddd.nevera.domain.usecase.notification.FcmTokenProvider
+import com.anddd.nevera.domain.repository.FcmTokenProvider
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

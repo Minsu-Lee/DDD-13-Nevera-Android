@@ -1,6 +1,6 @@
 package com.anddd.nevera.data.datasource
 
-import com.anddd.nevera.domain.usecase.notification.FcmTokenProvider
+import com.anddd.nevera.domain.repository.FcmTokenProvider
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.tasks.await
