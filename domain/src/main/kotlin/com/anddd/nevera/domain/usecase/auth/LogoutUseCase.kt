@@ -8,6 +8,7 @@ import com.anddd.nevera.domain.repository.FcmTokenRepository
 import com.anddd.nevera.domain.repository.TokenRepository
 import com.anddd.nevera.domain.repository.UserRepository
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class LogoutUseCase @Inject constructor(
     private val userRepository: UserRepository,
@@ -15,11 +16,35 @@ class LogoutUseCase @Inject constructor(
     private val fcmTokenRepository: FcmTokenRepository,
 ) {
 
-    suspend operator fun invoke(): NeveraResult<MessageResult, NetworkError> {
+    suspend operator fun invoke(isDebug: Boolean): NeveraResult<MessageResult, NetworkError> {
         return userRepository.logout()
             .onSuccess {
-                tokenRepository.clearLoginInfo()
-                fcmTokenRepository.clearFcmData()
+                clearLoginInfo(isDebug)
+                clearFcmData(isDebug)
             }
+    }
+
+    private suspend fun clearLoginInfo(isDebug: Boolean) {
+        try {
+            tokenRepository.clearLoginInfo()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            if (isDebug) {
+                t.printStackTrace()
+            }
+        }
+    }
+
+    private suspend fun clearFcmData(isDebug: Boolean) {
+        try {
+            fcmTokenRepository.clearFcmData()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            if (isDebug) {
+                t.printStackTrace()
+            }
+        }
     }
 }
