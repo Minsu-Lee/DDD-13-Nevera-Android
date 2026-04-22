@@ -22,10 +22,6 @@ internal class FcmTokenLocalDataSourceImpl @Inject constructor(
     override suspend fun getFcmToken(): String? =
         dataStore.data.first()[KEY_FCM_TOKEN]
 
-    override suspend fun saveFcmToken(token: String) {
-        dataStore.edit { it[KEY_FCM_TOKEN] = token }
-    }
-
     override suspend fun isSyncNeeded(): Boolean =
         dataStore.data.first()[KEY_NEEDS_SYNC] ?: false
 
