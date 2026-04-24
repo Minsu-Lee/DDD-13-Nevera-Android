@@ -67,7 +67,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:network"))
-    implementation(project(":core:notification"))
+    implementation(project(":infra:notification"))
 
     implementation(project(":feature:splash"))
     implementation(project(":feature:login"))
@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.work)
 
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.jupiter.engine)
