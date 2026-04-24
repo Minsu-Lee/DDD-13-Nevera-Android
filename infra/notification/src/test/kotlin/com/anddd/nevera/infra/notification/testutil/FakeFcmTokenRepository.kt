@@ -1,4 +1,4 @@
-package com.anddd.nevera.domain.testutil
+package com.anddd.nevera.infra.notification.testutil
 
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.domain.model.notification.FcmTokenError
