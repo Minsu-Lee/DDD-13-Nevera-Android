@@ -15,8 +15,9 @@ jobs:
       - name: Assign author and reviewer
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.AUTO_ASSIGN_PAT }}
           script: |
-            const developers = ['JuhyeokLee97', 'Minsu-Lee']
+            const developers = ['Jooman-Lee', 'Minsu-Lee']
             const author = context.payload.pull_request.user.login
             const reviewers = developers.filter(dev => dev !== author)
 
