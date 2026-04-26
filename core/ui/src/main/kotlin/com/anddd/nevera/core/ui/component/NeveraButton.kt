@@ -5,7 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -234,8 +236,8 @@ private fun buttonColors(
 @Composable
 private fun PreviewPrimaryStyles() {
     NeveraTheme {
-        androidx.compose.foundation.layout.Column(
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(16.dp),
         ) {
             NeveraButton(text = "Filled", onClick = {}, style = NeveraButtonStyle.Filled)
@@ -251,8 +253,8 @@ private fun PreviewPrimaryStyles() {
 @Composable
 private fun PreviewSecondaryStyles() {
     NeveraTheme {
-        androidx.compose.foundation.layout.Column(
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(16.dp),
         ) {
             NeveraButton(text = "Filled", onClick = {}, color = NeveraButtonColor.Secondary, style = NeveraButtonStyle.Filled)
@@ -268,8 +270,8 @@ private fun PreviewSecondaryStyles() {
 @Composable
 private fun PreviewSizes() {
     NeveraTheme {
-        androidx.compose.foundation.layout.Column(
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(16.dp),
         ) {
             NeveraButton(text = "Large", onClick = {}, size = NeveraButtonSize.Large)
@@ -284,8 +286,8 @@ private fun PreviewSizes() {
 @Composable
 private fun PreviewDisabled() {
     NeveraTheme {
-        androidx.compose.foundation.layout.Column(
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(16.dp),
         ) {
             NeveraButton(text = "Filled Disabled", onClick = {}, style = NeveraButtonStyle.Filled, enabled = false)
@@ -301,8 +303,8 @@ private fun PreviewDisabled() {
 @Composable
 private fun PreviewSecondaryDisabled() {
     NeveraTheme {
-        androidx.compose.foundation.layout.Column(
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(16.dp),
         ) {
             NeveraButton(text = "Filled Disabled", onClick = {}, color = NeveraButtonColor.Secondary, style = NeveraButtonStyle.Filled, enabled = false)
@@ -325,8 +327,8 @@ private fun PreviewIconVariants() {
         )
     }
     NeveraTheme {
-        androidx.compose.foundation.layout.Column(
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(16.dp),
         ) {
             NeveraButton(text = "No Icon", onClick = {})
