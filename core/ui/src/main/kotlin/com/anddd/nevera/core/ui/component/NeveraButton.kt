@@ -57,11 +57,10 @@ fun NeveraButton(
 
     val sizeSpec = size.toSpec()
     val colorSpec = buttonColors(color, style, isPressed)
-    val shape = if (style == NeveraButtonStyle.Rounded) {
-        RoundedCornerShape(NeveraRadius.full)
-    } else {
-        // Figma 변수명은 --radius/small이지만 실제값 8dp는 NeveraRadius.medium에 해당
-        RoundedCornerShape(NeveraRadius.medium)
+    // Figma 변수명은 --radius/small이지만 실제값 8dp는 NeveraRadius.medium에 해당
+    val shape = remember(style) {
+        if (style == NeveraButtonStyle.Rounded) RoundedCornerShape(NeveraRadius.full)
+        else RoundedCornerShape(NeveraRadius.medium)
     }
 
     val baseModifier = modifier
