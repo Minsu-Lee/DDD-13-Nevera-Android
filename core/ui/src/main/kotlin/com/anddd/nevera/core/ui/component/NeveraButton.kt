@@ -51,6 +51,9 @@ fun NeveraButton(
     require(!iconOnly || leadingIcon != null || trailingIcon != null) {
         "iconOnly=true 일 때 leadingIcon 또는 trailingIcon 중 하나는 반드시 제공해야 합니다."
     }
+    require(iconOnly || text.isNotBlank() || leadingIcon != null || trailingIcon != null) {
+        "text가 비어 있을 경우 leadingIcon 또는 trailingIcon 중 하나는 반드시 제공해야 합니다."
+    }
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
