@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.designsystem.ui.theme.shape.NeveraRadius
-import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
 import com.anddd.nevera.core.designsystem.ui.theme.typography.NeveraTypography
 
 enum class NeveraButtonColor { Primary, Secondary }
@@ -151,10 +150,10 @@ private fun NeveraButtonSize.toSpec(typography: NeveraTypography): NeveraButtonS
     return when (this) {
         NeveraButtonSize.Large -> NeveraButtonSizeSpec(
             height = 48.dp,
-            horizontalPadding = NeveraSpacing.base,
-            verticalPadding = NeveraSpacing.medium,
+            horizontalPadding = 16.dp,
+            verticalPadding = 12.dp,
             iconSize = 20.dp,
-            iconTextPadding = NeveraSpacing.small,
+            iconTextPadding = 8.dp,
             textStyle = typography.titleMedium,
         )
         NeveraButtonSize.Medium -> NeveraButtonSizeSpec(
@@ -167,18 +166,18 @@ private fun NeveraButtonSize.toSpec(typography: NeveraTypography): NeveraButtonS
         )
         NeveraButtonSize.Small -> NeveraButtonSizeSpec(
             height = 34.dp,
-            horizontalPadding = NeveraSpacing.medium,
-            verticalPadding = NeveraSpacing.small,
+            horizontalPadding = 12.dp,
+            verticalPadding = 8.dp,
             iconSize = 16.dp,
             iconTextPadding = 6.dp,
             textStyle = typography.titleXSmall,
         )
         NeveraButtonSize.XSmall -> NeveraButtonSizeSpec(
             height = 28.dp,
-            horizontalPadding = NeveraSpacing.small,
+            horizontalPadding = 8.dp,
             verticalPadding = 6.dp,
             iconSize = 14.dp,
-            iconTextPadding = NeveraSpacing.xSmall,
+            iconTextPadding = 4.dp,
             textStyle = typography.captionStrong,
         )
     }
