@@ -37,7 +37,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
         serviceScope.launch {
             try {
                 updateFcmTokenUseCase(token)
-                    .logFcmSyncFailure(TAG, BuildConfig.DEBUG) { tag, message ->
+                    .logFcmSyncFailure(TAG) { tag, message ->
                         Timber.tag(tag).w(message)
                     }
             } catch (ce: CancellationException) {
@@ -71,7 +71,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
                 )
             }
             NotificationType.UNKNOWN -> {
-                Timber.e("unknown type, $remoteMessage")
+                Timber.e("알 수 없는 알림 타입 수신, type: ${remoteMessage.data[NOTIFICATION_TYPE]}")
             }
         }
     }

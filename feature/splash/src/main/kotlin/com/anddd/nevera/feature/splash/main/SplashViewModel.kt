@@ -6,7 +6,6 @@ import com.anddd.nevera.domain.model.notification.logFcmSyncFailure
 import timber.log.Timber
 import com.anddd.nevera.domain.usecase.auth.CheckAutoLoginUseCase
 import com.anddd.nevera.domain.usecase.notification.SyncFcmTokenUseCase
-import com.anddd.nevera.feature.splash.BuildConfig
 import com.anddd.nevera.feature.splash.main.model.SplashUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -43,13 +42,13 @@ class SplashViewModel @Inject constructor(
     private suspend fun syncFcmToken() {
         try {
             syncFcmTokenUseCase()
-                .logFcmSyncFailure(TAG, BuildConfig.DEBUG) { tag, message ->
+                .logFcmSyncFailure(TAG) { tag, message ->
                     Timber.tag(tag).w(message)
                 }
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
-            Timber.e(t, "syncFcmToken")
+            Timber.e(t, "FCM 토큰 동기화 실패")
         }
     }
 

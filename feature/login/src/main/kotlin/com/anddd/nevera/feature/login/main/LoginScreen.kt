@@ -27,7 +27,7 @@ fun LoginScreen(
     val context = LocalContext.current
     val activity = context as? Activity
     if (activity == null) {
-        Timber.w("Google 로그인은 Activity context가 필요합니다")
+        Timber.i("Google 로그인은 Activity context가 필요합니다")
         return
     }
     val scope = rememberCoroutineScope()
