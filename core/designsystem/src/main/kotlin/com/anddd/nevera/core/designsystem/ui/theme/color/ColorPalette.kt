@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 internal object ColorPalette {
     val white = Color(0xFFFFFFFF)
     val black = Color(0xFF000000)
+    val transparent = Color(0x00000000)
 
     val gray5 = Color(0xFFF4F5F6)
     val gray10 = Color(0xFFE6E8EA)
