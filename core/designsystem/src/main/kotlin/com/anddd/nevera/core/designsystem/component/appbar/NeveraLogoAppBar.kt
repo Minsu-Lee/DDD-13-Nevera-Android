@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
@@ -34,10 +33,14 @@ fun NeveraLogoAppBar(
         showBackground = showBackground,
         startPadding = AppBarDefault.horizontalSpacingLarge,
     ) {
+        // TODO: replace ColorPainter with actual logo resource.
         Image(
             painter = ColorPainter(NeveraTheme.colors.primaryNormal),
             contentDescription = "로고",
-            modifier = Modifier.size(width = 100.dp, height = 32.dp),
+            modifier = Modifier.size(
+                width = AppBarDefault.logoWidth,
+                height = AppBarDefault.logoHeight,
+            ),
             contentScale = ContentScale.Fit,
             alignment = Alignment.CenterStart,
         )

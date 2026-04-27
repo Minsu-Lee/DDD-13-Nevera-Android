@@ -16,4 +16,6 @@ internal object AppBarDefault {
     val actionSpacing = NeveraSpacing.xSmall
     val iconButtonSize = NeveraIconSize.large
     val iconSize = NeveraIconSize.medium
+    val logoWidth = 100.dp
+    val logoHeight = 32.dp
 }
