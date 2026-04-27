@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.designsystem.ui.theme.color.NeveraColor
 import com.anddd.nevera.core.designsystem.ui.theme.shape.NeveraRadius
 import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
 import com.anddd.nevera.core.designsystem.ui.theme.typography.NeveraTypography
@@ -193,46 +194,58 @@ private fun buttonColors(
     val colors = NeveraTheme.colors
     return remember(color, style, pressed, colors) {
         when (color) {
-            NeveraButtonColor.Primary -> when (style) {
-                NeveraButtonStyle.Filled, NeveraButtonStyle.Rounded -> NeveraButtonColorSpec(
-                    containerColor = if (pressed) colors.primaryStrong else colors.primaryNormal,
-                    contentColor = colors.textInverse,
-                )
-                NeveraButtonStyle.Weak -> NeveraButtonColorSpec(
-                    containerColor = if (pressed) colors.primaryWeak else colors.surfaceBrandPrimary,
-                    contentColor = colors.primaryStrong,
-                )
-                NeveraButtonStyle.Outlined -> NeveraButtonColorSpec(
-                    containerColor = colors.surfacePrimary,
-                    contentColor = if (pressed) colors.primaryStrong else colors.primaryNormal,
-                    borderColor = if (pressed) colors.primaryStrong else colors.primaryNormal,
-                )
-                NeveraButtonStyle.Ghost -> NeveraButtonColorSpec(
-                    containerColor = Color.Transparent,
-                    contentColor = if (pressed) colors.primaryStrong else colors.primaryNormal,
-                )
-            }
-            NeveraButtonColor.Secondary -> when (style) {
-                NeveraButtonStyle.Filled, NeveraButtonStyle.Rounded -> NeveraButtonColorSpec(
-                    containerColor = if (pressed) colors.secondaryStrong else colors.secondaryNormal,
-                    contentColor = colors.textInverse,
-                )
-                NeveraButtonStyle.Weak -> NeveraButtonColorSpec(
-                    containerColor = if (pressed) colors.surfaceTertiary else colors.surfaceSecondary,
-                    contentColor = colors.secondaryStrong,
-                )
-                NeveraButtonStyle.Outlined -> NeveraButtonColorSpec(
-                    containerColor = colors.surfacePrimary,
-                    contentColor = if (pressed) colors.secondaryStrong else colors.secondaryNormal,
-                    borderColor = if (pressed) colors.secondaryStrong else colors.secondaryNormal,
-                )
-                NeveraButtonStyle.Ghost -> NeveraButtonColorSpec(
-                    containerColor = Color.Transparent,
-                    contentColor = if (pressed) colors.secondaryStrong else colors.secondaryNormal,
-                )
-            }
+            NeveraButtonColor.Primary -> primaryButtonColors(colors, style, pressed)
+            NeveraButtonColor.Secondary -> secondaryButtonColors(colors, style, pressed)
         }
     }
+}
+
+private fun primaryButtonColors(
+    colors: NeveraColor,
+    style: NeveraButtonStyle,
+    pressed: Boolean,
+): NeveraButtonColorSpec = when (style) {
+    NeveraButtonStyle.Filled, NeveraButtonStyle.Rounded -> NeveraButtonColorSpec(
+        containerColor = if (pressed) colors.primaryStrong else colors.primaryNormal,
+        contentColor = colors.textInverse,
+    )
+    NeveraButtonStyle.Weak -> NeveraButtonColorSpec(
+        containerColor = if (pressed) colors.primaryWeak else colors.surfaceBrandPrimary,
+        contentColor = colors.primaryStrong,
+    )
+    NeveraButtonStyle.Outlined -> NeveraButtonColorSpec(
+        containerColor = colors.surfacePrimary,
+        contentColor = if (pressed) colors.primaryStrong else colors.primaryNormal,
+        borderColor = if (pressed) colors.primaryStrong else colors.primaryNormal,
+    )
+    NeveraButtonStyle.Ghost -> NeveraButtonColorSpec(
+        containerColor = Color.Transparent,
+        contentColor = if (pressed) colors.primaryStrong else colors.primaryNormal,
+    )
+}
+
+private fun secondaryButtonColors(
+    colors: NeveraColor,
+    style: NeveraButtonStyle,
+    pressed: Boolean,
+): NeveraButtonColorSpec = when (style) {
+    NeveraButtonStyle.Filled, NeveraButtonStyle.Rounded -> NeveraButtonColorSpec(
+        containerColor = if (pressed) colors.secondaryStrong else colors.secondaryNormal,
+        contentColor = colors.textInverse,
+    )
+    NeveraButtonStyle.Weak -> NeveraButtonColorSpec(
+        containerColor = if (pressed) colors.surfaceTertiary else colors.surfaceSecondary,
+        contentColor = colors.secondaryStrong,
+    )
+    NeveraButtonStyle.Outlined -> NeveraButtonColorSpec(
+        containerColor = colors.surfacePrimary,
+        contentColor = if (pressed) colors.secondaryStrong else colors.secondaryNormal,
+        borderColor = if (pressed) colors.secondaryStrong else colors.secondaryNormal,
+    )
+    NeveraButtonStyle.Ghost -> NeveraButtonColorSpec(
+        containerColor = Color.Transparent,
+        contentColor = if (pressed) colors.secondaryStrong else colors.secondaryNormal,
+    )
 }
 
 @Preview(name = "Primary - All Styles", showBackground = true, backgroundColor = 0xFFFFFFFF)
