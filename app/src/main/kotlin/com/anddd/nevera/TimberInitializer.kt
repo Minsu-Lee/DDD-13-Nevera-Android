@@ -4,7 +4,7 @@ import timber.log.Timber
 
 object TimberInitializer {
 
-    `@Volatile` private var initialized = false
+    @Volatile private var initialized = false
 
     fun init() {
         if (initialized) return
