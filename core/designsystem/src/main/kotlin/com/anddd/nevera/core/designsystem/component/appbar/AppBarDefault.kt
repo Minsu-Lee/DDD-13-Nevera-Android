@@ -17,4 +17,5 @@ internal object AppBarDefault {
     val iconSize = NeveraTheme.iconSize.medium
     val logoWidth = 100.dp
     val logoHeight = 32.dp
+    val titleHorizontalGap = 46.dp
 }

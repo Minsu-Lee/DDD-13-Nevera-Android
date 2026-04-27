@@ -50,7 +50,8 @@ fun NeveraAppBar(
             val navPlaceable = measurables[0].measure(looseConstraints)
             val actionPlaceable = measurables[2].measure(looseConstraints)
 
-            val sideWidth = maxOf(navPlaceable.width, actionPlaceable.width)
+            val titleHorizontalGap = AppBarDefault.titleHorizontalGap.roundToPx()
+            val sideWidth = maxOf(navPlaceable.width, actionPlaceable.width) + titleHorizontalGap
             val titleConstraints = looseConstraints.copy(
                 maxWidth = (constraints.maxWidth - sideWidth * 2).coerceAtLeast(0),
             )
