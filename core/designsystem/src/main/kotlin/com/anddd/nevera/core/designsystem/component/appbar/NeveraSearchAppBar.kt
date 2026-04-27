@@ -3,9 +3,11 @@ package com.anddd.nevera.core.designsystem.component.appbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,9 +46,9 @@ fun NeveraSearchAppBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AppBarNavigationSlot(navigation = navigation)
-            Box(modifier = Modifier.weight(1f)) {
-                searchBar()
-            }
+            Spacer(modifier = Modifier.width(NeveraTheme.spacing.xSmall))
+            Box(modifier = Modifier.weight(1f)) { searchBar() }
+            Spacer(modifier = Modifier.width(NeveraTheme.spacing.small))
             AppBarActionSlot(action = action)
         }
     }
@@ -97,6 +99,26 @@ private fun NeveraSearchAppBarActionIconsPreview() {
                     contentDescription = "닫기",
                     onClick = {},
                 ),
+            ),
+            searchBar = { SearchBarPreviewContent() },
+        )
+    }
+}
+
+@Preview(
+    name = "NeveraSearchAppBar - Action Text Tertiary",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun NeveraSearchAppBarActionTextTertiaryPreview() {
+    NeveraTheme {
+        NeveraSearchAppBar(
+            navigation = AppBarNavigation.Back(onClick = {}),
+            action = AppBarAction.Text(
+                label = "건너뛰기",
+                onClick = {},
+                tone = AppBarAction.Text.Tone.Tertiary,
             ),
             searchBar = { SearchBarPreviewContent() },
         )
