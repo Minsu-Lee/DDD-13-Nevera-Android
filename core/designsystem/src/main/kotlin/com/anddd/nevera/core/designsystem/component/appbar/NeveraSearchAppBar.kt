@@ -91,7 +91,7 @@ private fun NeveraSearchAppBarActionIconsPreview() {
     NeveraTheme {
         NeveraSearchAppBar(
             navigation = AppBarNavigation.Back(onClick = {}),
-            action = AppBarAction.Icons(
+            action = AppBarAction.Icons.of(
                 AppBarAction.Icons.Item(
                     painter = NeveraIcons.Close,
                     contentDescription = "닫기",

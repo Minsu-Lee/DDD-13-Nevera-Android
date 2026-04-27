@@ -16,10 +16,11 @@ sealed interface AppBarAction {
      *
      * 최소 1개, 최대 2개의 아이콘을 지원합니다.
      */
-    class Icons(vararg val items: Item) : AppBarAction {
+    class Icons internal constructor(val items: List<Item>) : AppBarAction {
         init {
             require(items.size in 1..2) { "AppBarAction.Icons는 최소 1개, 최대 2개까지 지원합니다." }
         }
+
 
         /** 개별 아이콘 액션의 표시 정보와 클릭 동작을 정의합니다. */
         data class Item(
@@ -27,6 +28,11 @@ sealed interface AppBarAction {
             val contentDescription: String? = null,
             val onClick: () -> Unit,
         )
+
+        companion object {
+            fun of(item: Item): Icons = Icons(listOf(item))
+            fun of(first: Item, second: Item): Icons = Icons(listOf(first, second))
+        }
     }
 
     /**

@@ -107,7 +107,7 @@ private fun NeveraLogoAppBarActionTextTertiaryPreview() {
 private fun NeveraLogoAppBarActionIconsPreview() {
     NeveraTheme {
         NeveraLogoAppBar(
-            action = AppBarAction.Icons(
+            action = AppBarAction.Icons.of(
                 AppBarAction.Icons.Item(
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",

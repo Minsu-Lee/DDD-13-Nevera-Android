@@ -220,7 +220,7 @@ private fun NeveraAppBarActionIconsPreview() {
         NeveraAppBar(
             title = "타이틀",
             navigation = AppBarNavigation.Back(onClick = {}),
-            action = AppBarAction.Icons(
+            action = AppBarAction.Icons.of(
                 AppBarAction.Icons.Item(
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",
@@ -242,7 +242,7 @@ private fun NeveraAppBarActionIcons2Preview() {
         NeveraAppBar(
             title = "타이틀",
             navigation = AppBarNavigation.Back(onClick = {}),
-            action = AppBarAction.Icons(
+            action = AppBarAction.Icons.of(
                 AppBarAction.Icons.Item(
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",
