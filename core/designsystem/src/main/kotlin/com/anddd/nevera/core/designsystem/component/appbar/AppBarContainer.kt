@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.core.designsystem.ui.theme.color.ColorPalette
 
 /**
  * AppBar의 공통 레이아웃, 높이, 배경, 가로 패딩을 적용하는 컨테이너입니다.
@@ -36,9 +35,9 @@ internal fun AppBarContainer(
         modifier = modifier
             .fillMaxWidth()
             .requiredHeight(AppBarDefault.height)
-            .background(
-                color = if (showBackground) NeveraTheme.colors.backgroundPrimary
-                else ColorPalette.transparent   // todo implement NeveraTheme.colors
+            .then(
+                if (showBackground) Modifier.background(NeveraTheme.colors.backgroundPrimary)
+                else Modifier
             )
             .padding(start = startPadding, end = endPadding),
         contentAlignment = Alignment.CenterStart,

@@ -1,8 +1,7 @@
 package com.anddd.nevera.core.designsystem.component.appbar
 
 import androidx.compose.ui.unit.dp
-import com.anddd.nevera.core.designsystem.ui.theme.iconsize.NeveraIconSize
-import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
+import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 /**
  * AppBar 구성 요소에서 공통으로 사용하는 기본 치수와 간격 값을 제공합니다.
@@ -11,11 +10,11 @@ import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
  */
 internal object AppBarDefault {
     val height = 56.dp
-    val horizontalSpacingMedium = NeveraSpacing.medium
-    val horizontalSpacingLarge = NeveraSpacing.base
-    val actionSpacing = NeveraSpacing.xSmall
-    val iconButtonSize = NeveraIconSize.large
-    val iconSize = NeveraIconSize.medium
+    val horizontalSpacingMedium = NeveraTheme.spacing.medium
+    val horizontalSpacingLarge = NeveraTheme.spacing.base
+    val actionSpacing = NeveraTheme.spacing.xSmall
+    val iconButtonSize = NeveraTheme.iconSize.large
+    val iconSize = NeveraTheme.iconSize.medium
     val logoWidth = 100.dp
     val logoHeight = 32.dp
 }
