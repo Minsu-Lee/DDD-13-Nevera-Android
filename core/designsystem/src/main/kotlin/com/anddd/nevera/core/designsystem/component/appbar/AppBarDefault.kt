@@ -18,4 +18,6 @@ internal object AppBarDefault {
     val logoWidth = 100.dp
     val logoHeight = 32.dp
     val titleHorizontalGap = 46.dp
+    val textActionHorizontalPadding = NeveraTheme.spacing.xSmall
+    val textActionVerticalPadding = NeveraTheme.spacing.small
 }

@@ -1,16 +1,21 @@
 package com.anddd.nevera.core.designsystem.component.appbar
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.Dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
@@ -68,20 +73,7 @@ internal fun AppBarActionSlot(action: AppBarAction) {
             }
         }
 
-        is AppBarAction.Text -> {
-            val textColor = when (action.tone) {
-                AppBarAction.Text.Tone.Primary -> NeveraTheme.colors.primaryNormal
-                AppBarAction.Text.Tone.Tertiary -> NeveraTheme.colors.textTertiary
-            }
-
-            TextButton(onClick = action.onClick) {
-                Text(
-                    text = action.label,
-                    style = NeveraTheme.typography.titleXSmall,
-                    color = textColor,
-                )
-            }
-        }
+        is AppBarAction.Text -> AppBarTextButton(action)
 
         AppBarAction.None -> Unit
     }
@@ -114,5 +106,38 @@ private fun AppBarIconButton(
                 tint = NeveraTheme.colors.iconPrimary
             )
         }
+    }
+}
+
+/**
+ * [AppBarAction.Text] 값을 실제 텍스트 액션 UI로 변환해 표시합니다.
+ *
+ * [AppBarAction.Text.Tone]에 따라 텍스트 색상을 결정하며, Material [androidx.compose.material3.TextButton]의
+ * 최소 크기 제약 없이 텍스트와 패딩 크기만으로 버튼 영역을 구성합니다.
+ *
+ * @param action 표시할 텍스트 액션 상태입니다.
+ */
+@Composable
+fun AppBarTextButton(action: AppBarAction.Text) {
+    val textColor = when (action.tone) {
+        AppBarAction.Text.Tone.Primary -> NeveraTheme.colors.primaryNormal
+        AppBarAction.Text.Tone.Tertiary -> NeveraTheme.colors.textTertiary
+    }
+
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(percent = 50))
+            .clickable(onClick = action.onClick)
+            .padding(
+                horizontal = AppBarDefault.textActionHorizontalPadding,
+                vertical = AppBarDefault.textActionVerticalPadding,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = action.label,
+            style = NeveraTheme.typography.titleXSmall,
+            color = textColor,
+        )
     }
 }

@@ -21,7 +21,6 @@ sealed interface AppBarAction {
             require(items.size in 1..2) { "AppBarAction.Icons는 최소 1개, 최대 2개까지 지원합니다." }
         }
 
-
         /** 개별 아이콘 액션의 표시 정보와 클릭 동작을 정의합니다. */
         data class Item(
             val painter: Painter,
