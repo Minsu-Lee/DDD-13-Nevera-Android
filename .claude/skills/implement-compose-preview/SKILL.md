@@ -22,7 +22,7 @@ version: 0.1.0
 
 | 인자 유형 | 판별 기준 | 처리 방법 |
 |-----------|-----------|-----------|
-| 파일 경로 | `.kt` 확장자 포함 또는 경로 구분자(`/` 또는 `\`)` 포함 | 파일 내 모든 `@Composable` public 함수를 대상으로 Preview 생성 |
+| 파일 경로 | `.kt` 확장자 포함 또는 경로 구분자(`/` 또는 `\`) 포함 | 파일 내 모든 `@Composable` public 함수를 대상으로 Preview 생성 |
 | 함수명 | `.kt`, `/` 미포함 | 해당 이름의 `@Composable` 함수를 찾아 해당 함수만 Preview 생성 |
 | 없음 | `$ARGUMENTS`가 비어있음 | 사용자에게 대상 파일 또는 함수명을 질문 |
 
@@ -39,11 +39,15 @@ version: 0.1.0
 
 각 대상 Composable 함수의 파라미터를 다음 기준으로 분석한다.
 
-- **enum 타입**: 모든 entry에 대해 각각 Preview를 별도 생성한다.
+- **enum 타입**: 모든 entry에 대해 각각 Preview를 별도 생성한다. 이 규칙은 최상위 파라미터뿐 아니라 sealed 하위 타입의 생성자 파라미터 안에 중첩된 enum에도 동일하게 적용한다. 예를 들어 `AppBarAction.Text(text: String, tone: Tone)` 처럼 nested enum 이 있으면 `Tone.Primary`, `Tone.Tertiary` 각각에 대해 별도 Preview를 생성한다.
 - **sealed class 타입**: 모든 하위 타입에 대해 각각 Preview를 별도 생성하되, 하위 타입 형태에 따라 인스턴스화 방식을 다르게 적용한다.
   - `object` 하위 타입: 해당 object를 그대로 사용한다.
-  - `data class` 하위 타입: 파라미터를 이 분석 규칙에 따라 재귀적으로 처리하여 인스턴스를 생성한다 (String → 한국어 샘플, Boolean → `true` 고정, List → 1~3개 더미 아이템 등).
-- **Boolean 파라미터** (`enabled`, `selected`, `isLoading` 등): 각 Boolean 파라미터를 **독립적으로** 처리한다. 파라미터마다 `true` / `false` 두 Preview를 생성하되, 해당 파라미터 외의 Boolean은 기본값(기본값 없으면 `false`)으로 고정한다. 단, enum으로 이미 표현되는 상태와 중복되면 생략한다.
+  - `class` / `data class` 하위 타입: 파라미터를 이 분석 규칙에 따라 재귀적으로 처리하여 인스턴스를 생성한다 (String → 한국어 샘플, Boolean → `true` 고정, List → 1~3개 더미 아이템 등).
+  - 생성자에 `vararg` 파라미터가 있으면, 해당 원소 타입 기준으로 더미 값을 필요한 개수만큼 채워 넣어 클래스 불변식을 만족시킨다. 예를 들어 `AppBarAction.Icons(vararg items: Item)` 는 구체 클래스명 `AppBarAction.Icons` 와 원소 타입 `Item` 을 기준으로 처리하고, `AppBarAction.Icons.init` 의 `require(items.size in 1..2)` 를 만족하도록 `Item` 더미를 1개 또는 2개 생성해야 한다.
+  - `vararg Item` 더미 생성 시에도 기존 샘플 규칙을 그대로 적용한다 (String → 한국어 샘플, Boolean → `true`, List → 1~3개 더미 엔트리 등). 즉 preview generator 는 `AppBarAction.Icons` 를 만들 때 `Item` 인스턴스를 1~2개 구성해 전달해야 한다.
+- **Boolean 파라미터** (`enabled`, `selected`, `isLoading` 등): 각 Boolean 파라미터를 **독립적으로** 처리한다. 파라미터마다 `true` / `false` 두 Preview를 생성하되, 해당 파라미터 외의 Boolean은 기본값(기본값 없으면 `false`)으로 고정한다.
+  - 단, enum으로 이미 표현되는 상태와 중복되면 생략한다. 중복 판단은 이름 기반 휴리스틱을 우선 사용한다. Boolean 이름이 `is`, `has`, `should` 로 시작하거나 `enabled`, `active`, `selected`, `loading`, `expanded` 같은 상태 키워드를 포함하고, enum 타입명 또는 enum entry 가 같은 상태 키워드(`Enabled` / `Disabled`, `Selected` / `Unselected`, `Loading` / `Idle` 등)를 직접 표현하면 중복으로 본다.
+  - enum entry 와 Boolean 의미의 직접 매핑이 불명확하면 자동으로 생략하지 말고 Boolean Preview도 함께 생성한다. 함수명이 모호하거나 enum 설명만으로 상태 대응을 확신할 수 없으면 사용자에게 어떤 Boolean 을 생략할지 확인받는다.
 - **lambda 파라미터** (`onClick`, `onDismiss` 등): `{}` 빈 람다로 채운다.
 - **String 파라미터**: 의미 있는 한국어 샘플 텍스트를 사용한다 (예: `"타이틀"`, `"닉네임"`, `"확인"`).
 - **List / Map 파라미터**: 기본적으로 1~3개의 더미 아이템을 포함하는 샘플 데이터를 구성한다. 단, 함수명에 `Empty` / `Placeholder`가 포함되거나 파라미터명이 빈 상태를 명시하는 경우(예: `emptyItems`, `placeholderData`)에는 `emptyList()` / `emptyMap()`을 사용한다.
