@@ -2,10 +2,12 @@ package com.anddd.nevera.core.designsystem.component.appbar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
@@ -35,12 +37,42 @@ fun NeveraAppBar(
         modifier = modifier,
         showBackground = showBackground,
     ) {
-        AppBarNavigationSlot(navigation = navigation)
+        Layout(
+            modifier = Modifier.fillMaxSize(),
+            content = {
+                Box { AppBarNavigationSlot(navigation = navigation) }
+                Box { title?.let { Title(it) } }
+                Box { AppBarActionSlot(action = action) }
+            },
+        ) { measurables, constraints ->
+            val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
 
-        title?.let { Title(it) }
+            val navPlaceable = measurables[0].measure(looseConstraints)
+            val actionPlaceable = measurables[2].measure(looseConstraints)
 
-        Box(modifier = Modifier.align(Alignment.CenterEnd)) {
-            AppBarActionSlot(action = action)
+            val sideWidth = maxOf(navPlaceable.width, actionPlaceable.width)
+            val titleConstraints = looseConstraints.copy(
+                maxWidth = (constraints.maxWidth - sideWidth * 2).coerceAtLeast(0),
+            )
+            val titlePlaceable = measurables[1].measure(titleConstraints)
+
+            val height = constraints.maxHeight
+            val centerY = height / 2
+
+            layout(constraints.maxWidth, height) {
+                navPlaceable.placeRelative(
+                    x = 0,
+                    y = centerY - navPlaceable.height / 2
+                )
+                titlePlaceable.placeRelative(
+                    x = (constraints.maxWidth - titlePlaceable.width) / 2,
+                    y = centerY - titlePlaceable.height / 2,
+                )
+                actionPlaceable.placeRelative(
+                    x = constraints.maxWidth - actionPlaceable.width,
+                    y = centerY - actionPlaceable.height / 2,
+                )
+            }
         }
     }
 }
