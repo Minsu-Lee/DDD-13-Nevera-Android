@@ -27,6 +27,7 @@ googleid = "1.2.0"
 
 # Firebase
 firebaseBom = "33.13.0"
+firebaseCrashlyticsPlugin = "3.0.3"
 googleServices = "4.4.2"
 
 timber = "5.0.1"
@@ -75,6 +76,7 @@ googleid = { group = "com.google.android.libraries.identity.googleid", name = "g
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
@@ -87,6 +89,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 
 [bundles]
 google-login = [
