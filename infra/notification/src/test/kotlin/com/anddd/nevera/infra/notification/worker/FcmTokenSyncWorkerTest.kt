@@ -6,11 +6,12 @@ import androidx.work.ListenableWorker.Result
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.anddd.nevera.core.common.NeveraResult
-import com.anddd.nevera.infra.notification.testutil.FakeFcmTokenRepository
-import com.anddd.nevera.infra.notification.testutil.FakeTokenRepository
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.notification.FcmTokenError
 import com.anddd.nevera.domain.repository.FcmTokenProvider
+import com.anddd.nevera.domain.usecase.SyncDeviceTokenUseCase
+import com.anddd.nevera.infra.notification.testutil.FakeFcmTokenRepository
+import com.anddd.nevera.infra.notification.testutil.FakeTokenRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -35,17 +36,12 @@ class FcmTokenSyncWorkerTest {
     ): Pair<FcmTokenSyncWorker, FakeFcmTokenRepository> {
         val fcmTokenRepository = FakeFcmTokenRepository(storedToken, syncNeeded, registerResult)
         val tokenRepository = FakeTokenRepository(accessToken)
+        val useCase = SyncDeviceTokenUseCase(fcmTokenRepository, fcmTokenProvider, tokenRepository)
         val workerParams = mockk<WorkerParameters>(relaxed = true) {
             every { this@mockk.inputData } returns inputData
             every { this@mockk.runAttemptCount } returns runAttemptCount
         }
-        val worker = FcmTokenSyncWorker(
-            context,
-            workerParams,
-            fcmTokenRepository,
-            fcmTokenProvider,
-            tokenRepository,
-        )
+        val worker = FcmTokenSyncWorker(context, workerParams, useCase)
         return worker to fcmTokenRepository
     }
 
@@ -226,7 +222,7 @@ class FcmTokenSyncWorkerTest {
     }
 
     @Test
-    fun `새 토큰이 저장된 토큰과 동일하지만 isSyncNeeded가 true이면 markTokenForSync 없이 서버에 등록한다`() = runTest {
+    fun `새 토큰이 저장된 토큰과 동일하지만 isSyncNeeded가 true이면 saveTokenPendingSync 없이 서버에 등록한다`() = runTest {
         val inputData = workDataOf("fcm_token" to "same-token")
         val (worker, repo) = createWorker(
             inputData = inputData,
