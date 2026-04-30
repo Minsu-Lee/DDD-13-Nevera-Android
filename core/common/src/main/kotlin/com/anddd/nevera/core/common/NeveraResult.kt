@@ -30,9 +30,17 @@ inline fun <T, E, F> NeveraResult<T, E>.mapFailure(
 }
 
 inline fun <T, E, R, F> NeveraResult<T, E>.map(
-    onSuccess: (T) -> R,
-    onFailure: (E) -> F,
+    transformSuccess: (T) -> R,
+    transformFailure: (E) -> F,
 ): NeveraResult<R, F> = when (this) {
-    is NeveraResult.Success -> NeveraResult.Success(onSuccess(data))
-    is NeveraResult.Failure -> NeveraResult.Failure(onFailure(error))
+    is NeveraResult.Success -> NeveraResult.Success(transformSuccess(data))
+    is NeveraResult.Failure -> NeveraResult.Failure(transformFailure(error))
+}
+
+inline fun <T, E, R> NeveraResult<T, E>.fold(
+    transformSuccess: (T) -> R,
+    transformFailure: (E) -> R,
+): R = when(this) {
+    is NeveraResult.Success -> transformSuccess(data)
+    is NeveraResult.Failure -> transformFailure(error)
 }

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -53,6 +54,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 
@@ -67,7 +69,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:network"))
-    implementation(project(":core:notification"))
+    implementation(project(":infra:notification"))
 
     implementation(project(":feature:splash"))
     implementation(project(":feature:login"))
@@ -77,6 +79,7 @@ dependencies {
     implementation(project(":data"))
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.startup.runtime)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -87,6 +90,10 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.work)
+    implementation(libs.timber)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
 
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.jupiter.engine)
