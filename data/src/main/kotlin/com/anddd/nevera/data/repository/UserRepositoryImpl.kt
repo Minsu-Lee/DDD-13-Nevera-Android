@@ -26,8 +26,8 @@ internal class UserRepositoryImpl @Inject constructor(
         return apiCall {
             authDataSource.loginWithEmail(email, password)
         }.map(
-            onSuccess = { it.toDomain() },
-            onFailure = { it.toLoginError() },
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toLoginError() },
         )
     }
 

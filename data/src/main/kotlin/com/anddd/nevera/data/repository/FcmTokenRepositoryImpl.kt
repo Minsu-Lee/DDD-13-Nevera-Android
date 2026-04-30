@@ -20,8 +20,8 @@ internal class FcmTokenRepositoryImpl @Inject constructor(
         return fcmTokenLocalDataSource.getFcmToken()
     }
 
-    override suspend fun markTokenForSync(token: String) {
-        fcmTokenLocalDataSource.markTokenForSync(token)
+    override suspend fun saveTokenPendingSync(token: String) {
+        fcmTokenLocalDataSource.saveTokenPendingSync(token)
     }
 
     override suspend fun clearSyncNeeded() {
@@ -39,8 +39,8 @@ internal class FcmTokenRepositoryImpl @Inject constructor(
     override suspend fun registerFcmToken(token: String): NeveraResult<Unit, FcmTokenError> {
         return apiCall { fcmTokenRemoteDataSource.registerFcmToken(token) }
             .map(
-                onSuccess = { },
-                onFailure = { it.toFcmTokenError() },
+                transformSuccess = { },
+                transformFailure = { it.toFcmTokenError() },
             )
     }
 }

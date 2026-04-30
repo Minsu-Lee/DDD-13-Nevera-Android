@@ -15,7 +15,7 @@ class FakeFcmTokenRepository(
 
     override suspend fun getFcmToken(): String? = storedToken
 
-    override suspend fun markTokenForSync(token: String) {
+    override suspend fun saveTokenPendingSync(token: String) {
         markedTokens += token
         storedToken = token
         syncNeeded = true
