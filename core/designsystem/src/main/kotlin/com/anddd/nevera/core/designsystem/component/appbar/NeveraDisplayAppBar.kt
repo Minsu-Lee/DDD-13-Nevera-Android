@@ -28,7 +28,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 fun NeveraDisplayAppBar(
     modifier: Modifier = Modifier,
     title: String? = null,
-    action: AppBarAction = AppBarAction.None,
+    action: NeveraAppBarAction = NeveraAppBarAction.None,
     showBackground: Boolean = true,
 ) {
     AppBarContainer(
@@ -85,10 +85,10 @@ private fun NeveraDisplayAppBarPreview() {
 private fun NeveraDisplayAppBarTitleNoneTextPrimaryPreview() {
     NeveraTheme {
         NeveraDisplayAppBar(
-            action = AppBarAction.Text(
+            action = NeveraAppBarAction.Text(
                 label = "완료",
                 onClick = {},
-                tone = AppBarAction.Text.Tone.Primary,
+                tone = NeveraAppBarAction.Text.Tone.Primary,
             ),
         )
     }
@@ -104,10 +104,10 @@ private fun NeveraDisplayAppBarActionTextPrimaryPreview() {
     NeveraTheme {
         NeveraDisplayAppBar(
             title = "타이틀",
-            action = AppBarAction.Text(
+            action = NeveraAppBarAction.Text(
                 label = "완료",
                 onClick = {},
-                tone = AppBarAction.Text.Tone.Primary,
+                tone = NeveraAppBarAction.Text.Tone.Primary,
             ),
         )
     }
@@ -123,10 +123,10 @@ private fun NeveraDisplayAppBarActionTextTertiaryPreview() {
     NeveraTheme {
         NeveraDisplayAppBar(
             title = "타이틀",
-            action = AppBarAction.Text(
+            action = NeveraAppBarAction.Text(
                 label = "건너뛰기",
                 onClick = {},
-                tone = AppBarAction.Text.Tone.Tertiary,
+                tone = NeveraAppBarAction.Text.Tone.Tertiary,
             ),
         )
     }
@@ -142,8 +142,8 @@ private fun NeveraDisplayAppBarActionIconsPreview() {
     NeveraTheme {
         NeveraDisplayAppBar(
             title = "타이틀",
-            action = AppBarAction.Icons.of(
-                AppBarAction.Icons.Item(
+            action = NeveraAppBarAction.Icons.of(
+                NeveraAppBarAction.Icons.Item(
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",
                     onClick = {},
@@ -163,13 +163,13 @@ private fun NeveraDisplayAppBarActionIcons2Preview() {
     NeveraTheme {
         NeveraDisplayAppBar(
             title = "타이틀",
-            action = AppBarAction.Icons.of(
-                AppBarAction.Icons.Item(
+            action = NeveraAppBarAction.Icons.of(
+                NeveraAppBarAction.Icons.Item(
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",
                     onClick = {},
                 ),
-                AppBarAction.Icons.Item(
+                NeveraAppBarAction.Icons.Item(
                     painter = NeveraIcons.Info,
                     contentDescription = "정보",
                     onClick = {},

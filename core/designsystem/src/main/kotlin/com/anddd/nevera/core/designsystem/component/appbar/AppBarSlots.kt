@@ -22,48 +22,48 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 /**
- * [AppBarNavigation] 값을 실제 좌측 내비게이션 UI로 변환해 표시합니다.
+ * [NeveraAppBarNavigation] 값을 실제 좌측 내비게이션 UI로 변환해 표시합니다.
  *
  * 전달된 타입에 따라 뒤로가기, 닫기, 메뉴 버튼을 렌더링하거나 아무것도 표시하지 않습니다.
  *
  * @param navigation 좌측에 표시할 내비게이션 상태입니다.
  */
 @Composable
-internal fun AppBarNavigationSlot(navigation: AppBarNavigation) {
+internal fun AppBarNavigationSlot(navigation: NeveraAppBarNavigation) {
     when (navigation) {
-        is AppBarNavigation.Back -> AppBarIconButton(
+        is NeveraAppBarNavigation.Back -> AppBarIconButton(
             painter = NeveraIcons.ArrowBack,
             onClick = navigation.onClick,
             contentDescription = "뒤로가기",
         )
 
-        is AppBarNavigation.Close -> AppBarIconButton(
+        is NeveraAppBarNavigation.Close -> AppBarIconButton(
             painter = NeveraIcons.Close,
             onClick = navigation.onClick,
             contentDescription = "닫기",
         )
 
-        is AppBarNavigation.Menu -> AppBarIconButton(
+        is NeveraAppBarNavigation.Menu -> AppBarIconButton(
             painter = NeveraIcons.Menu,
             onClick = navigation.onClick,
             contentDescription = "메뉴",
         )
 
-        AppBarNavigation.None -> Unit
+        NeveraAppBarNavigation.None -> Unit
     }
 }
 
 /**
- * [AppBarAction] 값을 실제 우측 액션 UI로 변환해 표시합니다.
+ * [NeveraAppBarAction] 값을 실제 우측 액션 UI로 변환해 표시합니다.
  *
  * 아이콘 액션, 텍스트 액션, 액션 없음 상태를 AppBar 우측 영역 규칙에 맞춰 렌더링합니다.
  *
  * @param action 우측에 표시할 액션 상태입니다.
  */
 @Composable
-internal fun AppBarActionSlot(action: AppBarAction) {
+internal fun AppBarActionSlot(action: NeveraAppBarAction) {
     when (action) {
-        is AppBarAction.Icons -> Row(horizontalArrangement = Arrangement.spacedBy(AppBarDefault.actionSpacing)) {
+        is NeveraAppBarAction.Icons -> Row(horizontalArrangement = Arrangement.spacedBy(AppBarDefault.actionSpacing)) {
             action.items.forEach { item ->
                 AppBarIconButton(
                     painter = item.painter,
@@ -73,9 +73,9 @@ internal fun AppBarActionSlot(action: AppBarAction) {
             }
         }
 
-        is AppBarAction.Text -> AppBarTextButton(action)
+        is NeveraAppBarAction.Text -> AppBarTextButton(action)
 
-        AppBarAction.None -> Unit
+        NeveraAppBarAction.None -> Unit
     }
 }
 
@@ -110,18 +110,18 @@ private fun AppBarIconButton(
 }
 
 /**
- * [AppBarAction.Text] 값을 실제 텍스트 액션 UI로 변환해 표시합니다.
+ * [NeveraAppBarAction.Text] 값을 실제 텍스트 액션 UI로 변환해 표시합니다.
  *
- * [AppBarAction.Text.Tone]에 따라 텍스트 색상을 결정하며, Material [androidx.compose.material3.TextButton]의
+ * [NeveraAppBarAction.Text.Tone]에 따라 텍스트 색상을 결정하며, Material [androidx.compose.material3.TextButton]의
  * 최소 크기 제약 없이 텍스트와 패딩 크기만으로 버튼 영역을 구성합니다.
  *
  * @param action 표시할 텍스트 액션 상태입니다.
  */
 @Composable
-fun AppBarTextButton(action: AppBarAction.Text) {
+private fun AppBarTextButton(action: NeveraAppBarAction.Text) {
     val textColor = when (action.tone) {
-        AppBarAction.Text.Tone.Primary -> NeveraTheme.colors.primaryNormal
-        AppBarAction.Text.Tone.Tertiary -> NeveraTheme.colors.textTertiary
+        NeveraAppBarAction.Text.Tone.Primary -> NeveraTheme.colors.primaryNormal
+        NeveraAppBarAction.Text.Tone.Tertiary -> NeveraTheme.colors.textTertiary
     }
 
     Box(

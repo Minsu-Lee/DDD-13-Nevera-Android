@@ -7,18 +7,18 @@ import androidx.compose.ui.graphics.painter.Painter
  *
  * 아이콘 액션, 텍스트 액션, 액션 없음 상태를 타입으로 구분해서 전달할 때 사용합니다.
  */
-sealed interface AppBarAction {
+sealed interface NeveraAppBarAction {
     /** 우측 액션을 표시하지 않습니다. */
-    data object None : AppBarAction
+    data object None : NeveraAppBarAction
 
     /**
      * 아이콘 액션을 표시합니다.
      *
      * 최소 1개, 최대 2개의 아이콘을 지원합니다.
      */
-    class Icons internal constructor(val items: List<Item>) : AppBarAction {
+    class Icons internal constructor(val items: List<Item>) : NeveraAppBarAction {
         init {
-            require(items.size in 1..2) { "AppBarAction.Icons는 최소 1개, 최대 2개까지 지원합니다." }
+            require(items.size in 1..2) { "NeveraAppBarAction.Icons는 최소 1개, 최대 2개까지 지원합니다." }
         }
 
         /** 개별 아이콘 액션의 표시 정보와 클릭 동작을 정의합니다. */
@@ -43,7 +43,7 @@ sealed interface AppBarAction {
         val label: String,
         val onClick: () -> Unit,
         val tone: Tone = Tone.Primary,
-    ) : AppBarAction {
+    ) : NeveraAppBarAction {
         /** 텍스트 액션의 시각적 강조 강도를 정의합니다. */
         enum class Tone { Primary, Tertiary, }
     }

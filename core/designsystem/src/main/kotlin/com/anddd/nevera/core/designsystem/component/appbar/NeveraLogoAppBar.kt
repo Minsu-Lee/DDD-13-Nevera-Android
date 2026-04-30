@@ -25,7 +25,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 @Composable
 fun NeveraLogoAppBar(
     modifier: Modifier = Modifier,
-    action: AppBarAction = AppBarAction.None,
+    action: NeveraAppBarAction = NeveraAppBarAction.None,
     showBackground: Boolean = true,
 ) {
     AppBarContainer(
@@ -71,10 +71,10 @@ private fun NeveraLogoAppBarPreview() {
 private fun NeveraLogoAppBarActionTextPrimaryPreview() {
     NeveraTheme {
         NeveraLogoAppBar(
-            action = AppBarAction.Text(
+            action = NeveraAppBarAction.Text(
                 label = "완료",
                 onClick = {},
-                tone = AppBarAction.Text.Tone.Primary,
+                tone = NeveraAppBarAction.Text.Tone.Primary,
             ),
         )
     }
@@ -89,10 +89,10 @@ private fun NeveraLogoAppBarActionTextPrimaryPreview() {
 private fun NeveraLogoAppBarActionTextTertiaryPreview() {
     NeveraTheme {
         NeveraLogoAppBar(
-            action = AppBarAction.Text(
+            action = NeveraAppBarAction.Text(
                 label = "건너뛰기",
                 onClick = {},
-                tone = AppBarAction.Text.Tone.Tertiary,
+                tone = NeveraAppBarAction.Text.Tone.Tertiary,
             ),
         )
     }
@@ -107,8 +107,8 @@ private fun NeveraLogoAppBarActionTextTertiaryPreview() {
 private fun NeveraLogoAppBarActionIconsPreview() {
     NeveraTheme {
         NeveraLogoAppBar(
-            action = AppBarAction.Icons.of(
-                AppBarAction.Icons.Item(
+            action = NeveraAppBarAction.Icons.of(
+                NeveraAppBarAction.Icons.Item(
                     painter = NeveraIcons.Search,
                     contentDescription = "검색",
                     onClick = {},

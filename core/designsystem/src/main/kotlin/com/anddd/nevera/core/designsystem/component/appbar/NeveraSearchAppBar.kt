@@ -32,8 +32,8 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 @Composable
 fun NeveraSearchAppBar(
     modifier: Modifier = Modifier,
-    navigation: AppBarNavigation = AppBarNavigation.None,
-    action: AppBarAction = AppBarAction.None,
+    navigation: NeveraAppBarNavigation = NeveraAppBarNavigation.None,
+    action: NeveraAppBarAction = NeveraAppBarAction.None,
     showBackground: Boolean = true,
     searchBar: @Composable () -> Unit,
 ) {
@@ -77,7 +77,7 @@ private fun NeveraSearchAppBarPreview() {
 private fun NeveraSearchAppBarNavigationBackPreview() {
     NeveraTheme {
         NeveraSearchAppBar(
-            navigation = AppBarNavigation.Back(onClick = {}),
+            navigation = NeveraAppBarNavigation.Back(onClick = {}),
             searchBar = { SearchBarPreviewContent() },
         )
     }
@@ -92,9 +92,9 @@ private fun NeveraSearchAppBarNavigationBackPreview() {
 private fun NeveraSearchAppBarActionIconsPreview() {
     NeveraTheme {
         NeveraSearchAppBar(
-            navigation = AppBarNavigation.Back(onClick = {}),
-            action = AppBarAction.Icons.of(
-                AppBarAction.Icons.Item(
+            navigation = NeveraAppBarNavigation.Back(onClick = {}),
+            action = NeveraAppBarAction.Icons.of(
+                NeveraAppBarAction.Icons.Item(
                     painter = NeveraIcons.Close,
                     contentDescription = "닫기",
                     onClick = {},
@@ -114,11 +114,11 @@ private fun NeveraSearchAppBarActionIconsPreview() {
 private fun NeveraSearchAppBarActionTextTertiaryPreview() {
     NeveraTheme {
         NeveraSearchAppBar(
-            navigation = AppBarNavigation.Back(onClick = {}),
-            action = AppBarAction.Text(
+            navigation = NeveraAppBarNavigation.Back(onClick = {}),
+            action = NeveraAppBarAction.Text(
                 label = "건너뛰기",
                 onClick = {},
-                tone = AppBarAction.Text.Tone.Tertiary,
+                tone = NeveraAppBarAction.Text.Tone.Tertiary,
             ),
             searchBar = { SearchBarPreviewContent() },
         )
@@ -134,7 +134,7 @@ private fun NeveraSearchAppBarActionTextTertiaryPreview() {
 private fun NeveraSearchAppBarNoBackgroundPreview() {
     NeveraTheme {
         NeveraSearchAppBar(
-            navigation = AppBarNavigation.Back(onClick = {}),
+            navigation = NeveraAppBarNavigation.Back(onClick = {}),
             showBackground = false,
             searchBar = { SearchBarPreviewContent() },
         )
