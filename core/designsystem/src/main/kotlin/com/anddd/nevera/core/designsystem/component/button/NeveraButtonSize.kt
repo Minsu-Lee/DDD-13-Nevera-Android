@@ -18,23 +18,23 @@ internal data class IconButtonSizeSpec(
 )
 
 internal fun NeveraButtonSize.spec(): ButtonSizeSpec = when (this) {
-    NeveraButtonSize.XSmall -> ButtonSizeSpec(height = 48.dp, horizontalPadding = 12.dp)
+    NeveraButtonSize.XSmall -> ButtonSizeSpec(height = 28.dp, horizontalPadding = 6.dp)
 
-    NeveraButtonSize.Small -> ButtonSizeSpec(height = 40.dp, horizontalPadding = 10.dp)
+    NeveraButtonSize.Small -> ButtonSizeSpec(height = 34.dp, horizontalPadding = 8.dp)
 
-    NeveraButtonSize.Medium -> ButtonSizeSpec(height = 34.dp, horizontalPadding = 8.dp)
+    NeveraButtonSize.Medium -> ButtonSizeSpec(height = 40.dp, horizontalPadding = 10.dp)
 
-    NeveraButtonSize.Large -> ButtonSizeSpec(height = 28.dp, horizontalPadding = 6.dp)
+    NeveraButtonSize.Large -> ButtonSizeSpec(height = 48.dp, horizontalPadding = 12.dp)
 }
 
 internal fun NeveraButtonSize.iconSpec(): IconButtonSizeSpec = when (this) {
-    NeveraButtonSize.XSmall -> IconButtonSizeSpec(size = 48.dp, iconSize = 24.dp)
+    NeveraButtonSize.XSmall -> IconButtonSizeSpec(size = 28.dp, iconSize = 16.dp)
 
-    NeveraButtonSize.Small -> IconButtonSizeSpec(size = 40.dp, iconSize = 20.dp)
+    NeveraButtonSize.Small -> IconButtonSizeSpec(size = 34.dp, iconSize = 20.dp)
 
-    NeveraButtonSize.Medium -> IconButtonSizeSpec(size = 34.dp, iconSize = 16.dp)
+    NeveraButtonSize.Medium -> IconButtonSizeSpec(size = 40.dp, iconSize = 24.dp)
 
-    NeveraButtonSize.Large -> IconButtonSizeSpec(size = 28.dp, iconSize = 28.dp)
+    NeveraButtonSize.Large -> IconButtonSizeSpec(size = 48.dp, iconSize = 28.dp)
 
 }
 

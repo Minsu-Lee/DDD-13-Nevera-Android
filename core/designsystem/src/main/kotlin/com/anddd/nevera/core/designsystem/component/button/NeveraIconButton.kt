@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -54,7 +55,7 @@ internal fun NeveraIconButton(
 
     Surface(
         onClick = onClick,
-        modifier = modifier.requiredHeight(iconSpec.size),
+        modifier = modifier.requiredSize(iconSpec.size),
         enabled = enabled,
         shape = shape,
         color = containerColor,
