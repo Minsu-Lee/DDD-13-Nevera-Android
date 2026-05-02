@@ -15,7 +15,7 @@ fun NeveraFilledButton(
     color: NeveraButtonColor = NeveraButtonColor.Primary,
     size: NeveraButtonSize = NeveraButtonSize.Large,
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(NeveraTheme.radius.large),
+    shape: Shape = RoundedCornerShape(NeveraTheme.radius.xSmall),
 ) {
     NeveraButton(
         label = label,
