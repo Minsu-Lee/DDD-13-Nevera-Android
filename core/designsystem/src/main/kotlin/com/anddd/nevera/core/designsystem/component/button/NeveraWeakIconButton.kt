@@ -14,7 +14,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 @Composable
 fun NeveraWeakIconButton(
     painter: Painter,
-    contentDescription: String?,
+    contentDescription: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     color: NeveraButtonColor = NeveraButtonColor.Primary,

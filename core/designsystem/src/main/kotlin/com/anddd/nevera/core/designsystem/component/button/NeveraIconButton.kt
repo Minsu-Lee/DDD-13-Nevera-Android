@@ -24,10 +24,10 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 @Composable
 internal fun NeveraIconButton(
     painter: Painter,
+    contentDescription: String,
     onClick: () -> Unit,
     colors: NeveraButtonColors,
     modifier: Modifier = Modifier,
-    contentDescription: String? = null,
     size: NeveraButtonSize = NeveraButtonSize.Large,
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(NeveraTheme.radius.large),
