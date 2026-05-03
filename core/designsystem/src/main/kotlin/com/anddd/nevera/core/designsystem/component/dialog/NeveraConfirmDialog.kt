@@ -34,7 +34,7 @@ fun NeveraConfirmDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun NeveraConfirmDialogPreview() {
+private fun NeveraConfirmDialogPreview() {
     NeveraTheme {
         NeveraConfirmDialog(
             title = "Title",
