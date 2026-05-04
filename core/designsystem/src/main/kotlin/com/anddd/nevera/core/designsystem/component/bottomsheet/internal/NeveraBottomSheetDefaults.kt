@@ -14,8 +14,8 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
  */
 internal object NeveraBottomSheetDefaults {
     val ContainerShape: Shape = RoundedCornerShape(
-        topStart = 20.dp,
-        topEnd = 20.dp,
+        topStart = NeveraTheme.radius.xLarge,
+        topEnd = NeveraTheme.radius.xLarge,
     )
 
     val ThumbWidth: Dp = 40.dp
