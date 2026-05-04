@@ -23,7 +23,7 @@ internal fun ConfirmActionButtons(
     onPositive: () -> Unit,
     onNegative: () -> Unit,
 ) {
-    Row(modifier = Modifier.padding(NeveraTheme.spacing.padding6)) {
+    Row(modifier = Modifier.padding(NeveraTheme.spacing.padding16)) {
         NeveraWeakButton(
             label = negative,
             onClick = onNegative,
@@ -31,7 +31,7 @@ internal fun ConfirmActionButtons(
             color = NeveraButtonColor.Primary,
         )
 
-        Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap5))
+        Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap12))
 
         NeveraFilledButton(
             label = positive,

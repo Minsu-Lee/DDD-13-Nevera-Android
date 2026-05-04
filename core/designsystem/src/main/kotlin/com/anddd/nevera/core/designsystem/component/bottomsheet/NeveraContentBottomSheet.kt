@@ -48,7 +48,7 @@ fun NeveraContentBottomSheet(
         )
         Column(
             modifier = Modifier.padding(
-                horizontal = NeveraTheme.spacing.padding7
+                horizontal = NeveraTheme.spacing.padding20
             ),
             content = content,
         )
@@ -57,7 +57,7 @@ fun NeveraContentBottomSheet(
             onClick = onCtaClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(NeveraTheme.spacing.padding6),
+                .padding(NeveraTheme.spacing.padding16),
             color = NeveraButtonColor.Primary,
         )
     }

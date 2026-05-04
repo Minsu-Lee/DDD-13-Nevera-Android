@@ -19,9 +19,9 @@ internal fun ContentBottomSheetHeader(
         modifier = Modifier.fillMaxWidth()
             .heightIn(min = 27.dp)
             .padding(
-                start = NeveraTheme.spacing.padding7,
-                top = NeveraTheme.spacing.padding6,
-                end = NeveraTheme.spacing.padding7,
+                start = NeveraTheme.spacing.padding20,
+                top = NeveraTheme.spacing.padding16,
+                end = NeveraTheme.spacing.padding20,
             ),
         color = NeveraTheme.colors.textSecondary,
         style = NeveraTheme.typography.titleLarge,
@@ -31,9 +31,9 @@ internal fun ContentBottomSheetHeader(
         modifier = Modifier.fillMaxWidth()
             .heightIn(min = 21.dp)
             .padding(
-                start = NeveraTheme.spacing.padding7,
-                end = NeveraTheme.spacing.padding7,
-                bottom = NeveraTheme.spacing.padding6
+                start = NeveraTheme.spacing.padding20,
+                end = NeveraTheme.spacing.padding20,
+                bottom = NeveraTheme.spacing.padding16
             ),
         color = NeveraTheme.colors.textQuaternary,
         style = NeveraTheme.typography.bodySmall,

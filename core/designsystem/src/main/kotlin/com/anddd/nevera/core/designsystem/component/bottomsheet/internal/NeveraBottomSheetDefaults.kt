@@ -23,7 +23,7 @@ internal object NeveraBottomSheetDefaults {
     val ThumbHeight: Dp = 4.dp
 
     val ThumbVerticalPadding: Dp
-        @Composable get() = NeveraTheme.spacing.padding3
+        @Composable get() = NeveraTheme.spacing.padding8
 
     val ThumbShape: Shape
         @Composable get() = RoundedCornerShape(NeveraTheme.radius.max)
