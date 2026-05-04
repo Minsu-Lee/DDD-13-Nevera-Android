@@ -9,6 +9,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.component.bottomsheet.internal.ContentBottomSheetHeader
@@ -16,6 +17,7 @@ import com.anddd.nevera.core.designsystem.component.bottomsheet.internal.NeveraB
 import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
 import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import kotlinx.coroutines.launch
 
 /**
  * 제목, 설명, 커스텀 content, 단일 CTA 액션을 가진 BottomSheet 조합 컴포넌트입니다.
@@ -30,10 +32,13 @@ fun NeveraContentBottomSheet(
     subtitle: String,
     cta: String,
     onCtaClick: () -> Unit,
+    onDismissRequest: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
+    val scope = rememberCoroutineScope()
+    val defaultDismissRequest: () -> Unit = { scope.launch { sheetState.hide() } }
     NeveraBottomSheet(
-        onDismissRequest = onCtaClick,
+        onDismissRequest = onDismissRequest ?: defaultDismissRequest,
         sheetState = sheetState,
         modifier = modifier,
     ) {
