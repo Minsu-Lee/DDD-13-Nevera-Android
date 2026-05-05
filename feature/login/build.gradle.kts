@@ -30,7 +30,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.coroutines.android)
     implementation(libs.bundles.google.login)
 }
