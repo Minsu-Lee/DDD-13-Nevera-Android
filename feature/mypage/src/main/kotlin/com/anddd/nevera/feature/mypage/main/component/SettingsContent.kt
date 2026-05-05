@@ -47,7 +47,7 @@ internal fun SettingsContent(
             modifier = Modifier.fillMaxWidth()
         ) {
             items(
-                items = settingItems, key = { it.label }
+                items = settingItems, key = { it.type }
             ) { item ->
                 SettingItem(
                     item = item,

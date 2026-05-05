@@ -19,6 +19,7 @@ import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
+import com.anddd.nevera.feature.mypage.main.model.ProfileUiModel
 
 @Composable
 internal fun MyPageContent(
@@ -55,11 +56,7 @@ internal fun MyPageContent(
 
             Column{
                 // TODO: 실데이터 연결 시 uiState에서 주입
-                ProfileContent(
-                    profileImage = null,
-                    name = "홍길동",
-                    email = "hong@example.com",
-                )
+                ProfileContent(profile = uiState.profile)
 
                 Box(
                     modifier = Modifier
@@ -82,7 +79,9 @@ internal fun MyPageContent(
 private fun MyPageContentPreview() {
     NeveraTheme {
         MyPageContent(
-            uiState = MyPageUiState(),
+            uiState = MyPageUiState(
+                profile = ProfileUiModel("hong@example.com")
+            ),
             onIntent = {},
         )
     }

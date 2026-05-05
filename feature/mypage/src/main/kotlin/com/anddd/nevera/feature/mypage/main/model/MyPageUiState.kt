@@ -4,6 +4,7 @@ import com.anddd.nevera.core.designsystem.R
 
 data class MyPageUiState(
     val status: MyPageStatus = MyPageStatus.Idle,
+    val profile: ProfileUiModel = ProfileUiModel(),
     val settingItems: List<SettingItemUiModel> = listOf(
         SettingItemUiModel(
             iconRes = R.drawable.ic_bell,

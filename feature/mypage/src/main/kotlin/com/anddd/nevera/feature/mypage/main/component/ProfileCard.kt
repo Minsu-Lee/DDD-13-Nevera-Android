@@ -14,13 +14,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.feature.mypage.main.model.ProfileUiModel
 
 @Composable
 internal fun ProfileContent(
     modifier: Modifier = Modifier,
-    profileImage: String?,
-    name: String,
-    email: String,
+    profile: ProfileUiModel,
 ) {
     Row(
         modifier = modifier
@@ -29,7 +28,7 @@ internal fun ProfileContent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap12)
     ) {
-        if (profileImage == null) {
+        if (profile.profileImage == null) {
             Image(
                 painter = painterResource(R.drawable.ic_info),
                 contentDescription = "프로필 이미지"
@@ -38,23 +37,11 @@ internal fun ProfileContent(
             // TODO: 프로필 이미지 로드 구현 (Coil 등)
         }
 
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap2),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = name,
-                style = NeveraTheme.typography.titleLarge,
-                color = NeveraTheme.colors.textSecondary
-            )
-
-            Text(
-                text = email,
-                style = NeveraTheme.typography.captionLarge,
-                color = NeveraTheme.colors.textCaption
-            )
-        }
+        Text(
+            text = profile.email,
+            style = NeveraTheme.typography.captionLarge,
+            color = NeveraTheme.colors.textCaption
+        )
     }
 }
 
@@ -67,9 +54,7 @@ internal fun ProfileContent(
 private fun ProfileContentNoImagePreview() {
     NeveraTheme {
         ProfileContent(
-            profileImage = null,
-            name = "홍길동",
-            email = "hong@example.com",
+            profile = ProfileUiModel("hong@example.com")
         )
     }
 }
@@ -83,9 +68,7 @@ private fun ProfileContentNoImagePreview() {
 private fun ProfileContentWithImagePreview() {
     NeveraTheme {
         ProfileContent(
-            profileImage = "https://example.com/profile.jpg",
-            name = "홍길동",
-            email = "hong@example.com",
+            profile = ProfileUiModel("hong@example.com")
         )
     }
 }
