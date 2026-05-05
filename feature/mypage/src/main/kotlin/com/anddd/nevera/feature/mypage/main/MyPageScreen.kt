@@ -19,7 +19,6 @@ import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 
 @Composable
 fun MyPageScreen(
-    onNavigateBack: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -35,7 +34,6 @@ fun MyPageScreen(
             viewModel.sideEffect.collect { effect ->
                 when (effect) {
                     is MyPageSideEffect.ShowToast -> Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                    MyPageSideEffect.NavigateBack -> onNavigateBack()
                 }
             }
         }

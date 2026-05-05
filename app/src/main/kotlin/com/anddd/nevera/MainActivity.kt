@@ -19,6 +19,8 @@ import com.anddd.nevera.feature.signup.main.navigation.signupScreen
 import com.anddd.nevera.feature.splash.main.navigation.SPLASH_ROUTE
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.anddd.nevera.feature.mypage.main.navigation.MY_PAGE_ROUTE
+import com.anddd.nevera.feature.mypage.main.navigation.myPageScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -70,6 +72,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         )
+                        myPageScreen()
                     }
                 }
             }
