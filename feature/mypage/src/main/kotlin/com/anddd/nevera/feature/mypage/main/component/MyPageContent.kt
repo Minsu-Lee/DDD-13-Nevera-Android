@@ -15,7 +15,9 @@ import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarAction
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraDisplayAppBar
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
+import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
 
 @Composable
@@ -25,7 +27,7 @@ internal fun MyPageContent(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(NeveraTheme.colors.backgroundPrimary),
         topBar = {
@@ -41,30 +43,36 @@ internal fun MyPageContent(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier
+        Box(
+            modifier = Modifier
                 .fillMaxSize()
                 .background(NeveraTheme.colors.backgroundPrimary)
                 .padding(innerPadding),
         ) {
-            // TODO: 실데이터 연결 시 uiState에서 주입
-            ProfileContent(
-                profileImage = null,
-                name = "홍길동",
-                email = "hong@example.com",
-            )
+            if (uiState.status == MyPageStatus.Loading) {
+                LoadingContent()
+            }
 
-            Box(
-                modifier = Modifier
-                    .background(NeveraTheme.colors.dividerNormal)
-                    .fillMaxWidth()
-                    .height(NeveraTheme.spacing.gap8)
-            )
+            Column{
+                // TODO: 실데이터 연결 시 uiState에서 주입
+                ProfileContent(
+                    profileImage = null,
+                    name = "홍길동",
+                    email = "hong@example.com",
+                )
 
-            SettingsContent(
-                settingItems = uiState.settingItems,
-                onClick = { type -> onIntent(MyPageIntent.SettingItemClicked(type)) }
-            )
+                Box(
+                    modifier = Modifier
+                        .background(NeveraTheme.colors.dividerNormal)
+                        .fillMaxWidth()
+                        .height(NeveraTheme.spacing.gap8)
+                )
+
+                SettingsContent(
+                    settingItems = uiState.settingItems,
+                    onClick = { type -> onIntent(MyPageIntent.SettingItemClicked(type)) }
+                )
+            }
         }
     }
 }

@@ -40,12 +40,9 @@ fun MyPageScreen(
     }
 
     NeveraTheme {
-        when (uiState.status) {
-            is MyPageStatus.Loading -> LoadingContent()
-            else -> MyPageContent(
-                uiState = uiState,
-                onIntent = viewModel::processIntent,
-            )
-        }
+        MyPageContent(
+            uiState = uiState,
+            onIntent = viewModel::processIntent,
+        )
     }
 }
