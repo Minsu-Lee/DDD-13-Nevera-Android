@@ -4,4 +4,5 @@ sealed interface MyPageIntent {
     data object Load : MyPageIntent
     data object Submit : MyPageIntent
     data object Reset : MyPageIntent
+    data class SettingItemClicked(val type: SettingItemType): MyPageIntent
 }

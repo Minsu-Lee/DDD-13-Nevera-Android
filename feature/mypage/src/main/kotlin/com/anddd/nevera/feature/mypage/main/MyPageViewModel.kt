@@ -6,6 +6,7 @@ import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageSideEffect
 import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
+import com.anddd.nevera.feature.mypage.main.model.SettingItemType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,7 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
         MyPageIntent.Load -> state.copy(status = MyPageStatus.Loading)
         MyPageIntent.Submit -> state.copy(status = MyPageStatus.Loading)
         MyPageIntent.Reset -> MyPageUiState()
+        is MyPageIntent.SettingItemClicked -> state
     }
 
     // ③ 비동기 부수 효과 분기 — 새 비동기 Intent 추가 시 여기와 private 함수만 수정
@@ -43,7 +45,12 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
         when (intent) {
             MyPageIntent.Load -> load()
             MyPageIntent.Submit -> submit()
-            else -> Unit
+            MyPageIntent.Reset -> Unit
+            is MyPageIntent.SettingItemClicked -> when (intent.type) {
+                SettingItemType.Notification -> {}
+                SettingItemType.Account -> {}
+                SettingItemType.AppInfo -> {}
+            }
         }
     }
 
