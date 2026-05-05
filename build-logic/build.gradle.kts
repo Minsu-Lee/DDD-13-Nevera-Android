@@ -20,5 +20,17 @@ gradlePlugin {
             id = "nevera.android.library"
             implementationClass = "NeveraAndroidLibraryPlugin"
         }
+        register("neveraAndroidCompose") {
+            id = "nevera.android.compose"
+            implementationClass = "NeveraAndroidComposePlugin"
+        }
+        register("neveraAndroidHilt") {
+            id = "nevera.android.hilt"
+            implementationClass = "NeveraAndroidHiltPlugin"
+        }
+        register("neveraFeature") {
+            id = "nevera.feature"
+            implementationClass = "NeveraFeaturePlugin"
+        }
     }
 }
