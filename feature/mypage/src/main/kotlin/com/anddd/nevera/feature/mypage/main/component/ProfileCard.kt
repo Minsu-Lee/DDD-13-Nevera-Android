@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
@@ -26,20 +25,22 @@ internal fun ProfileContent(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(NeveraTheme.spacing.padding16),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap12)
     ) {
         if (profileImage == null) {
             Image(
                 painter = painterResource(R.drawable.ic_info),
                 contentDescription = "프로필 이미지"
             )
-        } else {        }
+        } else {
+            // TODO: 프로필 이미지 로드 구현 (Coil 등)
+        }
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+            verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap2),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
