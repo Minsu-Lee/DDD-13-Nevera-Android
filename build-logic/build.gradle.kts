@@ -9,3 +9,16 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
 }
+
+gradlePlugin {
+    plugins {
+        register("neveraKotlinJvm") {
+            id = "nevera.kotlin.jvm"
+            implementationClass = "NeveraKotlinJvmPlugin"
+        }
+        register("neveraAndroidLibrary") {
+            id = "nevera.android.library"
+            implementationClass = "NeveraAndroidLibraryPlugin"
+        }
+    }
+}
