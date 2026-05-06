@@ -54,7 +54,7 @@ internal fun MyPageContent(
                 LoadingContent()
             }
 
-            Column{
+            Column {
                 // TODO: 실데이터 연결 시 uiState에서 주입
                 ProfileContent(profile = uiState.profile)
 
