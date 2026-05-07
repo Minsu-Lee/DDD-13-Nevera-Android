@@ -27,14 +27,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldState
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldType
+import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 @Composable
@@ -47,18 +47,32 @@ internal fun NeveraBaseTextField(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    var passwordVisible by remember { mutableStateOf(false) }
+    val isActive = value.isNotEmpty()
+    var eyeVisible by remember { mutableStateOf(false) }
 
     val visualTransformation = when {
-        config.isPassword && !passwordVisible -> PasswordVisualTransformation()
+        config.isPassword && !eyeVisible -> PasswordVisualTransformation()
         else -> VisualTransformation.None
     }
 
-    val borderColor = NeveraTextFieldColors.borderColor(config.state, isFocused, enabled)
-    val containerColor = NeveraTextFieldColors.containerColor(enabled)
-    val textColor = NeveraTextFieldColors.textColor(enabled)
-    val placeholderColor = NeveraTextFieldColors.placeholderColor(enabled)
-    val descriptionColor = NeveraTextFieldColors.descriptionColor(config.state, enabled)
+    val borderColor = NeveraTextFieldColors.borderColor(
+        type = config.type,
+        state = config.state,
+        isFocused = isFocused,
+        isActive = isActive,
+        enabled = enabled,
+        negativeColor = config.negativeColor,
+    )
+    val containerColor = NeveraTextFieldColors.containerColor(config.type)
+    val headingColor = NeveraTextFieldColors.headingColor()
+    val inputTextColor = NeveraTextFieldColors.inputTextColor(enabled)
+    val placeholderColor = NeveraTextFieldColors.placeholderColor(config.type, enabled)
+    val descriptionColor = NeveraTextFieldColors.descriptionColor(config.state, enabled, config.negativeColor)
+
+    val textStyle = when (config.type) {
+        NeveraTextFieldType.Box -> NeveraTheme.typography.bodyLarge
+        NeveraTextFieldType.Underline -> NeveraTheme.typography.titleLarge
+    }
 
     val containerModifier = when (config.type) {
         NeveraTextFieldType.Box -> Modifier
@@ -84,7 +98,7 @@ internal fun NeveraBaseTextField(
                 text = heading,
                 modifier = Modifier.padding(start = NeveraTextFieldDefaults.LabelStartPadding),
                 style = NeveraTheme.typography.titleXSmall,
-                color = textColor,
+                color = headingColor,
             )
             Spacer(modifier = Modifier.height(NeveraTextFieldDefaults.HeadingBottomGap))
         }
@@ -93,10 +107,11 @@ internal fun NeveraBaseTextField(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .heightIn(min = 48.dp),
             enabled = enabled,
-            textStyle = NeveraTheme.typography.bodyMedium.copy(color = textColor),
+            textStyle = textStyle.copy(color = inputTextColor),
             keyboardOptions = config.keyboardOptions,
             keyboardActions = config.keyboardActions,
             singleLine = config.singleLine,
@@ -113,7 +128,7 @@ internal fun NeveraBaseTextField(
                         if (value.isEmpty() && config.placeholder != null) {
                             Text(
                                 text = config.placeholder,
-                                style = NeveraTheme.typography.bodyMedium,
+                                style = textStyle,
                                 color = placeholderColor,
                             )
                         }
@@ -122,10 +137,13 @@ internal fun NeveraBaseTextField(
                     }
                     TrailingIcons(
                         state = config.state,
+                        isActive = isActive,
+                        useIcon = config.useIcon,
                         isPassword = config.isPassword,
-                        passwordVisible = passwordVisible,
+                        eyeVisible = eyeVisible,
                         enabled = enabled,
-                        onEyeIconClick = { passwordVisible = !passwordVisible },
+                        negativeColor = config.negativeColor,
+                        onEyeIconClick = { eyeVisible = !eyeVisible },
                     )
                 }
             },
@@ -146,42 +164,46 @@ internal fun NeveraBaseTextField(
 @Composable
 private fun TrailingIcons(
     state: NeveraTextFieldState,
+    isActive: Boolean,
+    useIcon: Boolean,
     isPassword: Boolean,
-    passwordVisible: Boolean,
+    eyeVisible: Boolean,
     enabled: Boolean,
+    negativeColor: Color,
     onEyeIconClick: () -> Unit,
 ) {
-    val hasStateIcon = state != NeveraTextFieldState.Normal
-    if (!hasStateIcon && !isPassword) return
+    val showCheckIcon = useIcon && state == NeveraTextFieldState.Positive && isActive
+    val showWarningIcon = useIcon && state == NeveraTextFieldState.Negative
+    val showEyeIcon = useIcon && isPassword
+    if (!showCheckIcon && !showWarningIcon && !showEyeIcon) return
 
-    val stateIconColor = NeveraTextFieldColors.stateIconColor(state)
+    val stateIconColor = NeveraTextFieldColors.stateIconColor(state, negativeColor)
     val eyeIconColor = NeveraTextFieldColors.eyeIconColor(enabled)
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap4),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (hasStateIcon) {
-            val stateIconPainter = when (state) {
-                NeveraTextFieldState.Positive -> painterResource(R.drawable.ic_circle_check)
-                NeveraTextFieldState.Negative -> painterResource(R.drawable.ic_circle_warning)
-                NeveraTextFieldState.Normal -> error("unreachable")
-            }
+        if (showCheckIcon) {
             Icon(
-                painter = stateIconPainter,
+                painter = NeveraIcons.Check,
                 contentDescription = null,
                 modifier = Modifier.size(NeveraTheme.iconSize.small),
                 tint = stateIconColor,
             )
         }
-        if (isPassword) {
+        if (showWarningIcon) {
+            Icon(
+                painter = NeveraIcons.Warning,
+                contentDescription = null,
+                modifier = Modifier.size(NeveraTheme.iconSize.small),
+                tint = stateIconColor,
+            )
+        }
+        if (showEyeIcon) {
             IconButton(onClick = onEyeIconClick) {
                 Icon(
-                    painter = if (passwordVisible) {
-                        painterResource(R.drawable.ic_eyes)
-                    } else {
-                        painterResource(R.drawable.ic_eyes_off)
-                    },
+                    painter = if (eyeVisible) NeveraIcons.EyesOff else NeveraIcons.Eyes,
                     contentDescription = null,
                     modifier = Modifier.size(NeveraTheme.iconSize.small),
                     tint = eyeIconColor,

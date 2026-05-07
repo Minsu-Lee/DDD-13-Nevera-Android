@@ -9,7 +9,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 internal object NeveraTextFieldDefaults {
 
-    val BoxShape: Shape = RoundedCornerShape(NeveraTheme.radius.small)
+    val BoxShape: Shape = RoundedCornerShape(NeveraTheme.spacing.padding8)
 
     val ContentPadding: PaddingValues = PaddingValues(all = NeveraTheme.spacing.padding12)
 

@@ -87,28 +87,89 @@ private fun PreviewNeveraTextField_Password() {
     }
 }
 
-// endregion
-
-// region — MultiPreview (Type × State 조합)
-
-@Preview(name = "Box / Normal", showBackground = true, widthDp = 360)
-@Preview(name = "Box / Positive", showBackground = true, widthDp = 360)
-@Preview(name = "Box / Negative", showBackground = true, widthDp = 360)
-@Preview(name = "Underline / Normal", showBackground = true, widthDp = 360)
-@Preview(name = "Underline / Positive", showBackground = true, widthDp = 360)
-@Preview(name = "Underline / Negative", showBackground = true, widthDp = 360)
-private annotation class TextFieldMultiPreview
-
-@TextFieldMultiPreview
+@Preview(name = "NeveraTextField - useIcon=false", showBackground = true, widthDp = 360)
 @Composable
-private fun PreviewNeveraTextFieldMatrix() {
+private fun PreviewNeveraTextField_NoIcon() {
     NeveraTheme {
         NeveraTextField(
             value = "입력값",
             onValueChange = {},
             config = NeveraTextFieldConfig(
-                heading = "레이블",
-                description = "설명 텍스트",
+                heading = "단순 입력",
+                state = NeveraTextFieldState.Negative,
+                description = "아이콘 없음",
+                useIcon = false,
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField - negativeColor custom", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_NegativeCustomColor() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "",
+            onValueChange = {},
+            config = NeveraTextFieldConfig(
+                heading = "인증번호",
+                state = NeveraTextFieldState.Negative,
+                description = "인증번호가 올바르지 않습니다",
+                negativeColor = NeveraTheme.colors.accentOrange,
+            ),
+        )
+    }
+}
+
+// endregion
+
+// region — Underline 타입 Preview
+
+@Preview(name = "NeveraTextField Underline - Normal", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_Underline_Normal() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "",
+            onValueChange = {},
+            config = NeveraTextFieldConfig(
+                type = NeveraTextFieldType.Underline,
+                heading = "이름",
+                placeholder = "이름을 입력하세요",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField Underline - Positive", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_Underline_Positive() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "홍길동",
+            onValueChange = {},
+            config = NeveraTextFieldConfig(
+                type = NeveraTextFieldType.Underline,
+                heading = "이름",
+                state = NeveraTextFieldState.Positive,
+                description = "사용 가능한 이름입니다",
+            ),
+        )
+    }
+}
+
+@Preview(name = "NeveraTextField Underline - Negative", showBackground = true, widthDp = 360)
+@Composable
+private fun PreviewNeveraTextField_Underline_Negative() {
+    NeveraTheme {
+        NeveraTextField(
+            value = "",
+            onValueChange = {},
+            config = NeveraTextFieldConfig(
+                type = NeveraTextFieldType.Underline,
+                heading = "이름",
+                state = NeveraTextFieldState.Negative,
+                description = "이름을 입력해주세요",
             ),
         )
     }
@@ -140,9 +201,21 @@ private class NeveraTextFieldConfigProvider : PreviewParameterProvider<NeveraTex
             placeholder = "비밀번호를 입력하세요",
         ),
         NeveraTextFieldConfig(
+            heading = "useIcon = false",
+            state = NeveraTextFieldState.Negative,
+            useIcon = false,
+            description = "아이콘 미사용",
+        ),
+        NeveraTextFieldConfig(
             heading = "Underline",
             type = NeveraTextFieldType.Underline,
             placeholder = "내용을 입력하세요",
+        ),
+        NeveraTextFieldConfig(
+            heading = "Underline Negative",
+            type = NeveraTextFieldType.Underline,
+            state = NeveraTextFieldState.Negative,
+            description = "형식이 올바르지 않습니다",
         ),
     )
 }
