@@ -25,7 +25,6 @@ class NeveraTextFieldConfig(
     val heading: String? = null,
     val placeholder: String? = null,
     val description: String? = null,
-    // passwordVisible 상태는 컴포넌트 내부에서 관리하며 외부로 노출하지 않는다.
     val isPassword: Boolean = false,
     val useIcon: Boolean = true,
     val negativeColor: Color = Color.Unspecified,

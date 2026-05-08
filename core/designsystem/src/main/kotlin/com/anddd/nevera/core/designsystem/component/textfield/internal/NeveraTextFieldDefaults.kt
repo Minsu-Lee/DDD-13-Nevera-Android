@@ -9,10 +9,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+/**
+ * NeveraTheme은 CompositionLocal 기반이므로, 테마 의존 프로퍼티는
+ * @Composable 컨텍스트 안에서만 읽어야 한다.
+ */
 @Stable
 internal object NeveraTextFieldDefaults {
 
-    // NeveraTheme은 CompositionLocal 기반이므로 Composable 컨텍스트 안에서만 읽어야 한다.
     val BoxShape: Shape
         @Composable get() = RoundedCornerShape(size = NeveraTheme.spacing.padding8)
 

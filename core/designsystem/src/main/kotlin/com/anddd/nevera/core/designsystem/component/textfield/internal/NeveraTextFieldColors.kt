@@ -8,6 +8,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 internal object NeveraTextFieldColors {
 
+    // Color.Unspecified는 "재정의 없음" 신호 — negativeColor가 지정된 경우에만 덮어쓴다.
     private fun resolveNegativeColor(negativeColor: Color, fallback: Color): Color =
         if (negativeColor != Color.Unspecified) negativeColor else fallback
 
@@ -78,7 +79,7 @@ internal object NeveraTextFieldColors {
         return when (state) {
             NeveraTextFieldState.Positive -> NeveraTheme.colors.statusPositiveNormal
             NeveraTextFieldState.Negative -> resolvedNegativeColor
-            NeveraTextFieldState.Normal -> Color.Unspecified
+            NeveraTextFieldState.Normal -> Color.Unspecified // 아이콘 미표시
         }
     }
 
