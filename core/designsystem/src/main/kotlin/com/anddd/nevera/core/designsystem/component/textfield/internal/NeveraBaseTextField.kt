@@ -192,7 +192,7 @@ private fun TrailingIcons(
         if (showCheckIcon) {
             Icon(
                 painter = NeveraIcons.Check,
-                contentDescription = null,
+                contentDescription = "입력이 올바릅니다",
                 modifier = Modifier.size(NeveraTheme.iconSize.medium),
                 tint = stateIconColor,
             )
@@ -200,7 +200,7 @@ private fun TrailingIcons(
         if (showWarningIcon) {
             Icon(
                 painter = NeveraIcons.Warning,
-                contentDescription = null,
+                contentDescription = "입력을 확인하세요",
                 modifier = Modifier.size(NeveraTheme.iconSize.medium),
                 tint = stateIconColor,
             )
@@ -209,7 +209,7 @@ private fun TrailingIcons(
             IconButton(onClick = onEyeIconClick) {
                 Icon(
                     painter = if (eyeVisible) NeveraIcons.EyesOff else NeveraIcons.Eyes,
-                    contentDescription = null,
+                    contentDescription = if (eyeVisible) "비밀번호 숨기기" else "비밀번호 표시",
                     modifier = Modifier.size(NeveraTheme.iconSize.medium),
                     tint = eyeIconColor,
                 )
