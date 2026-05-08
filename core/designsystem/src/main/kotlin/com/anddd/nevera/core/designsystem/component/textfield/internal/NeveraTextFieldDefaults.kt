@@ -14,7 +14,7 @@ internal object NeveraTextFieldDefaults {
 
     // NeveraTheme은 CompositionLocal 기반이므로 Composable 컨텍스트 안에서만 읽어야 한다.
     val BoxShape: Shape
-        @Composable get() = RoundedCornerShape(NeveraTheme.spacing.padding8)
+        @Composable get() = RoundedCornerShape(size = NeveraTheme.spacing.padding8)
 
     val BoxContentPadding: PaddingValues
         @Composable get() = PaddingValues(all = NeveraTheme.spacing.padding12)
