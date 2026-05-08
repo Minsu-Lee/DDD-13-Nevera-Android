@@ -270,9 +270,15 @@ private class NeveraTextFieldConfigProvider : PreviewParameterProvider<NeveraTex
 private fun PreviewNeveraTextFieldParam(
     @PreviewParameter(NeveraTextFieldConfigProvider::class) config: NeveraTextFieldConfig,
 ) {
+    val previewValue = when {
+        config.isPassword -> "password1234"
+        config.state == NeveraTextFieldState.Positive -> "올바른 값"
+        config.state == NeveraTextFieldState.Negative -> "잘못된 값"
+        else -> "값"
+    }
     NeveraTheme {
         NeveraTextField(
-            value = "값",
+            value = previewValue,
             onValueChange = {},
             config = config,
         )

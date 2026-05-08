@@ -192,7 +192,7 @@ private fun TrailingIcons(
     ) {
         if (showCheckIcon) {
             Icon(
-                painter = NeveraIcons.Check,
+                painter = NeveraIcons.TextFieldCheck,
                 contentDescription = "입력이 올바릅니다",
                 modifier = Modifier.size(NeveraTheme.iconSize.medium),
                 tint = stateIconColor,
@@ -200,7 +200,7 @@ private fun TrailingIcons(
         }
         if (showWarningIcon) {
             Icon(
-                painter = NeveraIcons.Warning,
+                painter = NeveraIcons.TextFieldWarning,
                 contentDescription = "입력을 확인하세요",
                 modifier = Modifier.size(NeveraTheme.iconSize.medium),
                 tint = stateIconColor,

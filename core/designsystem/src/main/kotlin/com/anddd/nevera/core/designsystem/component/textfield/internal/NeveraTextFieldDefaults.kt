@@ -3,11 +3,13 @@ package com.anddd.nevera.core.designsystem.component.textfield.internal
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+@Stable
 internal object NeveraTextFieldDefaults {
 
     // NeveraTheme은 CompositionLocal 기반이므로 Composable 컨텍스트 안에서만 읽어야 한다.
