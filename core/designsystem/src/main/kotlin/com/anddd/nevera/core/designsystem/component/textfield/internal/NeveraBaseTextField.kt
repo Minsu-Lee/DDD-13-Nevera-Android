@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +49,7 @@ internal fun NeveraBaseTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isActive = value.isNotEmpty()
-    var eyeVisible by remember { mutableStateOf(false) }
+    var eyeVisible by rememberSaveable { mutableStateOf(false) }
 
     val visualTransformation = when {
         config.isPassword && !eyeVisible -> PasswordVisualTransformation()
