@@ -1,11 +1,13 @@
 package com.anddd.nevera.core.designsystem.component.textfield
 
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import com.anddd.nevera.core.designsystem.component.textfield.internal.NeveraBaseTextField
 
 /**
- * Nevera 디자인 시스템의 기본 텍스트 입력 컴포넌트.
+ * 이메일 입력 전용 텍스트 필드. [KeyboardType.Email]이 고정된다.
  *
  * @param value 현재 입력된 텍스트 값
  * @param onValueChange 텍스트 변경 시 호출되는 콜백
@@ -14,7 +16,7 @@ import com.anddd.nevera.core.designsystem.component.textfield.internal.NeveraBas
  * @param config 타입, 상태, 레이블, 플레이스홀더 등 외관 설정을 담은 [NeveraTextFieldConfig]
  */
 @Composable
-fun NeveraTextField(
+fun NeveraEmailTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -28,6 +30,17 @@ fun NeveraTextField(
         enabled = enabled,
         useIcon = true,
         isPassword = false,
-        config = config,
+        config = NeveraTextFieldConfig(
+            type = config.type,
+            state = config.state,
+            heading = config.heading,
+            placeholder = config.placeholder,
+            description = config.description,
+            negativeColor = config.negativeColor,
+            singleLine = config.singleLine,
+            // KeyboardType.Email 고정, ImeAction 등 나머지 옵션은 caller config 유지
+            keyboardOptions = config.keyboardOptions.copy(keyboardType = KeyboardType.Email),
+            keyboardActions = config.keyboardActions,
+        ),
     )
 }
