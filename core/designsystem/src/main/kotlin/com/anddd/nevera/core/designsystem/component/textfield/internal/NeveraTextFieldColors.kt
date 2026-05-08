@@ -34,13 +34,9 @@ internal object NeveraTextFieldColors {
         }
     }
 
-    /**
-     * TODO :: Box에서 backgroundSecondary와 alpha/white24 두개를 적용해서 색상을 표현한 상태.
-     * 색상 스포일러로 확인 시, #F7F7F8 색상으로 확인
-     */
     @Composable
     fun containerColor(type: NeveraTextFieldType): Color = when (type) {
-        NeveraTextFieldType.Box -> NeveraTheme.colors.backgroundSecondary
+        NeveraTextFieldType.Box -> NeveraTheme.colors.surfaceSecondary
         NeveraTextFieldType.Underline -> Color.Transparent
     }
 
