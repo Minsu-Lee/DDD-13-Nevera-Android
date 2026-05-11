@@ -12,7 +12,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.mypage.main.component.MyPageContent
-import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageSideEffect
 
 @Composable
@@ -22,10 +21,6 @@ fun MyPageScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(viewModel) {
-        viewModel.processIntent(MyPageIntent.Load)
-    }
 
     LaunchedEffect(lifecycleOwner, viewModel) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
