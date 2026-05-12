@@ -1,30 +1,33 @@
 package com.anddd.nevera.feature.sample.main
 
-import androidx.lifecycle.ViewModel
+import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.feature.sample.main.model.SampleIntent
 import com.anddd.nevera.feature.sample.main.model.SampleSideEffect
 import com.anddd.nevera.feature.sample.main.model.SampleUiState
+import com.anddd.nevera.feature.sample.main.model.SimpleMutation
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
-import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.viewmodel.container
-import timber.log.Timber
+import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
 @HiltViewModel
 class SampleViewModel @Inject constructor(
 
-) : ViewModel(), ContainerHost<SampleUiState, SampleSideEffect> {
+) : NeveraViewModel<SampleUiState, SampleSideEffect, SampleIntent, SimpleMutation>(SampleUiState()) {
 
-    override val container = container<SampleUiState, SampleSideEffect>(
-        initialState = SampleUiState(),
-        buildSettings = {
-            this.exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-                Timber.e(throwable)
-            }
-        })
+    override fun onIntent(intent: SampleIntent) {
+        when (intent) {
+            SampleIntent.ClickButton -> onClickButton()
+        }
+    }
 
-    fun onButtonClick() = intent {
-        reduce { state.copy(count = state.count + 1) }
+    private fun onClickButton() = intent {
+        onReduce(SimpleMutation.IncrementCount)
         postSideEffect(SampleSideEffect.ShowToast("클릭: ${state.count}"))
+    }
+
+    override suspend fun Syntax<SampleUiState, SampleSideEffect>.onReduce(mutation: SimpleMutation) {
+        when (mutation) {
+            SimpleMutation.IncrementCount -> reduce { state.copy(count = state.count + 1) }
+        }
     }
 }
