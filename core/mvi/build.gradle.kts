@@ -7,7 +7,6 @@ android {
 }
 
 dependencies {
-    api(libs.orbit.core)
-    api(libs.orbit.viewmodel)
+    api(libs.bundles.orbit)
     implementation(libs.timber)
 }
