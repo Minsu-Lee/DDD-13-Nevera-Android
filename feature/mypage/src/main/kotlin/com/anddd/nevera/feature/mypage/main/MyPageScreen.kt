@@ -19,16 +19,11 @@ import com.anddd.nevera.feature.mypage.main.model.MyPageStatus
 
 @Composable
 fun MyPageScreen(
-    onNavigateBack: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(viewModel) {
-        viewModel.processIntent(MyPageIntent.Load)
-    }
 
     LaunchedEffect(lifecycleOwner, viewModel) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -42,12 +37,9 @@ fun MyPageScreen(
     }
 
     NeveraTheme {
-        when (uiState.status) {
-            is MyPageStatus.Loading -> LoadingContent()
-            else -> MyPageContent(
-                uiState = uiState,
-                onIntent = viewModel::processIntent,
-            )
-        }
+        MyPageContent(
+            uiState = uiState,
+            onIntent = viewModel::processIntent,
+        )
     }
 }
