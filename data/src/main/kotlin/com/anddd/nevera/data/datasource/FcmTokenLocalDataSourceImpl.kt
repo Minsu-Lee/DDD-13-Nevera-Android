@@ -33,10 +33,8 @@ internal class FcmTokenLocalDataSourceImpl @Inject constructor(
         dataStore.edit { it.clear() }
     }
 
-    override suspend fun markTokenForSync(token: String) {
-        // DataStore.edit는 atomic transaction으로 동작한다.
-        // FCM 토큰 저장과 서버 동기화 필요 상태를 동시에 업데이트하여
-        // 토큰과 sync 상태 간의 불일치가 발생하지 않도록 한다.
+    // DataStore.edit는 atomic transaction — 토큰과 sync 상태를 동시에 업데이트해 불일치를 방지한다.
+    override suspend fun saveTokenPendingSync(token: String) {
         dataStore.edit {
             it[KEY_FCM_TOKEN] = token
             it[KEY_NEEDS_SYNC] = true
