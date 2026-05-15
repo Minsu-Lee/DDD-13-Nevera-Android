@@ -42,8 +42,10 @@ class MyPageViewModel @Inject constructor(
     private fun onSettingItemClicked(item: SettingItem) = intent {
         when (item) {
             SettingItem.Notification -> {}
+
             SettingItem.Account -> {}
-            SettingItem.AppInfo -> {}
+
+            SettingItem.AppInfo -> postSideEffect(MyPageSideEffect.NavigateToAppInfo)
         }
     }
 
