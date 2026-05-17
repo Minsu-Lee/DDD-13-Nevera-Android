@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.mypage.appinfo.component.AppInfoContent
 import com.anddd.nevera.feature.mypage.appinfo.model.AppInfoSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
@@ -34,10 +33,8 @@ fun AppInfoScreen(
         }
     }
 
-    NeveraTheme {
-        AppInfoContent(
-            uiState = uiState,
-            onIntent = viewModel::handleIntent,
-        )
-    }
+    AppInfoContent(
+        uiState = uiState,
+        onIntent = viewModel::handleIntent,
+    )
 }
