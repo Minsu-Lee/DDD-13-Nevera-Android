@@ -26,12 +26,8 @@ class AppInfoViewModel @Inject constructor(
     override fun handleIntent(intent: AppInfoIntent) {
         when (intent) {
             AppInfoIntent.NavigateBack -> onNavigateBack()
-            AppInfoIntent.TermsClicked -> {
-                // TODO onNavigateToTerms
-            }
-            AppInfoIntent.PrivacyPolicyClicked -> {
-                // TODO onNavigateToPrivacyPolicy
-            }
+            AppInfoIntent.TermsClicked -> onOpenTermsUrl()
+            AppInfoIntent.PrivacyPolicyClicked -> onOpenPrivacyPolicyUrl()
         }
     }
 
@@ -47,6 +43,14 @@ class AppInfoViewModel @Inject constructor(
 
     private fun onNavigateBack() = intent {
         postSideEffect(AppInfoSideEffect.NavigateBack)
+    }
+
+    private fun onOpenTermsUrl() = intent {
+        postSideEffect(AppInfoSideEffect.OpenUrl(state.appInfo.termsUrl))
+    }
+
+    private fun onOpenPrivacyPolicyUrl() = intent {
+        postSideEffect(AppInfoSideEffect.OpenUrl(state.appInfo.privacyPolicyUrl))
     }
 
     override suspend fun Syntax<AppInfoUiState, AppInfoSideEffect>.applyMutation(mutation: AppInfoMutation) {

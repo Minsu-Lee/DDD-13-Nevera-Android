@@ -1,8 +1,10 @@
 package com.anddd.nevera.feature.mypage.appinfo
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.mypage.appinfo.component.AppInfoContent
@@ -24,6 +26,10 @@ fun AppInfoScreen(
 
             AppInfoSideEffect.ShowNetworkErrorToast -> {
                 Toast.makeText(context, "네트워크 연결을 확인해주세요", Toast.LENGTH_SHORT).show()
+            }
+
+            is AppInfoSideEffect.OpenUrl -> {
+                context.startActivity(Intent(Intent.ACTION_VIEW, effect.url.toUri()))
             }
         }
     }
