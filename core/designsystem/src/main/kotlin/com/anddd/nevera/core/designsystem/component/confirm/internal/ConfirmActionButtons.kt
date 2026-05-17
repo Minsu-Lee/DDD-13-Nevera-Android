@@ -121,20 +121,20 @@ private fun ConfirmActionButtonsPrimarySecondaryPreview() {
 }
 
 @Preview(
-    name = "ConfirmActionButtons - positive=Secondary / negative=Danger",
+    name = "ConfirmActionButtons - positive=Danger / negative=Secondary",
     showBackground = true,
     widthDp = 360
 )
 @Composable
-private fun ConfirmActionButtonsSecondaryDangerPreview() {
+private fun ConfirmActionButtonsDangerSecondaryPreview() {
     NeveraTheme {
         ConfirmActionButtons(
-            positive = "확인",
-            negative = "삭제",
+            positive = "삭제",
+            negative = "취소",
             onPositive = {},
             onNegative = {},
-            positiveButtonColor = NeveraButtonColor.Secondary,
-            negativeButtonColor = NeveraButtonColor.Danger,
+            positiveButtonColor = NeveraButtonColor.Danger,
+            negativeButtonColor = NeveraButtonColor.Secondary,
         )
     }
 }
