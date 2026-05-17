@@ -43,7 +43,6 @@ internal fun LoginEtcSection(
                 style = NeveraTheme.typography.titleXSmall,
                 color = NeveraTheme.colors.textCaption,
             )
-            Spacer(Modifier.height(NeveraSpacing.gap12))
             HorizontalDivider(
                 modifier = Modifier.weight(1f)
                     .padding(start = NeveraTheme.spacing.padding12),

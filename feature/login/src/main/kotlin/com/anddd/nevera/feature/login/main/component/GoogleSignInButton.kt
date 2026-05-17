@@ -31,7 +31,8 @@ internal fun GoogleSignInButton(
 ) {
     Surface(
         onClick = onClick,
-        modifier = modifier.requiredHeight(48.dp),
+        modifier = modifier.fillMaxWidth()
+            .requiredHeight(48.dp),
         shape = RoundedCornerShape(NeveraTheme.radius.small),
         color = NeveraTheme.colors.surfacePrimary,
         border = BorderStroke(1.dp, NeveraTheme.colors.borderStrong),
