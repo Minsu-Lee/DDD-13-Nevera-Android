@@ -12,7 +12,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 fun NeveraConfirmDialog(
     modifier: Modifier = Modifier,
     title: String,
-    subtitle: String,
+    subtitle: String? = null,
     positive: String,
     negative: String,
     onPositive: () -> Unit,
@@ -28,21 +28,6 @@ fun NeveraConfirmDialog(
             negative = negative,
             onPositive = onPositive,
             onNegative = onNegative,
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun NeveraConfirmDialogPreview() {
-    NeveraTheme {
-        NeveraConfirmDialog(
-            title = "Title",
-            subtitle = "Subtitle",
-            positive = "CTA",
-            negative = "Sub",
-            onPositive = {},
-            onNegative = {}
         )
     }
 }
