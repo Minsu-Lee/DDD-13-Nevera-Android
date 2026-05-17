@@ -12,6 +12,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun MyPageScreen(
     onNavigateToAppInfo: () -> Unit,
+    onNavigateToAccountSetting: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -22,6 +23,8 @@ fun MyPageScreen(
             is MyPageSideEffect.ShowToast -> Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
 
             MyPageSideEffect.NavigateToAppInfo -> onNavigateToAppInfo()
+
+            MyPageSideEffect.NavigateToAccountSetting -> onNavigateToAccountSetting()
         }
     }
 
