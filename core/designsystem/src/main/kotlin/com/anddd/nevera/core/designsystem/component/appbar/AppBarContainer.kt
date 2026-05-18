@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,12 +35,13 @@ internal fun AppBarContainer(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .requiredHeight(AppBarDefault.height)
             .then(
                 if (showBackground) Modifier.background(NeveraTheme.colors.backgroundPrimary)
                 else Modifier
             )
-            .padding(start = startPadding, end = endPadding),
+            .padding(start = startPadding, end = endPadding)
+            .statusBarsPadding()
+            .requiredHeight(AppBarDefault.height),
         contentAlignment = Alignment.CenterStart,
         content = content
     )

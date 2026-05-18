@@ -18,6 +18,16 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_menu)
     val Search: Painter
         @Composable get() = painterResource(R.drawable.ic_search)
+    val Bell: Painter
+        @Composable get() = painterResource(R.drawable.ic_bell)
     val LogoAppBar: Painter
         @Composable get() = ColorPainter(NeveraTheme.colors.primaryNormal)
+    val Check: Painter
+        @Composable get() = painterResource(R.drawable.ic_textfield_check)
+    val Warning: Painter
+        @Composable get() = painterResource(R.drawable.ic_textfield_warning)
+    val Eye: Painter
+        @Composable get() = painterResource(R.drawable.ic_textfield_eyes)
+    val EyeOff: Painter
+        @Composable get() = painterResource(R.drawable.ic_textfield_eyes_off)
 }
