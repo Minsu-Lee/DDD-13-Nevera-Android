@@ -11,7 +11,6 @@
     <string name="login_submit_button">로그인하기</string>
     <string name="login_divider_or">또는</string>
     <string name="login_google_button">Google로 시작하기</string>
-    <string name="login_google_icon_description">Google 아이콘</string>
     <string name="login_signup_guide">계정이 없으신가요?</string>
     <string name="login_signup_button">회원가입</string>
 </resources>

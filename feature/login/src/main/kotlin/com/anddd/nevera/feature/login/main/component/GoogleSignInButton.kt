@@ -45,7 +45,7 @@ internal fun GoogleSignInButton(
         ) {
             Image(
                 painter = painterResource(R.drawable.img_google),
-                contentDescription = stringResource(R.string.login_google_icon_description),
+                contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
             Spacer(Modifier.width(NeveraSpacing.gap8))
