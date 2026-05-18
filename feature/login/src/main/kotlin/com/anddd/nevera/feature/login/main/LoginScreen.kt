@@ -5,8 +5,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.core.ui.component.LoadingContent
@@ -14,6 +12,7 @@ import com.anddd.nevera.feature.login.main.component.LoginContent
 import com.anddd.nevera.feature.login.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.login.main.model.LoginIntent
 import com.anddd.nevera.feature.login.main.model.LoginSideEffect
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -37,11 +36,12 @@ fun LoginScreen(
 
     fun googleLogin() {
         scope.launch {
-            runCatching {
-                googleAuthClient.getIdToken(activity)
-            }.onSuccess { idToken ->
+            try {
+                val idToken = googleAuthClient.getIdToken(activity)
                 viewModel.handleIntent(LoginIntent.LoginWithGoogleClicked(idToken))
-            }.onFailure { throwable ->
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (throwable: Throwable) {
                 viewModel.handleIntent(LoginIntent.GoogleLoginFailed(throwable))
             }
         }
@@ -70,7 +70,7 @@ fun LoginScreen(
             onGoogleLoginClick = ::googleLogin,
         )
         if (uiState.isLoading) {
-            LoadingContent(modifier = Modifier.pointerInput(Unit) {})
+            LoadingContent()
         }
     }
 }
