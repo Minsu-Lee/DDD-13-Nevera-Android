@@ -48,17 +48,22 @@ version: 0.3.0
 `core:mvi` 모듈의 `NeveraViewModel`을 기반으로 하는 Orbit MVI 패턴을 사용한다.
 
 ```
-View ──handleIntent()──▶ handleIntent()       ← NeveraViewModel override, 단일 진입점
-                              │
-                          intent {}            ← Orbit coroutine scope
-                              │
-                        applyMutation()        ← suspend, Syntax<STATE, SIDE_EFFECT> context
-                         ┌────┴────┐
-                       reduce    postSideEffect
-                         │            │
-                       state       sideEffect
-                         │            │
-                        View        View (collectSideEffect)
+[View]      viewModel.handleIntent(Intent)
+                │
+                ▼
+[ViewModel] handleIntent(intent)    ← NeveraViewModel abstract override, 단일 진입점
+                │  when(intent) → onXxx()
+                ▼
+            intent {}               ← Orbit coroutine scope
+                │
+                ▼
+            applyMutation(Mutation) ← suspend, Syntax<STATE, SIDE_EFFECT> context
+             ┌────┴────┐
+           reduce    postSideEffect
+             │            │
+           STATE      SIDE_EFFECT
+             │            │
+[View]  collectAsState  collectSideEffect
 ```
 
 - **NeveraIntent**: View → ViewModel 유일한 진입점 (marker interface)
