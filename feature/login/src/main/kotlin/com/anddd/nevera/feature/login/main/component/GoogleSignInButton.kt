@@ -48,7 +48,7 @@ internal fun GoogleSignInButton(
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
-            Spacer(Modifier.width(NeveraSpacing.gap8))
+            Spacer(Modifier.width(NeveraTheme.spacing.gap8))
             Text(
                 text = stringResource(R.string.login_google_button),
                 style = NeveraTheme.typography.titleMedium,
