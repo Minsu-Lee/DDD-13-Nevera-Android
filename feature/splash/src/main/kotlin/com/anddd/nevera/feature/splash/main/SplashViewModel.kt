@@ -1,5 +1,6 @@
 package com.anddd.nevera.feature.splash.main
 
+import android.os.SystemClock
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.scheduler.FcmSyncScheduler
 import com.anddd.nevera.domain.usecase.auth.CheckAutoLoginUseCase
@@ -42,7 +43,7 @@ class SplashViewModel @Inject constructor(
     ) = Unit
 
     private fun remainingDelay(startTime: Long): Long =
-        MIN_SPLASH_DURATION_MS - (System.currentTimeMillis() - startTime)
+        (MIN_SPLASH_DURATION_MS - (SystemClock.elapsedRealtime() - startTime)).coerceAtLeast(0L)
 
     companion object {
         private const val MIN_SPLASH_DURATION_MS = 2000L
