@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
 import com.anddd.nevera.domain.model.validation.EmailValidationResult
 import com.anddd.nevera.domain.model.validation.PasswordValidationError
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
@@ -36,12 +35,12 @@ internal fun LoginContent(
             .statusBarsPadding()
             .imePadding()
             .verticalScroll(scrollState)
-            .padding(horizontal = NeveraSpacing.padding24),
+            .padding(horizontal = NeveraTheme.spacing.padding24),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(Modifier.height(NeveraSpacing.gap20))
+        Spacer(Modifier.height(NeveraTheme.spacing.gap20))
         LoginHeader()
-        Spacer(Modifier.height(NeveraSpacing.gap16))
+        Spacer(Modifier.height(NeveraTheme.spacing.gap16))
         LoginInputSection(
             email = email,
             password = password,

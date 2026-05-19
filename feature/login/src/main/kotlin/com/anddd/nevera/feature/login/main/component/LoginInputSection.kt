@@ -15,7 +15,6 @@ import com.anddd.nevera.core.designsystem.component.textfield.NeveraPasswordText
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldState
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
 import com.anddd.nevera.domain.model.validation.EmailValidationResult
 import com.anddd.nevera.domain.model.validation.PasswordValidationError
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
@@ -62,7 +61,7 @@ internal fun LoginInputSection(
                 description = emailDescription,
             ),
         )
-        Spacer(Modifier.height(NeveraSpacing.gap16))
+        Spacer(Modifier.height(NeveraTheme.spacing.gap16))
         NeveraPasswordTextField(
             value = password,
             onValueChange = onPasswordChange,
@@ -75,7 +74,7 @@ internal fun LoginInputSection(
                 description = passwordDescription,
             ),
         )
-        Spacer(Modifier.height(NeveraSpacing.gap16))
+        Spacer(Modifier.height(NeveraTheme.spacing.gap16))
         NeveraFilledButton(
             label = stringResource(R.string.login_submit_button),
             onClick = onLoginClick,

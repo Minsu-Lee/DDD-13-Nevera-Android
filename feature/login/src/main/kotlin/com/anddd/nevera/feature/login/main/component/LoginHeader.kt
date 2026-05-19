@@ -34,7 +34,7 @@ internal fun LoginHeader() {
                 .requiredHeight(72.dp),
             contentScale = ContentScale.Fit,
         )
-        Spacer(Modifier.height(NeveraSpacing.gap6))
+        Spacer(Modifier.height(NeveraTheme.spacing.gap6))
         Text(
             text = stringResource(R.string.login_subtitle),
             style = NeveraTheme.typography.titleMedium,

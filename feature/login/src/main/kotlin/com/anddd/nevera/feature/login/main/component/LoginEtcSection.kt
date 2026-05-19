@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.core.designsystem.ui.theme.spacing.NeveraSpacing
 import com.anddd.nevera.feature.login.R
 
 @Composable
@@ -27,7 +26,7 @@ internal fun LoginEtcSection(
     onSignupClick: () -> Unit,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(Modifier.height(NeveraSpacing.gap16))
+        Spacer(Modifier.height(NeveraTheme.spacing.gap16))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -50,12 +49,12 @@ internal fun LoginEtcSection(
                 color = NeveraTheme.colors.borderNormal,
             )
         }
-        Spacer(Modifier.height(NeveraSpacing.gap16))
+        Spacer(Modifier.height(NeveraTheme.spacing.gap16))
         GoogleSignInButton(
             onClick = onGoogleLoginClick,
             modifier = Modifier.fillMaxWidth(),
         )
-        Spacer(Modifier.height(NeveraSpacing.gap16))
+        Spacer(Modifier.height(NeveraTheme.spacing.gap16))
         Row(
             modifier = Modifier.height(34.dp),
             horizontalArrangement = Arrangement.Center,
@@ -66,7 +65,7 @@ internal fun LoginEtcSection(
                 style = NeveraTheme.typography.titleXSmall,
                 color = NeveraTheme.colors.textQuaternary,
             )
-            Spacer(Modifier.width(NeveraSpacing.padding10))
+            Spacer(Modifier.width(NeveraTheme.spacing.padding10))
             Text(
                 text = stringResource(R.string.login_signup_button),
                 style = NeveraTheme.typography.titleXSmall,
