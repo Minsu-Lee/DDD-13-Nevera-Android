@@ -6,19 +6,19 @@ import com.anddd.nevera.domain.model.common.CommonError
 sealed interface EmailLoginErrorUiModel {
     val message: String
 
-    object InvalidCredentials : EmailLoginErrorUiModel {
+    data object InvalidCredentials : EmailLoginErrorUiModel {
         override val message: String = "이메일 또는 비밀번호가 틀렸습니다."
     }
 
-    object NetworkUnavailable : EmailLoginErrorUiModel {
+    data object NetworkUnavailable : EmailLoginErrorUiModel {
         override val message: String = "네트워크 연결을 확인해주세요."
     }
 
-    object Timeout : EmailLoginErrorUiModel {
+    data object Timeout : EmailLoginErrorUiModel {
         override val message: String = "요청 시간이 초과됐습니다."
     }
 
-    object Unauthorized : EmailLoginErrorUiModel {
+    data object Unauthorized : EmailLoginErrorUiModel {
         override val message: String = "다시 로그인해주세요."
     }
 
@@ -26,7 +26,7 @@ sealed interface EmailLoginErrorUiModel {
         override val message: String = "로그인에 실패했습니다.",
     ) : EmailLoginErrorUiModel
 
-    object Unknown : EmailLoginErrorUiModel {
+    data object Unknown : EmailLoginErrorUiModel {
         override val message: String = "로그인에 실패했습니다."
     }
 }
