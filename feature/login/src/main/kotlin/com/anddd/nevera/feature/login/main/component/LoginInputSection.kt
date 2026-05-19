@@ -24,8 +24,8 @@ import com.anddd.nevera.feature.login.R
 internal fun LoginInputSection(
     email: String,
     password: String,
-    emailValidation: EmailValidationResult?,
-    passwordValidation: PasswordValidationResult?,
+    emailValidation: EmailValidationResult = EmailValidationResult.Empty,
+    passwordValidation: PasswordValidationResult = PasswordValidationResult.Empty,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
@@ -85,14 +85,14 @@ internal fun LoginInputSection(
 }
 
 @Composable
-private fun EmailValidationResult?.toErrorDescription(): String? = when (this) {
+private fun EmailValidationResult.toErrorDescription(): String? = when (this) {
     EmailValidationResult.InvalidFormat ->
         stringResource(R.string.login_email_error_invalid_format)
     else -> null
 }
 
 @Composable
-private fun PasswordValidationResult?.toErrorDescription(): String? = when (this) {
+private fun PasswordValidationResult.toErrorDescription(): String? = when (this) {
     is PasswordValidationResult.Invalid ->
         stringResource(R.string.login_password_error_requirement)
     else -> null
@@ -105,8 +105,8 @@ private fun LoginInputSectionPreview() {
         LoginInputSection(
             email = "",
             password = "",
-            emailValidation = null,
-            passwordValidation = null,
+            emailValidation = EmailValidationResult.Empty,
+            passwordValidation = PasswordValidationResult.Empty,
             onEmailChange = {},
             onPasswordChange = {},
             onLoginClick = {},

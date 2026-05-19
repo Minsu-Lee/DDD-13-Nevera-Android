@@ -8,6 +8,6 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     val email: String = "",
     val password: String = "",
-    val emailValidation: EmailValidationResult? = null,
-    val passwordValidation: PasswordValidationResult? = null,
+    val emailValidation: EmailValidationResult = EmailValidationResult.Empty,
+    val passwordValidation: PasswordValidationResult = PasswordValidationResult.Empty,
 ) : NeveraState

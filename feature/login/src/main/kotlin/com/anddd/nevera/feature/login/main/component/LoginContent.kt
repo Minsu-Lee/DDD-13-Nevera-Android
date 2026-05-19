@@ -24,8 +24,8 @@ import com.anddd.nevera.feature.login.main.model.LoginIntent
 internal fun LoginContent(
     email: String,
     password: String,
-    emailValidation: EmailValidationResult?,
-    passwordValidation: PasswordValidationResult?,
+    emailValidation: EmailValidationResult = EmailValidationResult.Empty,
+    passwordValidation: PasswordValidationResult = PasswordValidationResult.Empty,
     onIntent: (LoginIntent) -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -64,8 +64,8 @@ private fun LoginContentPreview() {
         LoginContent(
             email = "",
             password = "",
-            emailValidation = null,
-            passwordValidation = null,
+            emailValidation = EmailValidationResult.Empty,
+            passwordValidation = PasswordValidationResult.Empty,
             onIntent = {},
         )
     }
