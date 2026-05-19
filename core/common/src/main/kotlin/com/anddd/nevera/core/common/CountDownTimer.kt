@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-class CountdownTimer(private val scope: CoroutineScope) {
+class CountDownTimer(private val scope: CoroutineScope) {
 
     sealed interface State {
         data object Idle : State
@@ -24,10 +24,12 @@ class CountdownTimer(private val scope: CoroutineScope) {
     private var job: Job? = null
 
     fun start(totalSeconds: Int, canResendAfterSeconds: Int) {
+        require(totalSeconds > 0) { "totalSeconds must be positive" }
+        require(canResendAfterSeconds <= totalSeconds) { "canResendAfterSeconds must not exceed totalSeconds" }
         job?.cancel()
-        _state.value = State.Idle
         job = scope.launch {
-            countdownFlow(totalSeconds).collect { remaining ->
+            _state.value = State.Active(remainingSeconds = totalSeconds, canResend = false)
+            countDownFlow(totalSeconds).collect { remaining ->
                 _state.value = if (remaining > 0) {
                     State.Active(
                         remainingSeconds = remaining,
@@ -45,7 +47,7 @@ class CountdownTimer(private val scope: CoroutineScope) {
         _state.value = State.Idle
     }
 
-    private fun countdownFlow(totalSeconds: Int): Flow<Int> = flow {
+    private fun countDownFlow(totalSeconds: Int): Flow<Int> = flow {
         for (i in totalSeconds downTo 0) {
             emit(i)
             if (i > 0) delay(1000)
