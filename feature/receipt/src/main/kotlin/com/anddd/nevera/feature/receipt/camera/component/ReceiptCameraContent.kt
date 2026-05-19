@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.receipt.main.component
+package com.anddd.nevera.feature.receipt.camera.component
 
 import androidx.camera.core.Preview
 import androidx.camera.view.PreviewView
@@ -15,6 +15,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.feature.receipt.main.component.PermissionDeniedDialog
 import com.anddd.nevera.feature.receipt.main.model.ReceiptIntent
 
 @Composable

@@ -17,8 +17,9 @@ import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarNavigatio
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.receipt.R
-import com.anddd.nevera.feature.receipt.main.component.ReceiptCameraContent
-import com.anddd.nevera.feature.receipt.main.component.ReceiptGalleryContent
+import com.anddd.nevera.feature.receipt.camera.component.ReceiptCameraContent
+import com.anddd.nevera.feature.receipt.gallery.component.GalleryPartialAccessBanner
+import com.anddd.nevera.feature.receipt.gallery.component.ReceiptGalleryContent
 import com.anddd.nevera.feature.receipt.main.model.ReceiptIntent
 import com.anddd.nevera.feature.receipt.main.model.ReceiptMode
 
@@ -63,15 +64,20 @@ internal fun ReceiptContent(
                 onOpenSettings = onCameraOpenSettings,
                 modifier = Modifier.weight(1f),
             )
-            ReceiptMode.Gallery -> ReceiptGalleryContent(
-                images = galleryImages,
-                hasGalleryPermission = galleryPermissionState.hasPermission,
-                showPermissionDialog = galleryPermissionState.isDenied,
-                onIntent = onIntent,
-                onDismissPermissionDialog = galleryPermissionState.clearDenied,
-                onOpenSettings = onGalleryOpenSettings,
-                modifier = Modifier.weight(1f),
-            )
+            ReceiptMode.Gallery -> {
+                if (galleryPermissionState.isPartialAccess) {
+                    GalleryPartialAccessBanner(onSelectMore = galleryPermissionState.requestPermission)
+                }
+                ReceiptGalleryContent(
+                    images = galleryImages,
+                    hasGalleryPermission = galleryPermissionState.hasPermission,
+                    showPermissionDialog = galleryPermissionState.isDenied,
+                    onIntent = onIntent,
+                    onDismissPermissionDialog = galleryPermissionState.clearDenied,
+                    onOpenSettings = onGalleryOpenSettings,
+                    modifier = Modifier.weight(1f),
+                )
+            }
         }
     }
 }
@@ -119,6 +125,35 @@ private fun ReceiptContentGalleryPreview() {
             ),
             galleryPermissionState = PermissionState(
                 hasPermission = true,
+                isDenied = false,
+                requestPermission = {},
+                clearDenied = {},
+            ),
+            onClose = {},
+            onIntent = {},
+            onBindCamera = { _, _ -> },
+            onCameraOpenSettings = {},
+            onGalleryOpenSettings = {},
+        )
+    }
+}
+
+@ComposePreview(name = "ReceiptContent - Gallery Partial Access", showBackground = true, widthDp = 360, heightDp = 720)
+@Composable
+private fun ReceiptContentGalleryPartialAccessPreview() {
+    NeveraTheme {
+        ReceiptContent(
+            mode = ReceiptMode.Gallery,
+            galleryImages = emptyList(),
+            cameraPermissionState = PermissionState(
+                hasPermission = true,
+                isDenied = false,
+                requestPermission = {},
+                clearDenied = {},
+            ),
+            galleryPermissionState = PermissionState(
+                hasPermission = true,
+                isPartialAccess = true,
                 isDenied = false,
                 requestPermission = {},
                 clearDenied = {},

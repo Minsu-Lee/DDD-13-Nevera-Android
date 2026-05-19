@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.receipt.main.component
+package com.anddd.nevera.feature.receipt.gallery.component
 
 import android.net.Uri
 import androidx.compose.foundation.background

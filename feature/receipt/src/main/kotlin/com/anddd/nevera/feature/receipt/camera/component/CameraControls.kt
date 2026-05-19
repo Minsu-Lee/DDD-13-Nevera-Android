@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.receipt.main.component
+package com.anddd.nevera.feature.receipt.camera.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,8 +27,8 @@ import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.receipt.R
 
+// TODO :: NeveraTheme.iconSize 에는 정의되어 있지 않은 사이즈, 문의 필요
 private val ShutterButtonSize = 60.dp
-private val ControlButtonBackground = Color(0x66000000)
 
 @Composable
 internal fun CameraControls(
@@ -68,13 +68,12 @@ internal fun CameraControls(
         ) {
             IconButton(
                 onClick = onSwitchToGallery,
-                modifier = Modifier.clip(CircleShape)
-                    .background(ControlButtonBackground),
+                modifier = Modifier.clip(CircleShape),
             ) {
                 Icon(
                     painter = NeveraIcons.ReceiptGallery,
                     contentDescription = "갤러리",
-                    tint = Color.White,
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(NeveraTheme.iconSize.xxLarge),
                 )
             }
@@ -90,7 +89,6 @@ internal fun CameraControls(
             IconButton(
                 onClick = onSwapCamera,
                 modifier = Modifier.clip(CircleShape)
-                    .background(ControlButtonBackground),
             ) {
                 Icon(
                     painter = NeveraIcons.ReceiptCameraSwap,
