@@ -10,12 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
+import javax.inject.Inject
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
-import com.anddd.nevera.feature.login.main.navigation.LOGIN_ROUTE
-import com.anddd.nevera.feature.login.main.navigation.loginScreen
+import com.anddd.nevera.feature.auth.main.navigation.LOGIN_ROUTE
+import com.anddd.nevera.feature.auth.main.navigation.loginScreen
 import com.anddd.nevera.feature.main.home.navigation.HOME_ROUTE
-import com.anddd.nevera.feature.signup.main.navigation.SIGNUP_ROUTE
-import com.anddd.nevera.feature.signup.main.navigation.signupScreen
+import com.anddd.nevera.feature.auth.signup.navigation.SIGNUP_ROUTE
+import com.anddd.nevera.feature.auth.signup.navigation.signupScreen
 import com.anddd.nevera.feature.splash.main.navigation.SPLASH_ROUTE
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -29,6 +31,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var googleAuthClient: GoogleAuthClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -62,7 +66,8 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToSignup = {
                                 navController.navigate(SIGNUP_ROUTE)
-                            }
+                            },
+                            googleAuthClient = googleAuthClient,
                         )
                         signupScreen(
                             onNavigateToLogin = {
