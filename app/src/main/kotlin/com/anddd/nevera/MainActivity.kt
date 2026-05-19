@@ -23,6 +23,8 @@ import com.anddd.nevera.feature.mypage.appinfo.navigation.APP_INFO_ROUTE
 import com.anddd.nevera.feature.mypage.appinfo.navigation.appInfoScreen
 import com.anddd.nevera.feature.mypage.main.navigation.MY_PAGE_ROUTE
 import com.anddd.nevera.feature.mypage.main.navigation.myPageScreen
+import com.anddd.nevera.feature.mypage.settingaccount.navigation.SETTING_ACCOUNT_ROUTE
+import com.anddd.nevera.feature.mypage.settingaccount.navigation.settingAccountScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -80,11 +82,24 @@ class MainActivity : ComponentActivity() {
                         myPageScreen(
                             onNavigateToAppInfo = {
                                 navController.navigate(APP_INFO_ROUTE)
+                            },
+                            onNavigateToAccountSetting = {
+                                navController.navigate(SETTING_ACCOUNT_ROUTE)
                             }
                         )
                         appInfoScreen(
                             onNavigateBack = {
                                 navController.popBackStack()
+                            }
+                        )
+                        settingAccountScreen(
+                            onNavigateBack = {
+                                navController.popBackStack()
+                            },
+                            onNavigateToLogin = {
+                                navController.navigate(LOGIN_ROUTE) {
+                                    popUpTo(HOME_ROUTE) { inclusive = true }
+                                }
                             }
                         )
                     }

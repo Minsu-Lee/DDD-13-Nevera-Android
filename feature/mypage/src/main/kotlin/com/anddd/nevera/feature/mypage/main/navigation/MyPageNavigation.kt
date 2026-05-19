@@ -8,8 +8,12 @@ const val MY_PAGE_ROUTE = "mypage"
 
 fun NavGraphBuilder.myPageScreen(
     onNavigateToAppInfo: () -> Unit,
+    onNavigateToAccountSetting: () -> Unit,
 ) {
     composable(route = MY_PAGE_ROUTE) {
-        MyPageScreen(onNavigateToAppInfo = onNavigateToAppInfo)
+        MyPageScreen(
+            onNavigateToAppInfo = onNavigateToAppInfo,
+            onNavigateToAccountSetting = onNavigateToAccountSetting,
+        )
     }
 }

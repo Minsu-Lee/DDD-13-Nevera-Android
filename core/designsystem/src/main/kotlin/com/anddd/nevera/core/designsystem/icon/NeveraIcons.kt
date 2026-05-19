@@ -8,6 +8,8 @@ import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 object NeveraIcons {
+    val Logo100: Painter
+        @Composable get() = painterResource(R.drawable.logo_100)
     val ArrowBack: Painter
         @Composable get() = painterResource(R.drawable.ic_arrow_back)
     val Close: Painter

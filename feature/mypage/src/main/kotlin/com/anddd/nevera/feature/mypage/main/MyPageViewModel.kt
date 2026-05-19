@@ -42,7 +42,7 @@ class MyPageViewModel @Inject constructor(
         when (item) {
             SettingItem.Notification -> {}
 
-            SettingItem.Account -> {}
+            SettingItem.Account -> postSideEffect(MyPageSideEffect.NavigateToAccountSetting)
 
             SettingItem.AppInfo -> postSideEffect(MyPageSideEffect.NavigateToAppInfo)
         }
