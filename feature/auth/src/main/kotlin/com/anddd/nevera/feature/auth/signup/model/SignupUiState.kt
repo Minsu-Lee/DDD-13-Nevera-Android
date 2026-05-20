@@ -41,16 +41,17 @@ sealed interface AuthCodeDescription {
 
 internal fun SignupUiState.withAuthCodeDescription(): SignupUiState {
     val isTimerExpired = timerState is CountDownTimer.State.Expired
-    val remainingSeconds = (timerState as? CountDownTimer.State.Active)?.remainingSeconds ?: 0
+    val activeTimer = timerState as? CountDownTimer.State.Active
+    val remainingSeconds = activeTimer?.remainingSeconds ?: 0
     val description = when {
         isEmailVerified -> AuthCodeDescription.Verified
         authCodeSectionError == AuthCodeSectionError.EmailAlreadyRegistered ->
             AuthCodeDescription.EmailAlreadyRegistered
         authCodeSectionError == AuthCodeSectionError.NotFound -> AuthCodeDescription.NotFound
-        timerState is CountDownTimer.State.Active -> AuthCodeDescription.Timer(remainingSeconds)
-        // 타이머가 살아있을 때만 표시 — 만료 후엔 아래 Expired로 떨어짐
-        authCodeSectionError == AuthCodeSectionError.InvalidCode && !isTimerExpired ->
+        // 오류 문구 + 남은 시간을 함께 표시 — Active 분기보다 먼저 평가해야 가려지지 않음
+        authCodeSectionError == AuthCodeSectionError.InvalidCode && activeTimer != null ->
             AuthCodeDescription.InvalidCode(remainingSeconds)
+        timerState is CountDownTimer.State.Active -> AuthCodeDescription.Timer(remainingSeconds)
         // 클라이언트 타이머 만료와 서버 측 만료 모두 동일 UI로 처리
         isTimerExpired || authCodeSectionError == AuthCodeSectionError.ServerExpired ->
             AuthCodeDescription.Expired
