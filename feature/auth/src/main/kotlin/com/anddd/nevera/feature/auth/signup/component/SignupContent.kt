@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.anddd.nevera.core.common.CountDownTimer
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBar
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarNavigation
 import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.common.CountDownTimer
 import com.anddd.nevera.domain.model.validation.EmailValidationResult
 import com.anddd.nevera.domain.model.validation.PasswordValidationResult
 import com.anddd.nevera.feature.auth.R
@@ -36,10 +36,6 @@ internal fun SignupContent(
     uiState: SignupUiState,
     onIntent: (SignupIntent) -> Unit,
 ) {
-    val isEmailValid = uiState.emailValidation is EmailValidationResult.Valid
-    val isPasswordValid = uiState.passwordValidation is PasswordValidationResult.Valid
-    val canSignup = uiState.isEmailVerified && isPasswordValid && uiState.isPasswordMatched
-
     Scaffold(
         topBar = {
             NeveraAppBar(
@@ -63,20 +59,13 @@ internal fun SignupContent(
             ) {
                 Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap20))
 
-                val isTimerCanResend = when (uiState.timerState) {
-                    is CountDownTimer.State.Active -> uiState.timerState.canResend
-                    CountDownTimer.State.Expired -> true
-                    CountDownTimer.State.Idle -> false
-                }
-                val canResend = uiState.isEmailRequestSent && !uiState.isEmailVerified && isTimerCanResend
-
                 EmailSection(
                     email = uiState.email,
                     emailValidation = uiState.emailValidation,
                     isEmailRequestSent = uiState.isEmailRequestSent,
                     isEmailVerified = uiState.isEmailVerified,
-                    isEmailValid = isEmailValid,
-                    canResend = canResend,
+                    isEmailValid = uiState.isEmailValid,
+                    canResend = uiState.canResend,
                     onEmailChange = { onIntent(SignupIntent.EmailChanged(it)) },
                     onRequestEmailVerification = { onIntent(SignupIntent.RequestEmailVerification) },
                 )
@@ -98,7 +87,7 @@ internal fun SignupContent(
                 PasswordSection(
                     password = uiState.password,
                     passwordValidation = uiState.passwordValidation,
-                    isPasswordValid = isPasswordValid,
+                    isPasswordValid = uiState.isPasswordValid,
                     enabled = uiState.isEmailVerified,
                     onPasswordChange = { onIntent(SignupIntent.PasswordChanged(it)) },
                 )
@@ -108,7 +97,7 @@ internal fun SignupContent(
                 ConfirmPasswordSection(
                     confirmPassword = uiState.confirmPassword,
                     isPasswordMatched = uiState.isPasswordMatched,
-                    enabled = uiState.isEmailVerified && isPasswordValid,
+                    enabled = uiState.isEmailVerified && uiState.isPasswordValid,
                     onConfirmPasswordChange = { onIntent(SignupIntent.ConfirmPasswordChanged(it)) },
                 )
 
@@ -118,7 +107,7 @@ internal fun SignupContent(
             NeveraFilledButton(
                 label = stringResource(R.string.signup_btn_signup),
                 onClick = { onIntent(SignupIntent.Signup) },
-                enabled = canSignup,
+                enabled = uiState.canSignup,
                 modifier = Modifier.fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .padding(NeveraTheme.spacing.gap16),

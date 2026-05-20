@@ -20,7 +20,26 @@ data class SignupUiState(
     val authCodeSectionError: AuthCodeSectionError = AuthCodeSectionError.None,
     val authCodeDescription: AuthCodeDescription = AuthCodeDescription.None,
     val timerState: CountDownTimer.State = CountDownTimer.State.Idle,
-) : NeveraState
+) : NeveraState {
+    val isEmailValid: Boolean
+        get() = emailValidation is EmailValidationResult.Valid
+
+    val isPasswordValid: Boolean
+        get() = passwordValidation is PasswordValidationResult.Valid
+
+    val canSignup: Boolean
+        get() = isEmailVerified && isPasswordValid && isPasswordMatched
+
+    val canResend: Boolean
+        get() {
+            val isTimerCanResend = when (timerState) {
+                is CountDownTimer.State.Active -> timerState.canResend
+                CountDownTimer.State.Expired -> true
+                CountDownTimer.State.Idle -> false
+            }
+            return isEmailRequestSent && !isEmailVerified && isTimerCanResend
+        }
+}
 
 sealed interface AuthCodeDescription {
     /** 표시할 설명 없음 */
