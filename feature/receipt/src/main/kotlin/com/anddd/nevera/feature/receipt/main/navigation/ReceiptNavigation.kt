@@ -11,7 +11,7 @@ const val RECEIPT_ROUTE = "receipt"
 internal const val RECEIPT_INITIAL_MODE_ARG = "initialMode"
 internal const val GALLERY_MODE_VALUE = "gallery"
 
-val ORDER_CAPTURE_ROUTE = "$RECEIPT_ROUTE?$RECEIPT_INITIAL_MODE_ARG=$GALLERY_MODE_VALUE"
+const val ORDER_CAPTURE_ROUTE = "$RECEIPT_ROUTE?$RECEIPT_INITIAL_MODE_ARG=$GALLERY_MODE_VALUE"
 
 fun NavGraphBuilder.receiptScreen(
     onNavigateBack: () -> Unit,
