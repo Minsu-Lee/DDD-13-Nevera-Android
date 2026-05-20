@@ -40,28 +40,25 @@ fun ReceiptScreen(
         when (effect) {
             ReceiptSideEffect.NavigateBack -> onNavigateBack()
             is ReceiptSideEffect.NavigateToResult -> onNavigateBack()
-            ReceiptSideEffect.OpenAppSettings -> context.openAppSettings()
+            ReceiptSideEffect.OpenCameraSettings -> {
+                cameraPermissionState.clearDenied()
+                context.openAppSettings()
+            }
+            ReceiptSideEffect.OpenGallerySettings -> {
+                galleryPermissionState.clearDenied()
+                context.openAppSettings()
+            }
             ReceiptSideEffect.ShowCaptureError ->
                 Toast.makeText(context, "촬영에 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
     ReceiptContent(
-        mode = uiState.mode,
-        galleryImages = uiState.galleryImages,
+        uiState = uiState,
         cameraPermissionState = cameraPermissionState,
         galleryPermissionState = galleryPermissionState,
-        onClose = onNavigateBack,
         onIntent = viewModel::handleIntent,
         onBindCamera = viewModel::bindCamera,
-        onCameraOpenSettings = {
-            cameraPermissionState.clearDenied()
-            context.openAppSettings()
-        },
-        onGalleryOpenSettings = {
-            galleryPermissionState.clearDenied()
-            context.openAppSettings()
-        },
     )
 }
 

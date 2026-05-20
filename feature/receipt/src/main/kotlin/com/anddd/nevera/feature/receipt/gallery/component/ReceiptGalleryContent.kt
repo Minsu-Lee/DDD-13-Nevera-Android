@@ -49,8 +49,7 @@ internal fun ReceiptGalleryContent(
 
         if (!hasGalleryPermission) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.5f)),
             )
         }

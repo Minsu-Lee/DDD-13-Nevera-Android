@@ -1,5 +1,7 @@
 package com.anddd.nevera.feature.receipt.main
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.camera.core.Preview
 import androidx.lifecycle.LifecycleOwner
@@ -16,12 +18,15 @@ import com.anddd.nevera.feature.receipt.main.model.ReceiptUiState
 import com.anddd.nevera.feature.receipt.main.navigation.GALLERY_MODE_VALUE
 import com.anddd.nevera.feature.receipt.main.navigation.RECEIPT_INITIAL_MODE_ARG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.syntax.Syntax
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class ReceiptViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle,
     private val cameraManager: CameraManager,
     private val galleryManager: GalleryManager,
@@ -38,13 +43,28 @@ class ReceiptViewModel @Inject constructor(
 
     override fun handleIntent(action: ReceiptIntent) {
         when (action) {
+            ReceiptIntent.Close -> onClose()
             ReceiptIntent.SwitchToGallery -> onSwitchToGallery()
             ReceiptIntent.SwitchToCamera -> onSwitchToCamera()
             ReceiptIntent.TakePicture -> onTakePicture()
             ReceiptIntent.SwapCamera -> onSwapCamera()
             ReceiptIntent.LoadGalleryImages -> onLoadGalleryImages()
             is ReceiptIntent.SelectImage -> onSelectImage(action.uri)
+            ReceiptIntent.OpenCameraSettings -> onOpenCameraSettings()
+            ReceiptIntent.OpenGallerySettings -> onOpenGallerySettings()
         }
+    }
+
+    private fun onClose() = intent {
+        postSideEffect(ReceiptSideEffect.NavigateBack)
+    }
+
+    private fun onOpenCameraSettings() = intent {
+        postSideEffect(ReceiptSideEffect.OpenCameraSettings)
+    }
+
+    private fun onOpenGallerySettings() = intent {
+        postSideEffect(ReceiptSideEffect.OpenGallerySettings)
     }
 
     private fun onSwitchToGallery() = intent {
@@ -81,9 +101,17 @@ class ReceiptViewModel @Inject constructor(
             is ReceiptMutation.GalleryLoaded ->
                 reduce { state.copy(galleryImages = mutation.images) }
             is ReceiptMutation.CaptureSuccess -> {
-                // TODO: bitmap을 임시 저장 후 NavigateToResult로 전달
+                val uri = Uri.fromFile(saveBitmapToTempFile(mutation.bitmap))
+                postSideEffect(ReceiptSideEffect.NavigateToResult(uri))
             }
         }
+    }
+
+    private fun saveBitmapToTempFile(bitmap: Bitmap): File {
+        val dir = File(context.cacheDir, "receipt_captures").also { it.mkdirs() }
+        val file = File(dir, "capture_${System.currentTimeMillis()}.jpg")
+        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 95, it) }
+        return file
     }
 
     override fun onCleared() {

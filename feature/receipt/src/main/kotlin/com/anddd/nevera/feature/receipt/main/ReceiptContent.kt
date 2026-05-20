@@ -1,6 +1,5 @@
 package com.anddd.nevera.feature.receipt.main
 
-import android.net.Uri
 import androidx.camera.core.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -22,26 +21,23 @@ import com.anddd.nevera.feature.receipt.gallery.component.GalleryPartialAccessBa
 import com.anddd.nevera.feature.receipt.gallery.component.ReceiptGalleryContent
 import com.anddd.nevera.feature.receipt.main.model.ReceiptIntent
 import com.anddd.nevera.feature.receipt.main.model.ReceiptMode
+import com.anddd.nevera.feature.receipt.main.model.ReceiptUiState
 
 @Composable
 internal fun ReceiptContent(
-    mode: ReceiptMode,
-    galleryImages: List<Uri>,
+    uiState: ReceiptUiState,
     cameraPermissionState: PermissionState,
     galleryPermissionState: PermissionState,
-    onClose: () -> Unit,
     onIntent: (ReceiptIntent) -> Unit,
     onBindCamera: (LifecycleOwner, Preview.SurfaceProvider) -> Unit,
-    onCameraOpenSettings: () -> Unit,
-    onGalleryOpenSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         NeveraAppBar(
             modifier = Modifier.background(Color.Black),
             title = stringResource(R.string.receipt_scan_title),
-            navigation = NeveraAppBarNavigation.Close(onClick = onClose),
-            action = when (mode) {
+            navigation = NeveraAppBarNavigation.Close(onClick = { onIntent(ReceiptIntent.Close) }),
+            action = when (uiState.mode) {
                 ReceiptMode.Camera -> NeveraAppBarAction.None
                 ReceiptMode.Gallery -> NeveraAppBarAction.Icons.of(
                     NeveraAppBarAction.Icons.Item(
@@ -54,14 +50,14 @@ internal fun ReceiptContent(
             showBackground = false,
         )
 
-        when (mode) {
+        when (uiState.mode) {
             ReceiptMode.Camera -> ReceiptCameraContent(
                 hasCameraPermission = cameraPermissionState.hasPermission,
                 showPermissionDialog = cameraPermissionState.isDenied,
                 onIntent = onIntent,
                 onBindCamera = onBindCamera,
                 onDismissPermissionDialog = cameraPermissionState.clearDenied,
-                onOpenSettings = onCameraOpenSettings,
+                onOpenSettings = { onIntent(ReceiptIntent.OpenCameraSettings) },
                 modifier = Modifier.weight(1f),
             )
             ReceiptMode.Gallery -> {
@@ -69,12 +65,12 @@ internal fun ReceiptContent(
                     GalleryPartialAccessBanner(onSelectMore = galleryPermissionState.requestPermission)
                 }
                 ReceiptGalleryContent(
-                    images = galleryImages,
+                    images = uiState.galleryImages,
                     hasGalleryPermission = galleryPermissionState.hasPermission,
                     showPermissionDialog = galleryPermissionState.isDenied,
                     onIntent = onIntent,
                     onDismissPermissionDialog = galleryPermissionState.clearDenied,
-                    onOpenSettings = onGalleryOpenSettings,
+                    onOpenSettings = { onIntent(ReceiptIntent.OpenGallerySettings) },
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -87,8 +83,7 @@ internal fun ReceiptContent(
 private fun ReceiptContentCameraPreview() {
     NeveraTheme {
         ReceiptContent(
-            mode = ReceiptMode.Camera,
-            galleryImages = emptyList(),
+            uiState = ReceiptUiState(mode = ReceiptMode.Camera),
             cameraPermissionState = PermissionState(
                 hasPermission = true,
                 isDenied = false,
@@ -101,11 +96,8 @@ private fun ReceiptContentCameraPreview() {
                 requestPermission = {},
                 clearDenied = {},
             ),
-            onClose = {},
             onIntent = {},
             onBindCamera = { _, _ -> },
-            onCameraOpenSettings = {},
-            onGalleryOpenSettings = {},
         )
     }
 }
@@ -115,8 +107,7 @@ private fun ReceiptContentCameraPreview() {
 private fun ReceiptContentGalleryPreview() {
     NeveraTheme {
         ReceiptContent(
-            mode = ReceiptMode.Gallery,
-            galleryImages = emptyList(),
+            uiState = ReceiptUiState(mode = ReceiptMode.Gallery),
             cameraPermissionState = PermissionState(
                 hasPermission = true,
                 isDenied = false,
@@ -129,11 +120,8 @@ private fun ReceiptContentGalleryPreview() {
                 requestPermission = {},
                 clearDenied = {},
             ),
-            onClose = {},
             onIntent = {},
             onBindCamera = { _, _ -> },
-            onCameraOpenSettings = {},
-            onGalleryOpenSettings = {},
         )
     }
 }
@@ -143,8 +131,7 @@ private fun ReceiptContentGalleryPreview() {
 private fun ReceiptContentGalleryPartialAccessPreview() {
     NeveraTheme {
         ReceiptContent(
-            mode = ReceiptMode.Gallery,
-            galleryImages = emptyList(),
+            uiState = ReceiptUiState(mode = ReceiptMode.Gallery),
             cameraPermissionState = PermissionState(
                 hasPermission = true,
                 isDenied = false,
@@ -158,11 +145,8 @@ private fun ReceiptContentGalleryPartialAccessPreview() {
                 requestPermission = {},
                 clearDenied = {},
             ),
-            onClose = {},
             onIntent = {},
             onBindCamera = { _, _ -> },
-            onCameraOpenSettings = {},
-            onGalleryOpenSettings = {},
         )
     }
 }
