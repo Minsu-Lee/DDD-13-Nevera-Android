@@ -25,6 +25,7 @@ class CountDownTimer(private val scope: CoroutineScope) {
 
     fun start(totalSeconds: Int, canResendAfterSeconds: Int) {
         require(totalSeconds > 0) { "totalSeconds must be positive" }
+        require(canResendAfterSeconds >= 0) { "canResendAfterSeconds must be non-negative" }
         require(canResendAfterSeconds <= totalSeconds) { "canResendAfterSeconds must not exceed totalSeconds" }
         job?.cancel()
         job = scope.launch {
