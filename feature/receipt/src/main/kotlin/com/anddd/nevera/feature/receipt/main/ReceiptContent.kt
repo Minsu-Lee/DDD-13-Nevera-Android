@@ -66,7 +66,6 @@ internal fun ReceiptContent(
                 }
                 ReceiptGalleryContent(
                     images = uiState.galleryImages,
-                    hasGalleryPermission = galleryPermissionState.hasPermission,
                     showPermissionDialog = galleryPermissionState.isDenied,
                     onIntent = onIntent,
                     onDismissPermissionDialog = galleryPermissionState.clearDenied,
