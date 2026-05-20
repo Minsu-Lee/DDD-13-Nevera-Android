@@ -22,8 +22,10 @@ import com.anddd.nevera.feature.auth.signup.model.SignupSideEffect
 import com.anddd.nevera.feature.auth.signup.model.SignupUiState
 import com.anddd.nevera.feature.auth.signup.model.withAuthCodeDescription
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
@@ -37,13 +39,24 @@ class SignupViewModel @Inject constructor(
 ) : NeveraViewModel<SignupUiState, SignupSideEffect, SignupIntent, SignupMutation>(
     SignupUiState()
 ) {
-    private val countdownTimer = CountDownTimer(viewModelScope)
+    private val countdownTimer = CountDownTimer()
+    private var timerJob: Job? = null
 
     // 인증번호 유효시간 타이머를 구독해 UiState로 반영한다.
     init {
         countdownTimer.state
             .onEach(::onTimerStateChanged)
             .launchIn(viewModelScope)
+    }
+
+    private fun startCountdownTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch { countdownTimer.start(totalSeconds = 180, canResendAfterSeconds = 120) }
+    }
+
+    private fun resetCountdownTimer() {
+        timerJob?.cancel()
+        countdownTimer.reset()
     }
 
     // 타이머 상태 변경을 화면 상태와 만료 side effect로 변환한다.
@@ -69,7 +82,7 @@ class SignupViewModel @Inject constructor(
 
     // 이메일 입력값을 저장하고 즉시 형식을 검증한다.
     private fun onEmailChange(email: String) = intent {
-        countdownTimer.reset()
+        resetCountdownTimer()
         val emailValidation = validateEmailUseCase(email)
         applyMutation(
             SignupMutation.EmailChanged(
@@ -113,7 +126,7 @@ class SignupViewModel @Inject constructor(
         val requestedEmail = state.email
         val emailResult = validateEmailUseCase(requestedEmail)
         if (emailResult != EmailValidationResult.Valid) {
-            countdownTimer.reset()
+            resetCountdownTimer()
             applyMutation(SignupMutation.EmailChanged(requestedEmail, emailResult))
             return@intent
         }
@@ -130,7 +143,7 @@ class SignupViewModel @Inject constructor(
     ) {
         // 요청 중 이메일이 바뀐 경우 오래된 응답은 무시한다.
         if (state.email == requestedEmail) {
-            countdownTimer.start(totalSeconds = 180, canResendAfterSeconds = 120)
+            startCountdownTimer()
             applyMutation(SignupMutation.EmailRequestSuccess)
         } else {
             applyMutation(SignupMutation.Idle)
@@ -175,7 +188,7 @@ class SignupViewModel @Inject constructor(
             .onSuccess {
                 // 요청 중 이메일이 바뀐 경우 인증 완료로 반영하지 않는다.
                 if (state.email == requestedEmail) {
-                    countdownTimer.reset()
+                    resetCountdownTimer()
                     applyMutation(SignupMutation.AuthCodeVerified)
                 } else {
                     applyMutation(SignupMutation.Idle)
