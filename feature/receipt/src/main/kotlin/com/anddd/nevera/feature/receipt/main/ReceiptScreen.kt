@@ -25,7 +25,9 @@ fun ReceiptScreen(
     val context = LocalContext.current
     val uiState = viewModel.collectAsState().value
     val cameraPermissionState = rememberCameraPermissionState()
-    val galleryPermissionState = rememberGalleryPermissionState()
+    val galleryPermissionState = rememberGalleryPermissionState(
+        onGranted = { viewModel.handleIntent(ReceiptIntent.LoadGalleryImages) }
+    )
 
     LaunchedEffect(uiState.mode, galleryPermissionState.hasPermission) {
         when (uiState.mode) {

@@ -68,7 +68,9 @@ fun rememberCameraPermissionState(): PermissionState {
 }
 
 @Composable
-fun rememberGalleryPermissionState(): PermissionState {
+fun rememberGalleryPermissionState(
+    onGranted: () -> Unit = {},
+): PermissionState {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var hasPermission by remember { mutableStateOf(checkGalleryPermission(context)) }
@@ -106,6 +108,7 @@ fun rememberGalleryPermissionState(): PermissionState {
             }
         }
         isDenied = !hasPermission
+        if (hasPermission) onGranted()
     }
 
     return remember(hasPermission, isPartialAccess, isDenied) {
