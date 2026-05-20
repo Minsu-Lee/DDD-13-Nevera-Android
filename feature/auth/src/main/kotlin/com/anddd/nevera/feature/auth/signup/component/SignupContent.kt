@@ -48,7 +48,7 @@ internal fun SignupContent(
     onNavigateBack: () -> Unit,
     onIntent: (SignupIntent) -> Unit,
 ) {
-    val isEmailValid = emailValidation == EmailValidationResult.Valid
+    val isEmailValid = emailValidation is EmailValidationResult.Valid
     val isPasswordValid = passwordValidation is PasswordValidationResult.Valid
     val canSignup = isEmailVerified &&
         isPasswordValid &&
