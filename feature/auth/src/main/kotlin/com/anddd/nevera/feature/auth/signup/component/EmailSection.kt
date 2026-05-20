@@ -25,7 +25,7 @@ import com.anddd.nevera.feature.auth.R
 @Composable
 internal fun EmailSection(
     email: String,
-    emailValidation: EmailValidationResult?,
+    emailValidation: EmailValidationResult = EmailValidationResult.Empty,
     isEmailRequestSent: Boolean,
     isEmailVerified: Boolean,
     isEmailValid: Boolean,
@@ -88,7 +88,7 @@ private fun EmailSectionInitialPreview() {
     NeveraTheme {
         EmailSection(
             email = "",
-            emailValidation = null,
+            emailValidation = EmailValidationResult.Empty,
             isEmailRequestSent = false,
             isEmailVerified = false,
             isEmailValid = false,
