@@ -1,7 +1,8 @@
 package com.anddd.nevera.feature.auth.signup.component
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,9 +17,9 @@ internal fun SectionLabel(text: String) {
             style = NeveraTheme.typography.titleXSmall,
             color = NeveraTheme.colors.textCaption,
         )
+        Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap2))
         Text(
             text = "*",
-            modifier = Modifier.padding(start = NeveraTheme.spacing.gap2),
             style = NeveraTheme.typography.titleXSmall,
             color = NeveraTheme.colors.notificationRed,
         )
