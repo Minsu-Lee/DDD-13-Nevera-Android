@@ -77,6 +77,7 @@ class SignupViewModel @Inject constructor(
             is SignupIntent.RequestEmailVerification -> requestEmailVerification()
             is SignupIntent.VerifyAuthCode -> verifyAuthCode()
             is SignupIntent.Signup -> signup()
+            is SignupIntent.NavigateBack -> navigateBack()
         }
     }
 
@@ -249,6 +250,10 @@ class SignupViewModel @Inject constructor(
                     }
                 }
             }
+    }
+
+    private fun navigateBack() = intent {
+        postSideEffect(SignupSideEffect.MoveToLoginScreen)
     }
 
     // 제출 전 이메일, 비밀번호, 비밀번호 확인 조건을 최종 검증한다.

@@ -10,4 +10,5 @@ sealed interface SignupIntent : NeveraIntent {
     data object RequestEmailVerification : SignupIntent
     data object VerifyAuthCode : SignupIntent
     data object Signup : SignupIntent
+    data object NavigateBack : SignupIntent
 }
