@@ -52,8 +52,7 @@ internal fun SignupContent(
     val isPasswordValid = passwordValidation is PasswordValidationResult.Valid
     val canSignup = isEmailVerified &&
         isPasswordValid &&
-        isPasswordMatched &&
-        confirmPassword.isNotBlank()
+        isPasswordMatched
 
     Scaffold(
         topBar = {
