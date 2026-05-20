@@ -30,7 +30,6 @@ internal fun EmailSection(
     isEmailVerified: Boolean,
     isEmailValid: Boolean,
     canResend: Boolean,
-    isLoading: Boolean,
     onEmailChange: (String) -> Unit,
     onRequestEmailVerification: () -> Unit,
 ) {
@@ -47,7 +46,7 @@ internal fun EmailSection(
     val isButtonEnabled = when {
         isEmailVerified -> false
         isEmailRequestSent -> canResend
-        else -> isEmailValid && !isLoading
+        else -> isEmailValid
     }
 
     Column {
@@ -94,7 +93,6 @@ private fun EmailSectionInitialPreview() {
             isEmailVerified = false,
             isEmailValid = false,
             canResend = false,
-            isLoading = false,
             onEmailChange = {},
             onRequestEmailVerification = {},
         )
@@ -112,7 +110,6 @@ private fun EmailSectionInvalidEmailPreview() {
             isEmailVerified = false,
             isEmailValid = false,
             canResend = false,
-            isLoading = false,
             onEmailChange = {},
             onRequestEmailVerification = {},
         )
@@ -130,7 +127,6 @@ private fun EmailSectionSentPreview() {
             isEmailVerified = false,
             isEmailValid = true,
             canResend = false,
-            isLoading = false,
             onEmailChange = {},
             onRequestEmailVerification = {},
         )
@@ -148,7 +144,6 @@ private fun EmailSectionCanResendPreview() {
             isEmailVerified = false,
             isEmailValid = true,
             canResend = true,
-            isLoading = false,
             onEmailChange = {},
             onRequestEmailVerification = {},
         )

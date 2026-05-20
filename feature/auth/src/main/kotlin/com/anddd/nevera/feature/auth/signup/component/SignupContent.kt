@@ -94,7 +94,6 @@ internal fun SignupContent(
                     isEmailVerified = isEmailVerified,
                     isEmailValid = isEmailValid,
                     canResend = canResend,
-                    isLoading = isLoading,
                     onEmailChange = { onIntent(SignupIntent.EmailChanged(it)) },
                     onRequestEmailVerification = { onIntent(SignupIntent.RequestEmailVerification) },
                 )
