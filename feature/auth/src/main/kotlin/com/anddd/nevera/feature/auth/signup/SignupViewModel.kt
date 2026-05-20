@@ -121,7 +121,7 @@ class SignupViewModel @Inject constructor(
         applyMutation(SignupMutation.Loading)
         emailRequestUseCase(requestedEmail)
             .onSuccess { onEmailRequestSuccess(requestedEmail) }
-            .onFailure { onEmailRequestFailure(it, isResend) }
+            .onFailure { onEmailRequestFailure(requestedEmail, it, isResend) }
     }
 
     // 인증번호 발송 성공을 현재 이메일 상태에만 반영한다.
@@ -139,9 +139,14 @@ class SignupViewModel @Inject constructor(
 
     // 인증번호 발송 실패를 토스트와 필요 시 인증코드 섹션 오류로 변환한다.
     private suspend fun Syntax<SignupUiState, SignupSideEffect>.onEmailRequestFailure(
+        requestedEmail: String,
         error: EmailRequestError,
         isResend: Boolean,
     ) {
+        if (state.email != requestedEmail) {
+            applyMutation(SignupMutation.Idle)
+            return
+        }
         when (error) {
             is EmailRequestError.DuplicateEmail -> {
                 // 재발송 중에는 이미 열린 인증코드 섹션에도 오류를 표시한다.
