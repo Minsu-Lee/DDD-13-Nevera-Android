@@ -25,7 +25,6 @@ import com.anddd.nevera.feature.mypage.main.navigation.MY_PAGE_ROUTE
 import com.anddd.nevera.feature.mypage.main.navigation.myPageScreen
 import com.anddd.nevera.feature.mypage.settingaccount.navigation.SETTING_ACCOUNT_ROUTE
 import com.anddd.nevera.feature.mypage.settingaccount.navigation.settingAccountScreen
-import com.anddd.nevera.feature.receipt.main.navigation.ORDER_CAPTURE_ROUTE
 import com.anddd.nevera.feature.receipt.main.navigation.RECEIPT_ROUTE
 import com.anddd.nevera.feature.receipt.main.navigation.receiptScreen
 import dagger.hilt.android.AndroidEntryPoint
