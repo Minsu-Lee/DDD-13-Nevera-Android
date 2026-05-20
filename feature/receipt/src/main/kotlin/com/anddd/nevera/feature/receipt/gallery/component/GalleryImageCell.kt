@@ -37,9 +37,7 @@ internal fun GalleryImageCell(
             .aspectRatio(1f)
             .background(GalleryPlaceholderBrush)
             .clickable(enabled = uri != null) {
-                if (uri != null) {
-                    onClick(uri)
-                }
+                onClick(uri!!)
             }
     ) {
         if (uri != null) {
