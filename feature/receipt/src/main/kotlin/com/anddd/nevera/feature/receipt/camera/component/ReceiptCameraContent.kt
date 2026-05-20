@@ -58,6 +58,7 @@ internal fun ReceiptCameraContent(
         }
 
         CameraControls(
+            hasCameraPermission = hasCameraPermission,
             onSwitchToGallery = { onIntent(ReceiptIntent.SwitchToGallery) },
             onTakePicture = { onIntent(ReceiptIntent.TakePicture) },
             onSwapCamera = { onIntent(ReceiptIntent.SwapCamera) },
