@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- NeveraDatePickerDialog -->
+    <string name="nevera_date_picker_title">날짜 선택</string>
+    <string name="nevera_date_picker_placeholder">선택한 날짜</string>
+    <string name="nevera_date_picker_dismiss">닫기</string>
+    <string name="nevera_date_picker_confirm">확인</string>
+    <string name="nevera_date_picker_prev_month">이전 달</string>
+    <string name="nevera_date_picker_next_month">다음 달</string>
+
+    <!-- NeveraQuantityStepper -->
+    <string name="nevera_stepper_decrease">수량 감소</string>
+    <string name="nevera_stepper_increase">수량 증가</string>
+</resources>
