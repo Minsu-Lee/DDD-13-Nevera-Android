@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
@@ -66,5 +67,37 @@ internal fun IngredientDropdownField(
                 tint = NeveraTheme.colors.iconSecondary,
             )
         }
+    }
+}
+
+@Preview(
+    name = "IngredientDropdownField - 선택 없음",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientDropdownFieldEmptyPreview() {
+    NeveraTheme {
+        IngredientDropdownField(
+            labelResId = R.string.ingredient_item_label_category,
+            value = null,
+            onClick = {},
+        )
+    }
+}
+
+@Preview(
+    name = "IngredientDropdownField - 선택됨",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientDropdownFieldSelectedPreview() {
+    NeveraTheme {
+        IngredientDropdownField(
+            labelResId = R.string.ingredient_item_label_category,
+            value = "음료",
+            onClick = {},
+        )
     }
 }

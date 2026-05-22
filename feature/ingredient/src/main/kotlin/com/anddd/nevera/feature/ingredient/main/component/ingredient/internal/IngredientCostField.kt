@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextField
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldSuffix
@@ -48,6 +49,36 @@ internal fun IngredientCostField(
                 placeholder = "0",
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             ),
+        )
+    }
+}
+
+@Preview(
+    name = "IngredientCostField - 금액 없음",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientCostFieldEmptyPreview() {
+    NeveraTheme {
+        IngredientCostField(
+            cost = 0,
+            onCostChanged = {},
+        )
+    }
+}
+
+@Preview(
+    name = "IngredientCostField - 금액 있음",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientCostFieldPreview() {
+    NeveraTheme {
+        IngredientCostField(
+            cost = 4800,
+            onCostChanged = {},
         )
     }
 }

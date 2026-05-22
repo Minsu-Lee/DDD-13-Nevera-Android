@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
@@ -71,5 +72,35 @@ internal fun IngredientExpiryDateRow(
                 tint = NeveraTheme.colors.iconSecondary,
             )
         }
+    }
+}
+
+@Preview(
+    name = "IngredientExpiryDateRow - 날짜 없음",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientExpiryDateRowEmptyPreview() {
+    NeveraTheme {
+        IngredientExpiryDateRow(
+            expiryDate = null,
+            onClick = {},
+        )
+    }
+}
+
+@Preview(
+    name = "IngredientExpiryDateRow - 날짜 있음",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientExpiryDateRowPreview() {
+    NeveraTheme {
+        IngredientExpiryDateRow(
+            expiryDate = LocalDate.of(2026, 12, 17),
+            onClick = {},
+        )
     }
 }

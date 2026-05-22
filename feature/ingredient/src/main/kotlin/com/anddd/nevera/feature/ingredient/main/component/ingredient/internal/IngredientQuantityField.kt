@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.component.stepper.NeveraQuantityStepper
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
@@ -35,6 +36,36 @@ internal fun IngredientQuantityField(
             quantity = quantity,
             onDecrease = { onQuantityChanged((quantity - 1).coerceAtLeast(1)) },
             onIncrease = { onQuantityChanged(quantity + 1) },
+        )
+    }
+}
+
+@Preview(
+    name = "IngredientQuantityField - 최솟값",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientQuantityFieldMinPreview() {
+    NeveraTheme {
+        IngredientQuantityField(
+            quantity = 1,
+            onQuantityChanged = {},
+        )
+    }
+}
+
+@Preview(
+    name = "IngredientQuantityField - 일반값",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientQuantityFieldPreview() {
+    NeveraTheme {
+        IngredientQuantityField(
+            quantity = 3,
+            onQuantityChanged = {},
         )
     }
 }

@@ -6,7 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.feature.ingredient.R
 
 /**
  * 필드 레이블 공통 컴포넌트
@@ -22,4 +24,16 @@ internal fun IngredientFieldLabel(@StringRes resId: Int) {
         color = NeveraTheme.colors.textCaption,
         style = NeveraTheme.typography.titleXSmall,
     )
+}
+
+@Preview(
+    name = "IngredientFieldLabel",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientFieldLabelPreview() {
+    NeveraTheme {
+        IngredientFieldLabel(resId = R.string.ingredient_item_label_quantity)
+    }
 }

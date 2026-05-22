@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextField
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
@@ -67,4 +68,20 @@ internal fun IngredientNameEditDialog(
             }
         },
     )
+}
+
+@Preview(
+    name = "IngredientNameEditDialog",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientNameEditDialogPreview() {
+    NeveraTheme {
+        IngredientNameEditDialog(
+            currentName = "아침에주스 ABC 주스",
+            onConfirm = {},
+            onDismiss = {},
+        )
+    }
 }

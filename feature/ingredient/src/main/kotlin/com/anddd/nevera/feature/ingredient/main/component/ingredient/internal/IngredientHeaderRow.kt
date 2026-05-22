@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.ingredient.main.component.ingredient.internal
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
@@ -92,5 +94,39 @@ internal fun IngredientHeaderRow(
                 )
             }
         }
+    }
+}
+
+@Preview(
+    name = "IngredientHeaderRow - Selected",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientHeaderRowSelectedPreview() {
+    NeveraTheme {
+        IngredientHeaderRow(
+            name = "아침에주스 ABC 주스, 18개입 과즙 음료",
+            isSelected = true,
+            onSelectionChanged = {},
+            onEditClick = {},
+        )
+    }
+}
+
+@Preview(
+    name = "IngredientHeaderRow - Unselected",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun IngredientHeaderRowUnselectedPreview() {
+    NeveraTheme {
+        IngredientHeaderRow(
+            name = "롯데 핸디카페 초콜릿 다크",
+            isSelected = false,
+            onSelectionChanged = {},
+            onEditClick = {},
+        )
     }
 }
