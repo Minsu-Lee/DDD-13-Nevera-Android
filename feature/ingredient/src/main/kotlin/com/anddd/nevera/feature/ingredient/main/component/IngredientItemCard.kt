@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextOverflow
@@ -79,8 +81,7 @@ fun IngredientItemCard(
     var showNameEditDialog by remember { mutableStateOf(false) }
 
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .neveraShadow(
                 layers = NeveraShadow.small,
                 cornerRadius = NeveraTheme.radius.medium,
@@ -240,7 +241,11 @@ private fun HeaderRow(
             contentDescription = null,
             modifier = Modifier
                 .size(24.dp)
-                .clickable { onSelectionChanged(!isSelected) },
+                .toggleable(
+                    value = isSelected,
+                    role = Role.Checkbox,
+                    onValueChange = onSelectionChanged,
+                ),
         )
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
         Text(
