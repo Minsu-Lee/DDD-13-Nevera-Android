@@ -11,8 +11,11 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.feature.login.main.navigation.LOGIN_ROUTE
-import com.anddd.nevera.feature.login.main.navigation.loginScreen
+import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
+import com.anddd.nevera.feature.auth.main.navigation.LOGIN_ROUTE
+import com.anddd.nevera.feature.auth.main.navigation.loginScreen
+import com.anddd.nevera.feature.auth.signup.navigation.SIGNUP_ROUTE
+import com.anddd.nevera.feature.auth.signup.navigation.signupScreen
 import com.anddd.nevera.feature.main.home.navigation.HOME_ROUTE
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.appinfo.navigation.APP_INFO_ROUTE
@@ -20,14 +23,16 @@ import com.anddd.nevera.feature.mypage.appinfo.navigation.appInfoScreen
 import com.anddd.nevera.feature.mypage.main.navigation.myPageScreen
 import com.anddd.nevera.feature.mypage.settingaccount.navigation.SETTING_ACCOUNT_ROUTE
 import com.anddd.nevera.feature.mypage.settingaccount.navigation.settingAccountScreen
-import com.anddd.nevera.feature.signup.main.navigation.SIGNUP_ROUTE
-import com.anddd.nevera.feature.signup.main.navigation.signupScreen
 import com.anddd.nevera.feature.splash.main.navigation.SPLASH_ROUTE
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var googleAuthClient: GoogleAuthClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -61,7 +66,8 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToSignup = {
                                 navController.navigate(SIGNUP_ROUTE)
-                            }
+                            },
+                            googleAuthClient = googleAuthClient,
                         )
                         signupScreen(
                             onNavigateToLogin = {
