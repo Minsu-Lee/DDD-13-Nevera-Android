@@ -21,8 +21,15 @@ import java.time.ZoneOffset
  *
  * Material3 [DatePickerDialog]에 Nevera 디자인 토큰을 적용한 래퍼 컴포넌트입니다.
  *
+ * ### 타임존 계약
+ * Material3 [rememberDatePickerState]는 내부적으로 UTC epoch millis를 사용합니다.
+ * 이 컴포넌트는 입·출력 모두 UTC 자정 기준으로 변환하며, 반환 타입인 [LocalDate]에는
+ * 타임존 정보가 포함되지 않습니다.
+ * 서버에 timestamp를 전달해야 하는 경우, 호출 측(ViewModel/Repository)에서
+ * UTC 기준으로 변환하는 책임을 가집니다.
+ *
  * @param selectedDate   현재 선택된 날짜 (null = 미설정)
- * @param onDateSelected 확인 탭 시 선택 날짜 전달
+ * @param onDateSelected 확인 탭 시 선택 날짜 전달 — 타임존 없는 순수 [LocalDate] 반환
  * @param onDismiss      닫기 콜백
  */
 @OptIn(ExperimentalMaterial3Api::class)
