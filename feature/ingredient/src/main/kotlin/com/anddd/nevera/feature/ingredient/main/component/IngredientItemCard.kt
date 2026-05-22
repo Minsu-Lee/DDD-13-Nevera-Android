@@ -57,6 +57,12 @@ import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+private object IngredientItemCardDimension {
+    val HeaderHeight = 67.dp
+    val NameRowHeight = 35.dp
+    val BorderStrokeWidth = 1.dp
+}
+
 /**
  * 식재료 항목 카드 (Stateless)
  *
@@ -232,7 +238,7 @@ private fun HeaderRow(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
-            .heightIn(67.dp)
+            .heightIn(IngredientItemCardDimension.HeaderHeight)
             .padding(horizontal = NeveraTheme.spacing.gap16),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -252,14 +258,14 @@ private fun HeaderRow(
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap12))
         val borderColor = NeveraTheme.colors.borderNormal
         Row(
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f)
+                .heightIn(IngredientItemCardDimension.NameRowHeight)
                 .drawBehind {
                     drawLine(
                         color = borderColor,
                         start = Offset(0f, size.height),
                         end = Offset(size.width, size.height),
-                        strokeWidth = 1.dp.toPx(),
+                        strokeWidth = IngredientItemCardDimension.BorderStrokeWidth.toPx(),
                     )
                 },
             verticalAlignment = Alignment.CenterVertically,
@@ -272,12 +278,15 @@ private fun HeaderRow(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
             )
-            IconButton(onClick = onEditClick) {
+            IconButton(
+                onClick = onEditClick,
+                modifier = Modifier.size(NeveraTheme.iconSize.xLarge)
+            ) {
                 Icon(
                     painter = NeveraIcons.Edit,
                     contentDescription = stringResource(R.string.ingredient_item_edit_icon_description),
-                    tint = NeveraTheme.colors.iconCaption,
                     modifier = Modifier.size(NeveraTheme.iconSize.medium),
+                    tint = NeveraTheme.colors.iconCaption,
                 )
             }
         }
