@@ -25,6 +25,17 @@ import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
+private object StepperDimension {
+    val Height = 36.dp
+    val ButtonSize = 28.dp
+    val CounterMinWidth = 18.dp
+}
+
+private object StepperDefaults {
+    const val MIN_QUANTITY = 1
+    const val MAX_QUANTITY = 999
+}
+
 /**
  * 수량 조절 Stepper (Stateless)
  * 상태 관리는 호출 측에서 담당
@@ -43,14 +54,14 @@ fun NeveraQuantityStepper(
     onDecrease: () -> Unit,
     onIncrease: () -> Unit,
     modifier: Modifier = Modifier,
-    minQuantity: Int = 1,
-    maxQuantity: Int = 999,
+    minQuantity: Int = StepperDefaults.MIN_QUANTITY,
+    maxQuantity: Int = StepperDefaults.MAX_QUANTITY,
 ) {
     val canDecrease = quantity > minQuantity
     val canIncrease = quantity < maxQuantity
 
     Row(
-        modifier = modifier.height(36.dp)
+        modifier = modifier.height(StepperDimension.Height)
             .padding(NeveraTheme.spacing.padding4)
             .border(
                 width = 1.dp,
@@ -61,7 +72,7 @@ fun NeveraQuantityStepper(
     ) {
         IconButton(
             onClick = onDecrease,
-            modifier = Modifier.size(28.dp),
+            modifier = Modifier.size(StepperDimension.ButtonSize),
             enabled = canDecrease,
         ) {
             Icon(
@@ -75,7 +86,7 @@ fun NeveraQuantityStepper(
 
         Text(
             text = quantity.toString(),
-            modifier = Modifier.widthIn(min = 18.dp),
+            modifier = Modifier.widthIn(min = StepperDimension.CounterMinWidth),
             style = NeveraTheme.typography.titleSmall,
             color = NeveraTheme.colors.textTertiary,
             textAlign = TextAlign.Center,
@@ -83,7 +94,7 @@ fun NeveraQuantityStepper(
 
         IconButton(
             onClick = onIncrease,
-            modifier = Modifier.size(28.dp),
+            modifier = Modifier.size(StepperDimension.ButtonSize),
             enabled = canIncrease,
         ) {
             Icon(
