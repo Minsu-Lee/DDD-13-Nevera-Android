@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.ingredient.ui.component
+package com.anddd.nevera.feature.ingredient.main.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,9 +35,9 @@ import com.anddd.nevera.core.designsystem.component.bottomsheet.NeveraActionBott
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
-import com.anddd.nevera.feature.ingredient.domain.model.FoodCategory
-import com.anddd.nevera.feature.ingredient.ui.displayName
-import com.anddd.nevera.feature.ingredient.ui.iconRes
+import com.anddd.nevera.domain.model.ingredient.FoodCategory
+import com.anddd.nevera.feature.ingredient.main.displayName
+import com.anddd.nevera.feature.ingredient.main.iconRes
 
 /**
  * 식재료 카테고리 선택 바텀시트
@@ -133,7 +133,7 @@ private fun CategoryItem(
             painter = NeveraIcons.Check,
             contentDescription = null,
             tint = if (isSelected) NeveraTheme.colors.primaryNormal
-                   else NeveraTheme.colors.iconDisabled,
+            else NeveraTheme.colors.iconDisabled,
             modifier = Modifier.size(NeveraTheme.iconSize.medium),
         )
     }
