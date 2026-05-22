@@ -74,6 +74,7 @@ fun NeveraDatePickerDialog(
                     }
                     onDismiss()
                 },
+                enabled = datePickerState.selectedDateMillis != null,
             ) {
                 Text(
                     text = stringResource(R.string.nevera_date_picker_confirm),
