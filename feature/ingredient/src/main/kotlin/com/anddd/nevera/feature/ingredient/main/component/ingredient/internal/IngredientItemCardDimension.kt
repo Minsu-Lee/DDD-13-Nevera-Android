@@ -12,6 +12,9 @@ internal object IngredientItemCardDimension {
     /** [IngredientQuantityField] — 수량 행 최소 높이 */
     val QuantityRowHeight = 48.dp
 
+    /** [IngredientExpiryDateRow] — 날짜 선택 영역(내부 Row) 최소 높이 */
+    val ExpiryDateRowHeight = 48.dp
+
     /** [IngredientHeaderRow] — 식재료명 하단 border 선 굵기 */
     val BorderStrokeWidth = 1.dp
 

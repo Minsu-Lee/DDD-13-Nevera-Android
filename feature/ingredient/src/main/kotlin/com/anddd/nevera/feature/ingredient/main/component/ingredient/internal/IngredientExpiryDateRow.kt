@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,16 +40,15 @@ internal fun IngredientExpiryDateRow(
     val dateFormatter = remember { DateTimeFormatter.ofPattern("yyyy.MM.dd") }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .padding(horizontal = NeveraTheme.spacing.padding16),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IngredientFieldLabel(R.string.ingredient_item_label_expiry)
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
         Row(
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f)
+                .heightIn(IngredientItemCardDimension.ExpiryDateRowHeight)
                 .clip(RoundedCornerShape(NeveraTheme.radius.small))
                 .background(NeveraTheme.colors.surfaceSecondary)
                 .clickable(onClick = onClick)
@@ -61,15 +61,15 @@ internal fun IngredientExpiryDateRow(
             Text(
                 text = expiryDate?.format(dateFormatter) ?: stringResource(R.string.ingredient_item_placeholder_date),
                 modifier = Modifier.weight(1f),
-                color = if (expiryDate != null) NeveraTheme.colors.textPrimary
-                else NeveraTheme.colors.textTertiary,
-                style = NeveraTheme.typography.bodyMedium,
+                color = if (expiryDate != null) NeveraTheme.colors.textSecondary
+                else NeveraTheme.colors.textDisabled,
+                style = NeveraTheme.typography.bodyLarge,
             )
             Icon(
                 painter = NeveraIcons.ChevronSmallRight,
                 contentDescription = null,
                 modifier = Modifier.size(NeveraTheme.iconSize.small),
-                tint = NeveraTheme.colors.iconSecondary,
+                tint = NeveraTheme.colors.iconCaption,
             )
         }
     }

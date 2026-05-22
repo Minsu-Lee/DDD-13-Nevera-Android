@@ -77,7 +77,8 @@ internal fun IngredientHeaderRow(
             Text(
                 text = name,
                 modifier = Modifier.weight(1f),
-                color = NeveraTheme.colors.textSecondary,
+                color = if (isSelected) NeveraTheme.colors.textSecondary
+                else NeveraTheme.colors.textDisabled,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 style = NeveraTheme.typography.titleLarge,

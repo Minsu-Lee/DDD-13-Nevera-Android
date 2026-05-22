@@ -56,15 +56,15 @@ internal fun IngredientDropdownField(
             Text(
                 text = value ?: stringResource(R.string.ingredient_item_placeholder_select),
                 modifier = Modifier.weight(1f),
-                color = if (value != null) NeveraTheme.colors.textPrimary
-                else NeveraTheme.colors.textTertiary,
-                style = NeveraTheme.typography.bodyMedium,
+                color = if (value != null) NeveraTheme.colors.textSecondary
+                else NeveraTheme.colors.textCaption,
+                style = NeveraTheme.typography.bodyLarge,
             )
             Icon(
-                painter = NeveraIcons.ChevronSmallDown,
+                painter = NeveraIcons.ChevronSmallRight,
                 contentDescription = null,
                 modifier = Modifier.size(NeveraTheme.iconSize.small),
-                tint = NeveraTheme.colors.iconSecondary,
+                tint = NeveraTheme.colors.iconCaption,
             )
         }
     }
