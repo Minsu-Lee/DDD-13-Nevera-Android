@@ -1,92 +1,97 @@
 package com.anddd.nevera.core.designsystem.component.datepicker
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import com.anddd.nevera.core.designsystem.component.datepicker.internal.CalendarGrid
-import com.anddd.nevera.core.designsystem.component.datepicker.internal.DatePickerHeader
-import com.anddd.nevera.core.designsystem.component.datepicker.internal.DayOfWeekHeader
-import com.anddd.nevera.core.designsystem.component.datepicker.internal.DialogButtons
-import com.anddd.nevera.core.designsystem.component.datepicker.internal.MonthNavigationRow
+import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import java.time.Instant
 import java.time.LocalDate
-import java.time.YearMonth
+import java.time.ZoneOffset
 
 /**
- * TODO :: 디자인 수치들이 이상해서, 확인요청해둔 상태
- * 날짜 선택 다이얼로그
+ * Nevera 디자인 시스템 날짜 선택 다이얼로그
+ *
+ * Material3 [DatePickerDialog]에 Nevera 디자인 토큰을 적용한 래퍼 컴포넌트입니다.
  *
  * @param selectedDate   현재 선택된 날짜 (null = 미설정)
  * @param onDateSelected 확인 탭 시 선택 날짜 전달
  * @param onDismiss      닫기 콜백
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NeveraDatePickerDialog(
     selectedDate: LocalDate?,
     onDateSelected: (LocalDate) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val today = LocalDate.now()
-    var displayedYearMonth by remember {
-        mutableStateOf(YearMonth.from(selectedDate ?: today))
-    }
-    var tempSelected by remember(selectedDate) { mutableStateOf(selectedDate) }
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = selectedDate
+            ?.atStartOfDay(ZoneOffset.UTC)
+            ?.toInstant()
+            ?.toEpochMilli(),
+    )
 
-    Dialog(
+    val colors = DatePickerDefaults.colors(
+        containerColor = NeveraTheme.colors.surfacePrimary,
+        selectedDayContainerColor = NeveraTheme.colors.primaryNormal,
+        selectedDayContentColor = NeveraTheme.colors.surfacePrimary,
+        todayContentColor = NeveraTheme.colors.primaryNormal,
+        todayDateBorderColor = NeveraTheme.colors.primaryNormal,
+        selectedYearContainerColor = NeveraTheme.colors.primaryNormal,
+        selectedYearContentColor = NeveraTheme.colors.surfacePrimary,
+        dayContentColor = NeveraTheme.colors.textPrimary,
+        navigationContentColor = NeveraTheme.colors.iconPrimary,
+        titleContentColor = NeveraTheme.colors.textSecondary,
+        headlineContentColor = NeveraTheme.colors.textPrimary,
+    )
+
+    DatePickerDialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = NeveraTheme.spacing.padding16),
-            shape = RoundedCornerShape(NeveraTheme.radius.large),
-            colors = CardDefaults.cardColors(containerColor = NeveraTheme.colors.surfacePrimary),
-        ) {
-            Column(modifier = Modifier.padding(top = NeveraTheme.spacing.padding16)) {
-                DatePickerHeader(tempSelected = tempSelected)
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = NeveraTheme.spacing.gap8),
-                    color = NeveraTheme.colors.borderNormal,
-                )
-                MonthNavigationRow(
-                    displayedYearMonth = displayedYearMonth,
-                    onPrevMonth = { displayedYearMonth = displayedYearMonth.minusMonths(1) },
-                    onNextMonth = { displayedYearMonth = displayedYearMonth.plusMonths(1) },
-                )
-                DayOfWeekHeader()
-                CalendarGrid(
-                    displayedYearMonth = displayedYearMonth,
-                    today = today,
-                    selectedDate = tempSelected,
-                    onDateClick = { tempSelected = it },
-                )
-                DialogButtons(
-                    tempSelected = tempSelected,
-                    onDismiss = onDismiss,
-                    onConfirm = {
-                        tempSelected?.let(onDateSelected)
-                        onDismiss()
-                    },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        onDateSelected(
+                            Instant.ofEpochMilli(millis)
+                                .atZone(ZoneOffset.UTC)
+                                .toLocalDate()
+                        )
+                    }
+                    onDismiss()
+                },
+            ) {
+                Text(
+                    text = stringResource(R.string.nevera_date_picker_confirm),
+                    color = NeveraTheme.colors.primaryNormal,
                 )
             }
-        }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(
+                    text = stringResource(R.string.nevera_date_picker_dismiss),
+                    color = NeveraTheme.colors.primaryNormal,
+                )
+            }
+        },
+        colors = colors,
+    ) {
+        DatePicker(
+            state = datePickerState,
+            colors = colors,
+        )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 private fun NeveraDatePickerDialogSelectedPreview() {
@@ -99,6 +104,7 @@ private fun NeveraDatePickerDialogSelectedPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 private fun NeveraDatePickerDialogEmptyPreview() {
