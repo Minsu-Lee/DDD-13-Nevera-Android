@@ -4,6 +4,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -58,6 +59,15 @@ fun NeveraDatePickerDialog(
         navigationContentColor = NeveraTheme.colors.iconPrimary,
         titleContentColor = NeveraTheme.colors.textSecondary,
         headlineContentColor = NeveraTheme.colors.textPrimary,
+        dateTextFieldColors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = NeveraTheme.colors.primaryNormal,
+            focusedLabelColor = NeveraTheme.colors.primaryNormal,
+            cursorColor = NeveraTheme.colors.primaryNormal,
+            unfocusedBorderColor = NeveraTheme.colors.borderNormal,
+            unfocusedLabelColor = NeveraTheme.colors.textSecondary,
+            focusedTextColor = NeveraTheme.colors.textPrimary,
+            unfocusedTextColor = NeveraTheme.colors.textPrimary,
+        ),
     )
 
     DatePickerDialog(
