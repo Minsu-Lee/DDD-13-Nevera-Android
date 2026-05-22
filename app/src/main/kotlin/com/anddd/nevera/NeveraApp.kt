@@ -1,5 +1,7 @@
 package com.anddd.nevera
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -72,6 +74,10 @@ fun NeveraApp(googleAuthClient: GoogleAuthClient) {
             navController = navController,
             startDestination = SplashRoute,
             modifier = Modifier.padding(innerPadding),
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
         ) {
             splashScreen(
                 onNavigateToLogin = {
