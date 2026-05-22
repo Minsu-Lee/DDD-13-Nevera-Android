@@ -8,6 +8,8 @@ import com.anddd.nevera.core.designsystem.R
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 
 object NeveraIcons {
+    val AppBarLogo: Painter
+        @Composable get() = painterResource(R.drawable.ic_logo_appbar)
     val Logo100: Painter
         @Composable get() = painterResource(R.drawable.logo_100)
     val ArrowBack: Painter
@@ -32,6 +34,20 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_textfield_eyes)
     val EyeOff: Painter
         @Composable get() = painterResource(R.drawable.ic_textfield_eyes_off)
+    val CirclePlus: Painter
+        @Composable get() = painterResource(R.drawable.ic_circle_plus)
+    val NavHome: Painter
+        @Composable get() = painterResource(R.drawable.ic_house)
+    val NavHomeFilled: Painter
+        @Composable get() = painterResource(R.drawable.ic_house_filled)
+    val NavFridge: Painter
+        @Composable get() = painterResource(R.drawable.ic_fridge)
+    val NavFridgeFilled: Painter
+        @Composable get() = painterResource(R.drawable.ic_fridge_filled)
+    val NavMy: Painter
+        @Composable get() = painterResource(R.drawable.ic_user)
+    val NavMyFilled: Painter
+        @Composable get() = painterResource(R.drawable.ic_user_filled)
     val ReceiptCameraWhite: Painter
         @Composable get() = painterResource(R.drawable.ic_receipt_camera_white)
     val ReceiptCloseWhite: Painter
