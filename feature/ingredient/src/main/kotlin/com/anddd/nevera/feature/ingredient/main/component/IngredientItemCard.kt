@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.ingredient.main.component
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,8 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.component.datepicker.NeveraDatePickerDialog
@@ -231,13 +232,15 @@ private fun HeaderRow(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Checkbox(
-            checked = isSelected,
-            onCheckedChange = onSelectionChanged,
-            colors = CheckboxDefaults.colors(
-                checkedColor = NeveraTheme.colors.primaryNormal,
-                uncheckedColor = NeveraTheme.colors.iconDisabled,
+        Image(
+            painter = painterResource(
+                if (isSelected) R.drawable.ic_checkbox_check_active_24
+                else R.drawable.ic_checkbox_check_disabled_24
             ),
+            contentDescription = null,
+            modifier = Modifier
+                .size(24.dp)
+                .clickable { onSelectionChanged(!isSelected) },
         )
         Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap8))
         Text(
