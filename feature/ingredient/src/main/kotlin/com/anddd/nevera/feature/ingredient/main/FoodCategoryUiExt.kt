@@ -1,10 +1,10 @@
-package com.anddd.nevera.feature.ingredient.ui
+package com.anddd.nevera.feature.ingredient.main
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.anddd.nevera.feature.ingredient.R
-import com.anddd.nevera.feature.ingredient.domain.model.FoodCategory
+import com.anddd.nevera.domain.model.ingredient.FoodCategory
 
 /** 화면 표시용 카테고리 한국어명 (strings.xml 참조) */
 @Composable

@@ -1,10 +1,10 @@
-package com.anddd.nevera.feature.ingredient.domain.model
+package com.anddd.nevera.domain.model.ingredient
 
 /**
  * 식재료 보관 방법 도메인 모델
  *
  * UI 표시 문자열 등 표현 관련 속성은 UI 레이어의 확장 함수로 분리됩니다.
- * @see com.anddd.nevera.feature.ingredient.ui.displayName
+ * @see com.anddd.nevera.feature.ingredient.main.displayName
  */
 sealed interface StorageLocation {
     data object Fridge  : StorageLocation

@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.ingredient.ui.component
+package com.anddd.nevera.feature.ingredient.main.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,15 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.component.bottomsheet.NeveraActionBottomSheet
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.ingredient.R
-import com.anddd.nevera.feature.ingredient.domain.model.StorageLocation
-import com.anddd.nevera.feature.ingredient.ui.displayName
+import com.anddd.nevera.domain.model.ingredient.StorageLocation
+import com.anddd.nevera.feature.ingredient.main.displayName
 
 /**
  * 식재료 보관 방법 선택 바텀시트
