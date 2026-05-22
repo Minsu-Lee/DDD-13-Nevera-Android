@@ -1,5 +1,6 @@
 package com.anddd.nevera.feature.ingredient.main.component.ingredient
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,9 +12,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.core.designsystem.ui.theme.shadow.NeveraShadow
-import com.anddd.nevera.core.designsystem.ui.theme.shadow.neveraShadow
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.feature.ingredient.R
@@ -59,13 +59,10 @@ fun IngredientItemCard(
 ) {
     Surface(
         modifier = modifier
-            .fillMaxWidth()
-            .neveraShadow(
-                layers = NeveraShadow.small,
-                cornerRadius = NeveraTheme.radius.medium,
-            ),
+            .fillMaxWidth(),
         color = NeveraTheme.colors.surfacePrimary,
-        shape = RoundedCornerShape(NeveraTheme.radius.medium),
+        shape = RoundedCornerShape(NeveraTheme.radius.large),
+        border = BorderStroke(1.dp, NeveraTheme.colors.borderNormal),
     ) {
         Column(
             modifier = Modifier.padding(bottom = NeveraTheme.spacing.gap16),
