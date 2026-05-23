@@ -10,7 +10,7 @@ import com.anddd.nevera.feature.auth.signup.SignupScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object AuthRoute
+data object AuthGraphRoute
 
 @Serializable
 internal data object LoginRoute
@@ -23,7 +23,7 @@ fun NavGraphBuilder.authNavGraph(
     navController: NavController,
     onNavigateToHome: () -> Unit,
 ) {
-    navigation<AuthRoute>(startDestination = LoginRoute) {
+    navigation<AuthGraphRoute>(startDestination = LoginRoute) {
         composable<LoginRoute> {
             LoginScreen(
                 googleAuthClient = googleAuthClient,
