@@ -49,7 +49,7 @@ internal fun IngredientHeaderRow(
                 if (isSelected) R.drawable.ic_checkbox_check_active_24
                 else R.drawable.ic_checkbox_check_disabled_24
             ),
-            contentDescription = null,
+            contentDescription = stringResource(R.string.ingredient_item_checkbox_description),
             modifier = Modifier.size(NeveraTheme.iconSize.medium)
                 .toggleable(
                     value = isSelected,
