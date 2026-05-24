@@ -17,7 +17,7 @@ import com.anddd.nevera.feature.ingredient.R
  * 수량 필드 행
  *
  * 레이블(수량) + [NeveraQuantityStepper]로 구성됩니다.
- * 최솟값 1 미만으로 감소하지 않습니다.
+ * 최솟값/최댓값 범위 제한은 [NeveraQuantityStepper] 내부에서 처리됩니다.
  */
 @Composable
 internal fun IngredientQuantityField(
@@ -34,7 +34,7 @@ internal fun IngredientQuantityField(
         Spacer(modifier = Modifier.weight(1f))
         NeveraQuantityStepper(
             quantity = quantity,
-            onDecrease = { onQuantityChanged((quantity - 1).coerceAtLeast(1)) },
+            onDecrease = { onQuantityChanged(quantity - 1) },
             onIncrease = { onQuantityChanged(quantity + 1) },
         )
     }
