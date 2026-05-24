@@ -8,8 +8,9 @@ import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.mypage.navigation.MyPageRoute
 import kotlin.reflect.KClass
 
-enum class TopLevelDestination(val route: Any) {    // TODO Any 타입
+enum class TopLevelDestination(val route: Any) {
     Home(route = HomeRoute),
+
     // Todo 냉장고 추가
     MyPage(route = MyPageRoute);
 
