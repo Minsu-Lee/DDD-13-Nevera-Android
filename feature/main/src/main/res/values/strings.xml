@@ -18,4 +18,11 @@
     <string name="home_wish_empty_description">아직 나의 절약 목표가 없어요</string>
     <string name="home_wish_add_icon_description">Add Wish</string>
     <string name="home_wish_create_button">위시 만들기</string>
+
+    <!-- Home Recent Ingredient Section -->
+    <string name="home_ingredient_section_title">최근 나의 식재료</string>
+    <string name="home_ingredient_section_help_description">도움말</string>
+    <string name="home_ingredient_tab_rescue">구조</string>
+    <string name="home_ingredient_tab_disposal">폐기</string>
+    <string name="home_ingredient_empty_message">아직 나의 식재료가 없어요</string>
 </resources>

@@ -14,12 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.anddd.nevera.feature.main.R
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarAction
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraLogoAppBar
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.LoadingContent
+import com.anddd.nevera.feature.main.R
+import com.anddd.nevera.feature.main.home.model.HomeIntent
 import com.anddd.nevera.feature.main.home.model.HomeUiState
 
 private val HorizontalDividerHeight = 8.dp
@@ -27,6 +28,7 @@ private val HorizontalDividerHeight = 8.dp
 @Composable
 internal fun HomeContent(
     uiState: HomeUiState,
+    onIntent: (HomeIntent) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -47,6 +49,7 @@ internal fun HomeContent(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
+            // TODO replace Column with LazyColumn
             Column(modifier = Modifier.fillMaxWidth()) {
                 WishBanner(
                     nickname = uiState.wishUiModel.nickname,
@@ -68,6 +71,15 @@ internal fun HomeContent(
                     thickness = HorizontalDividerHeight,
                     color = NeveraTheme.colors.dividerNormal
                 )
+                Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap20))
+                RecentIngredientSection(
+                    selectedTab = uiState.ingredientFilterTab,
+                    onTabSelected = { tab ->
+                        onIntent(HomeIntent.RecentIngredientTabClick(tab))
+                    },
+                    onHelpClick = {},
+                    modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
+                )
             }
         }
 
@@ -77,12 +89,17 @@ internal fun HomeContent(
     }
 }
 
-@Preview
+@Preview(
+    name = "HomeContent",
+    showBackground = true,
+    widthDp = 360,
+)
 @Composable
 private fun HomeContentPreview() {
     NeveraTheme {
         HomeContent(
             uiState = HomeUiState(),
+            onIntent = {},
         )
     }
 }
