@@ -89,6 +89,7 @@ fun NeveraDatePickerDialog(
                 Text(
                     text = stringResource(R.string.nevera_date_picker_confirm),
                     color = NeveraTheme.colors.primaryNormal,
+                    style = NeveraTheme.typography.titleSmall
                 )
             }
         },
@@ -97,6 +98,7 @@ fun NeveraDatePickerDialog(
                 Text(
                     text = stringResource(R.string.nevera_date_picker_dismiss),
                     color = NeveraTheme.colors.primaryNormal,
+                    style = NeveraTheme.typography.titleSmall
                 )
             }
         },
