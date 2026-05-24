@@ -25,7 +25,7 @@ import com.anddd.nevera.feature.ingredient.R
 /**
  * 드롭다운 선택 필드 행 (카테고리 / 보관 방법 공통)
  *
- * 레이블 + 선택 영역(배경 surfaceSecondary) + ChevronDown 아이콘으로 구성됩니다.
+ * 레이블 + 선택 영역(배경 surfaceSecondary) + ChevronSmallRight 아이콘으로 구성됩니다.
  * [value]가 null이면 "선택" placeholder를 dim 색상으로 표시합니다.
  * 탭 시 [onClick]을 호출하며, 바텀시트 표시 여부는 호출 측에서 관리합니다.
  */
