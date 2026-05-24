@@ -11,8 +11,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.anddd.nevera.feature.main.R
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraAppBarAction
 import com.anddd.nevera.core.designsystem.component.appbar.NeveraLogoAppBar
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
@@ -32,7 +34,7 @@ internal fun HomeContent(
                 action = NeveraAppBarAction.Icons.of(
                     NeveraAppBarAction.Icons.Item(
                         painter = NeveraIcons.Bell,
-                        contentDescription = "알림",
+                        contentDescription = stringResource(R.string.home_notification_icon_description),
                         onClick = {},
                     ),
                 ),

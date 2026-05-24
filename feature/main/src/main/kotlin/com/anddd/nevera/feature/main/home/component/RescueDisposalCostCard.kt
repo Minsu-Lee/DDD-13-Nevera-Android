@@ -14,9 +14,11 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.feature.main.R
 
 private val DividerWidth = 1.dp
 private val DividerHeight = 24.dp
@@ -37,7 +39,7 @@ fun RescueDisposalCostCard(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CostColumn(
-            label = "구조 금액",
+            label = stringResource(R.string.home_cost_rescue_label),
             amount = rescueAmount,
             modifier = Modifier.weight(1f),
         )
@@ -47,7 +49,7 @@ fun RescueDisposalCostCard(
             modifier = Modifier.height(DividerHeight),
         )
         CostColumn(
-            label = "폐기 금액",
+            label = stringResource(R.string.home_cost_disposal_label),
             amount = disposalAmount,
             modifier = Modifier.weight(1f),
         )

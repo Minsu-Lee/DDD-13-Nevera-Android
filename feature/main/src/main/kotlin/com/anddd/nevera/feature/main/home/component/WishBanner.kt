@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -67,7 +68,7 @@ fun WishBanner(
         ) {
             Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap24))
             Text(
-                text = "${nickname}님!\n함께 식재료를 구조해요",
+                text = stringResource(R.string.home_wish_banner_greeting, nickname),
                 style = NeveraTheme.typography.titleLarge,
                 color = NeveraTheme.colors.textPrimary,
                 modifier = Modifier.padding(NeveraTheme.spacing.padding8)
@@ -92,6 +93,7 @@ private fun WishCard(
     val progress = if (goalMoney > 0) savedMoney.toFloat() / goalMoney else 0f
     val remaining = goalMoney - savedMoney
     val cardShape = RoundedCornerShape(NeveraTheme.radius.medium)
+    val remainingText = stringResource(R.string.home_wish_remaining_amount, remaining)
 
     Column(
         modifier = modifier
@@ -133,7 +135,7 @@ private fun WishCard(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(R.drawable.ic_flag),
-                contentDescription = "wish flag",
+                contentDescription = stringResource(R.string.home_wish_flag_icon_description),
                 modifier = Modifier.size(NeveraTheme.iconSize.small)
             )
             Spacer(Modifier.width(NeveraTheme.spacing.gap8))
@@ -142,7 +144,7 @@ private fun WishCard(
                     withStyle(SpanStyle(color = NeveraTheme.colors.primaryNormal)) {
                         append(wish)
                     }
-                    append("까지 %,d원 남았어요".format(remaining))
+                    append(remainingText)
                 },
                 style = NeveraTheme.typography.titleXSmall,
                 color = NeveraTheme.colors.textTertiary,
@@ -180,7 +182,7 @@ private fun EmptyWishCard(
         verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap16),
     ) {
         Text(
-            text = "아직 나의 절약 목표가 없어요",
+            text = stringResource(R.string.home_wish_empty_description),
             style = NeveraTheme.typography.titleSmall,
             color = NeveraTheme.colors.textCaption,
         )
@@ -195,12 +197,12 @@ private fun EmptyWishCard(
         ) {
             Image(
                 painter = NeveraIcons.CirclePlus,
-                contentDescription = "Add Wish",
+                contentDescription = stringResource(R.string.home_wish_add_icon_description),
                 modifier = Modifier.size(NeveraTheme.iconSize.xSmall),
                 colorFilter = ColorFilter.tint(color = NeveraTheme.colors.textInverse)
             )
             Text(
-                text = "위시 만들기",
+                text = stringResource(R.string.home_wish_create_button),
                 style = NeveraTheme.typography.titleXSmall,
                 color = NeveraTheme.colors.textInverse,
                 modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding6)
