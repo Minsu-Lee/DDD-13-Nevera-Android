@@ -23,6 +23,7 @@ class HomeViewModel @Inject constructor(
     override fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.RecentIngredientTabClick -> onRecentIngredientTabClick(intent.tab)
+            HomeIntent.AddIngredientClick -> Unit // TODO: 식재료 추가 화면 이동
         }
     }
 
