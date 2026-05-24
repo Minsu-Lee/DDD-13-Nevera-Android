@@ -9,6 +9,8 @@
 
     <!-- Home Wish Banner -->
     <string name="home_wish_banner_greeting">%1$s님!\n함께 식재료를 구조해요</string>
+    <string name="home_wish_amount_format">%1$,d원</string>
+    <string name="home_wish_amount_separator">/</string>
     <string name="home_wish_remaining_amount">까지 %1$,d원 남았어요</string>
     <string name="home_wish_flag_icon_description">wish flag</string>
 

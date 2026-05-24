@@ -102,14 +102,23 @@ private fun WishCard(
             .border(BorderWidth, NeveraTheme.colors.borderNormal, cardShape)
             .padding(NeveraTheme.spacing.padding16),
     ) {
-        Row(verticalAlignment = Alignment.Bottom) {
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap2)
+        ) {
             Text(
-                text = "%,d원".format(savedMoney),
+                text = stringResource(R.string.home_wish_amount_format, savedMoney),
                 style = NeveraTheme.typography.headlineSmall,
                 color = NeveraTheme.colors.textSecondary,
             )
             Text(
-                text = "/ %,d원".format(goalMoney),
+                text = stringResource(R.string.home_wish_amount_separator),
+                style = NeveraTheme.typography.bodySmall,
+                color = NeveraTheme.colors.textCaption,
+                modifier = Modifier.padding(bottom = 2.dp),
+            )
+            Text(
+                text = stringResource(R.string.home_wish_amount_format, goalMoney),
                 style = NeveraTheme.typography.bodySmall,
                 color = NeveraTheme.colors.textCaption,
                 modifier = Modifier.padding(bottom = 2.dp),
