@@ -1,12 +1,14 @@
 package com.anddd.nevera.feature.main.home.model
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.anddd.nevera.feature.main.R
 
 data class IngredientFilterTabUiModel(
     val type: IngredientFilterTab,
-    val labelRes: Int,
-    val selectedIconRes: Int,
-    val unselectedIconRes: Int,
+    @StringRes val labelRes: Int,
+    @DrawableRes val selectedIconRes: Int,
+    @DrawableRes val unselectedIconRes: Int,
 )
 
 enum class IngredientFilterTab {
