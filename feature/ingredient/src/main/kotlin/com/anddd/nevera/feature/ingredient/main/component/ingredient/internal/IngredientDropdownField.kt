@@ -47,10 +47,7 @@ internal fun IngredientDropdownField(
                 .clip(RoundedCornerShape(NeveraTheme.radius.small))
                 .background(NeveraTheme.colors.surfaceSecondary)
                 .clickable(onClick = onClick)
-                .padding(
-                    horizontal = NeveraTheme.spacing.padding12,
-                    vertical = NeveraTheme.spacing.padding12,
-                ),
+                .padding(NeveraTheme.spacing.padding12),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
