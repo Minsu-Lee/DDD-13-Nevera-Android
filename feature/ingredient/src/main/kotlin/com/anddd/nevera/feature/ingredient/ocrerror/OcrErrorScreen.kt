@@ -1,5 +1,6 @@
 package com.anddd.nevera.feature.ingredient.ocrerror
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,8 @@ fun OcrErrorScreen(
     onRetry: () -> Unit,
     onClose: () -> Unit,
 ) {
+    BackHandler(onBack = onClose)
+
     Column(
         modifier = Modifier.fillMaxSize()
             .background(NeveraTheme.colors.backgroundPrimary),
