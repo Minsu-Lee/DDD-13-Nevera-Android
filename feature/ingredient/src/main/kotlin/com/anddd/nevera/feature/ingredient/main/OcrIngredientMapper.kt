@@ -4,6 +4,7 @@ import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
+import java.time.LocalDate
 
 /**
  * [OcrIngredient] → [IngredientUiModel] 변환
@@ -14,7 +15,7 @@ internal fun OcrIngredient.toUiModel(): IngredientUiModel = IngredientUiModel(
     category = category,
     location = location,
     quantity = quantity,
-    expiryDate = expiryDate,
+    expiryDate = expiryDate ?: LocalDate.now().plusDays(7),
     cost = cost,
 )
 
