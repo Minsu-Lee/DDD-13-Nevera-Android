@@ -1,8 +1,8 @@
 package com.anddd.nevera.feature.ingredient.main.component
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,16 +73,18 @@ private sealed interface IngredientEditState {
 /**
  * 식재료 목록 편집 콘텐츠
  *
- * @param uiState      현재 UI 상태
+ * @param uiState         현재 UI 상태
  * @param scannedImageUri 스캔한 이미지 URI (썸네일 표시용)
- * @param onIntent     Intent 전달 콜백
- * @param modifier     외부 Modifier
+ * @param onIntent        Intent 전달 콜백
+ * @param onImageClick    썸네일 이미지 탭 시 콜백 (사진 상세 화면 이동)
+ * @param modifier        외부 Modifier
  */
 @Composable
 internal fun IngredientContent(
     uiState: IngredientUiState,
     scannedImageUri: String?,
     onIntent: (IngredientIntent) -> Unit,
+    onImageClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var editState by remember { mutableStateOf<IngredientEditState>(IngredientEditState.None) }
@@ -110,7 +112,10 @@ internal fun IngredientContent(
             ) {
                 // 헤더: 타이틀 + 부제목 + 이미지 썸네일
                 item {
-                    IngredientListHeader(scannedImageUri = scannedImageUri)
+                    IngredientListHeader(
+                        scannedImageUri = scannedImageUri,
+                        onImageClick = onImageClick,
+                    )
                 }
 
                 // 식재료 카드 목록
@@ -223,7 +228,7 @@ internal fun IngredientContent(
 }
 
 @Composable
-private fun IngredientListHeader(scannedImageUri: String?) {
+private fun IngredientListHeader(scannedImageUri: String?, onImageClick: () -> Unit) {
     Column {
         Text(
             text = stringResource(R.string.ingredient_list_title),
@@ -246,7 +251,11 @@ private fun IngredientListHeader(scannedImageUri: String?) {
                     color = NeveraTheme.colors.borderStrong,
                     shape = RoundedCornerShape(NeveraTheme.radius.medium),
                 )
-                .background(NeveraTheme.colors.backgroundSecondary),
+                .background(NeveraTheme.colors.backgroundSecondary)
+                .clickable(
+                    enabled = scannedImageUri != null,
+                    onClick = onImageClick,
+                ),
         ) {
             if (scannedImageUri != null) {
                 AsyncImage(
@@ -330,6 +339,7 @@ private fun IngredientContentPreview() {
             ),
             scannedImageUri = "content://preview/scanned_image",
             onIntent = {},
+            onImageClick = {},
         )
     }
 }
