@@ -36,16 +36,18 @@ import org.orbitmvi.orbit.compose.collectSideEffect
  * 진입 즉시 OCR API를 호출하며, 스캔 중에는 [OcrScanningDialog]를 오버레이로 표시합니다.
  * 스캔 중 배경 화면은 흰색으로 처리됩니다.
  *
- * @param onNavigateBack        X 버튼 확인 후 이전 화면으로 이탈
- * @param onNavigateToError     OCR API 실패 시 [com.anddd.nevera.feature.ingredient.ocrerror.OcrErrorScreen]으로 이동
- * @param onNavigateToSuccess   등록 완료 시 RegisterSuccessScreen으로 이동 (총 금액 전달)
- * @param viewModel             HiltViewModel
+ * @param onNavigateBack            X 버튼 확인 후 이전 화면으로 이탈
+ * @param onNavigateToError         OCR API 실패 시 [com.anddd.nevera.feature.ingredient.ocrerror.OcrErrorScreen]으로 이동
+ * @param onNavigateToSuccess       등록 완료 시 RegisterSuccessScreen으로 이동 (총 금액 전달)
+ * @param onNavigateToPhotoDetail   영수증 썸네일 탭 시 사진 상세 화면으로 이동 (imageUri 전달)
+ * @param viewModel                 HiltViewModel
  */
 @Composable
 fun IngredientScreen(
     onNavigateBack: () -> Unit,
     onNavigateToError: () -> Unit,
     onNavigateToSuccess: (totalCost: Int) -> Unit,
+    onNavigateToPhotoDetail: (imageUri: String) -> Unit,
     viewModel: IngredientViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.collectAsState().value
@@ -131,6 +133,7 @@ fun IngredientScreen(
                         uiState = uiState,
                         scannedImageUri = viewModel.imageUri,
                         onIntent = viewModel::handleIntent,
+                        onImageClick = { viewModel.imageUri?.let(onNavigateToPhotoDetail) },
                         modifier = Modifier.fillMaxSize(),
                     )
                     if (uiState.phase is IngredientPhase.Registering) {
