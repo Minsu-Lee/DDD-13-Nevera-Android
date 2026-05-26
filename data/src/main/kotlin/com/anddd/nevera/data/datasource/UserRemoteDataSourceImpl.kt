@@ -3,21 +3,22 @@ package com.anddd.nevera.data.datasource
 import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.data.api.UserApi
 import com.anddd.nevera.data.model.auth.EmailRequest
-import com.anddd.nevera.data.model.auth.MessageResponse
-import com.anddd.nevera.data.model.auth.TokenResponse
 import com.anddd.nevera.data.model.auth.EmailVerifyRequest
 import com.anddd.nevera.data.model.auth.LoginRequest
+import com.anddd.nevera.data.model.auth.MessageResponse
 import com.anddd.nevera.data.model.auth.SignupRequest
 import com.anddd.nevera.data.model.auth.SnsLoginRequest
+import com.anddd.nevera.data.model.auth.TokenResponse
+import com.anddd.nevera.data.model.user.ProfileResponse
 import javax.inject.Inject
 
-internal class UserDataSourceImpl @Inject constructor(
-    private val userApi: UserApi
-) : UserDataSource {
+internal class UserRemoteDataSourceImpl @Inject constructor(
+    private val userApi: UserApi,
+) : UserRemoteDataSource {
 
     override suspend fun loginWithEmail(
         email: String,
-        password: String
+        password: String,
     ): ApiResponse<TokenResponse> {
         val request = LoginRequest(email, password)
         return userApi.login(request)
@@ -43,7 +44,7 @@ internal class UserDataSourceImpl @Inject constructor(
 
     override suspend fun emailVerify(
         email: String,
-        authCode: String
+        authCode: String,
     ): ApiResponse<MessageResponse> {
         val request = EmailVerifyRequest(email, authCode)
         return userApi.emailVerify(request)
@@ -55,5 +56,9 @@ internal class UserDataSourceImpl @Inject constructor(
 
     override suspend fun withdraw(): ApiResponse<MessageResponse> {
         return userApi.withdraw()
+    }
+
+    override suspend fun getProfile(): ApiResponse<ProfileResponse> {
+        return userApi.getProfile()
     }
 }

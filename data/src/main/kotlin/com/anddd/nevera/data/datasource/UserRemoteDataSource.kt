@@ -3,8 +3,9 @@ package com.anddd.nevera.data.datasource
 import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.data.model.auth.MessageResponse
 import com.anddd.nevera.data.model.auth.TokenResponse
+import com.anddd.nevera.data.model.user.ProfileResponse
 
-internal interface UserDataSource {
+internal interface UserRemoteDataSource {
     suspend fun loginWithEmail(email: String, password: String): ApiResponse<TokenResponse>
     suspend fun signup(
         email: String,
@@ -15,4 +16,5 @@ internal interface UserDataSource {
     suspend fun emailVerify(email: String, authCode: String): ApiResponse<MessageResponse>
     suspend fun logout(): ApiResponse<MessageResponse>
     suspend fun withdraw(): ApiResponse<MessageResponse>
+    suspend fun getProfile(): ApiResponse<ProfileResponse>
 }

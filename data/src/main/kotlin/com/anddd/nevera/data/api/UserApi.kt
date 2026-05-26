@@ -9,8 +9,10 @@ import com.anddd.nevera.data.model.auth.RefreshRequest
 import com.anddd.nevera.data.model.auth.SignupRequest
 import com.anddd.nevera.data.model.auth.MessageResponse
 import com.anddd.nevera.data.model.auth.SnsLoginRequest
+import com.anddd.nevera.data.model.user.ProfileResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 internal interface UserApi {
@@ -38,4 +40,7 @@ internal interface UserApi {
 
     @DELETE("api/v1/auth/withdraw")
     suspend fun withdraw(): ApiResponse<MessageResponse>
+
+    @GET("api/v1/mypage/me/profile")
+    suspend fun getProfile(): ApiResponse<ProfileResponse>
 }

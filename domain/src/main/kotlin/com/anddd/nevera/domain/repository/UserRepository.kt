@@ -11,6 +11,8 @@ import com.anddd.nevera.domain.model.auth.LogoutError
 import com.anddd.nevera.domain.model.auth.SignupError
 import com.anddd.nevera.domain.model.auth.WithdrawError
 import com.anddd.nevera.domain.model.common.MessageResult
+import com.anddd.nevera.domain.model.user.Profile
+import com.anddd.nevera.domain.model.user.ProfileError
 
 interface UserRepository {
     suspend fun loginWithEmail(email: String, password: String): NeveraResult<LoginResult, LoginError>
@@ -23,4 +25,5 @@ interface UserRepository {
     suspend fun emailVerify(email: String, authCode: String): NeveraResult<MessageResult, EmailVerifyError>
     suspend fun logout(): NeveraResult<MessageResult, LogoutError>
     suspend fun withdraw(): NeveraResult<MessageResult, WithdrawError>
+    suspend fun getProfile(): NeveraResult<Profile, ProfileError>
 }

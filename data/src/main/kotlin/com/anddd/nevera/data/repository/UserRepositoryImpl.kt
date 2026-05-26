@@ -3,12 +3,13 @@ package com.anddd.nevera.data.repository
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.core.common.map
 import com.anddd.nevera.core.network.auth.ApiCallExecutor
-import com.anddd.nevera.data.datasource.UserDataSource
+import com.anddd.nevera.data.datasource.UserRemoteDataSource
 import com.anddd.nevera.data.mapper.error.toEmailRequestError
 import com.anddd.nevera.data.mapper.error.toEmailVerifyError
 import com.anddd.nevera.data.mapper.error.toGoogleLoginError
 import com.anddd.nevera.data.mapper.error.toLoginError
 import com.anddd.nevera.data.mapper.error.toLogoutError
+import com.anddd.nevera.data.mapper.error.toProfileError
 import com.anddd.nevera.data.mapper.error.toSignupError
 import com.anddd.nevera.data.mapper.error.toWithdrawError
 import com.anddd.nevera.data.mapper.toDomain
@@ -21,12 +22,14 @@ import com.anddd.nevera.domain.model.auth.LogoutError
 import com.anddd.nevera.domain.model.auth.SignupError
 import com.anddd.nevera.domain.model.auth.WithdrawError
 import com.anddd.nevera.domain.model.common.MessageResult
+import com.anddd.nevera.domain.model.user.Profile
+import com.anddd.nevera.domain.model.user.ProfileError
 import com.anddd.nevera.domain.repository.UserRepository
 import javax.inject.Inject
 
 internal class UserRepositoryImpl @Inject constructor(
-    private val authDataSource: UserDataSource,
-    private val apiCall: ApiCallExecutor
+    private val userRemoteDataSource: UserRemoteDataSource,
+    private val apiCall: ApiCallExecutor,
 ) : UserRepository {
 
     override suspend fun loginWithEmail(
@@ -34,7 +37,7 @@ internal class UserRepositoryImpl @Inject constructor(
         password: String,
     ): NeveraResult<LoginResult, LoginError> {
         return apiCall {
-            authDataSource.loginWithEmail(email, password)
+            userRemoteDataSource.loginWithEmail(email, password)
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toLoginError() },
@@ -46,7 +49,7 @@ internal class UserRepositoryImpl @Inject constructor(
         password: String,
     ): NeveraResult<MessageResult, SignupError> {
         return apiCall {
-            authDataSource.signup(email, password)
+            userRemoteDataSource.signup(email, password)
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toSignupError() }
@@ -55,7 +58,7 @@ internal class UserRepositoryImpl @Inject constructor(
 
     override suspend fun loginWithGoogle(idToken: String): NeveraResult<LoginResult, GoogleLoginError> {
         return apiCall {
-            authDataSource.loginWithGoogle(idToken)
+            userRemoteDataSource.loginWithGoogle(idToken)
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toGoogleLoginError() }
@@ -64,7 +67,7 @@ internal class UserRepositoryImpl @Inject constructor(
 
     override suspend fun emailRequest(email: String): NeveraResult<MessageResult, EmailRequestError> {
         return apiCall {
-            authDataSource.emailRequest(email)
+            userRemoteDataSource.emailRequest(email)
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toEmailRequestError() }
@@ -76,7 +79,7 @@ internal class UserRepositoryImpl @Inject constructor(
         authCode: String,
     ): NeveraResult<MessageResult, EmailVerifyError> {
         return apiCall {
-            authDataSource.emailVerify(email, authCode)
+            userRemoteDataSource.emailVerify(email, authCode)
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toEmailVerifyError() }
@@ -85,7 +88,7 @@ internal class UserRepositoryImpl @Inject constructor(
 
     override suspend fun logout(): NeveraResult<MessageResult, LogoutError> {
         return apiCall {
-            authDataSource.logout()
+            userRemoteDataSource.logout()
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toLogoutError() }
@@ -94,10 +97,19 @@ internal class UserRepositoryImpl @Inject constructor(
 
     override suspend fun withdraw(): NeveraResult<MessageResult, WithdrawError> {
         return apiCall {
-            authDataSource.withdraw()
+            userRemoteDataSource.withdraw()
         }.map(
             transformSuccess = { it.toDomain() },
             transformFailure = { it.toWithdrawError() },
+        )
+    }
+
+    override suspend fun getProfile(): NeveraResult<Profile, ProfileError> {
+        return apiCall {
+            userRemoteDataSource.getProfile()
+        }.map(
+            transformSuccess = { it.toDomain() },
+            transformFailure = { it.toProfileError() },
         )
     }
 }
