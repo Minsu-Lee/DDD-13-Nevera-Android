@@ -58,4 +58,6 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_chevron_down_small)
     val Edit: Painter
         @Composable get() = painterResource(R.drawable.ic_edit_pencil)
+    val IllustLighting: Painter
+        @Composable get() = painterResource(R.drawable.ic_illust_lighting)
 }
