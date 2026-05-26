@@ -1,6 +1,8 @@
 package com.anddd.nevera.feature.ingredient.main.component
 
 import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,13 +12,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -30,8 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
@@ -47,14 +54,20 @@ import com.anddd.nevera.feature.ingredient.main.model.IngredientIntent
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiState
 import java.time.LocalDate
+import androidx.core.net.toUri
+
+// ─── 상수 ──────────────────────────────────────────────────────────────────
+private val ScannedImageSize = 72.dp
+private val ScannedImageBorderWidth = 1.dp
+private val SectionDividerHeight = 8.dp
 
 // ─── 바텀시트 / 다이얼로그 상태 ───────────────────────────────────────────────
 private sealed interface IngredientEditState {
     data object None : IngredientEditState
-    data class EditingName(val itemId: String)     : IngredientEditState
+    data class EditingName(val itemId: String) : IngredientEditState
     data class EditingCategory(val itemId: String) : IngredientEditState
     data class EditingLocation(val itemId: String) : IngredientEditState
-    data class EditingDate(val itemId: String)     : IngredientEditState
+    data class EditingDate(val itemId: String) : IngredientEditState
 }
 
 /**
@@ -73,10 +86,19 @@ internal fun IngredientContent(
     modifier: Modifier = Modifier,
 ) {
     var editState by remember { mutableStateOf<IngredientEditState>(IngredientEditState.None) }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    // uiState가 일반 파라미터이므로 snapshotFlow 추적을 위해 State로 래핑
+    val currentItemsSize by rememberUpdatedState(uiState.items.size)
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(NeveraTheme.colors.backgroundPrimary)
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
+                state = listState,
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(
                     start = NeveraTheme.spacing.padding16,
@@ -84,7 +106,7 @@ internal fun IngredientContent(
                     top = NeveraTheme.spacing.padding16,
                     bottom = NeveraTheme.spacing.gap32,
                 ),
-                verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap12),
+                verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap16),
             ) {
                 // 헤더: 타이틀 + 부제목 + 이미지 썸네일
                 item {
@@ -124,13 +146,7 @@ internal fun IngredientContent(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .navigationBarsPadding()
-                    .padding(
-                        start = NeveraTheme.spacing.padding16,
-                        end = NeveraTheme.spacing.padding16,
-                        top = NeveraTheme.spacing.gap8,
-                        bottom = NeveraTheme.spacing.padding16,
-                    ),
+                    .padding(NeveraTheme.spacing.padding16),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 NeveraFilledButton(
@@ -139,8 +155,22 @@ internal fun IngredientContent(
                     enabled = uiState.isRegisterEnabled,
                     modifier = Modifier.fillMaxWidth(),
                 )
-                Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap4))
-                AddItemButton(onClick = { onIntent(IngredientIntent.AddEmptyItem) })
+                Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap8))
+                AddItemButton(
+                    onClick = {
+                        val sizeBeforeAdd = currentItemsSize
+                        onIntent(IngredientIntent.AddEmptyItem)
+                        // 버튼 클릭 즉시 코루틴 시작 — 아이템 추가 감지 후 바로 스크롤
+                        // snapshotFlow가 rememberUpdatedState(State)를 추적하므로
+                        // 컴포지션 사이클 대기 없이 상태 변화 즉시 반응
+                        coroutineScope.launch {
+                            snapshotFlow { currentItemsSize }
+                                .first { it > sizeBeforeAdd }
+                            // LazyColumn index: 0=header, 1..N=items → 마지막 index = items.size
+                            listState.animateScrollToItem(currentItemsSize)
+                        }
+                    }
+                )
             }
         }
 
@@ -197,28 +227,54 @@ private fun IngredientListHeader(scannedImageUri: String?) {
     Column {
         Text(
             text = stringResource(R.string.ingredient_list_title),
-            style = NeveraTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = NeveraTheme.colors.textPrimary,
+            style = NeveraTheme.typography.headlineSmall,
+            color = NeveraTheme.colors.textSecondary,
         )
         Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap4))
         Text(
             text = stringResource(R.string.ingredient_list_subtitle),
-            style = NeveraTheme.typography.bodyMedium,
-            color = NeveraTheme.colors.textSecondary,
+            style = NeveraTheme.typography.bodySmall,
+            color = NeveraTheme.colors.textQuaternary,
         )
         Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap16))
-        if (scannedImageUri != null) {
-            AsyncImage(
-                model = Uri.parse(scannedImageUri),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(NeveraTheme.radius.small)),
-                contentScale = ContentScale.Crop,
-            )
+        Box(
+            modifier = Modifier
+                .size(ScannedImageSize)
+                .clip(RoundedCornerShape(NeveraTheme.radius.medium))
+                .border(
+                    width = ScannedImageBorderWidth,
+                    color = NeveraTheme.colors.borderStrong,
+                    shape = RoundedCornerShape(NeveraTheme.radius.medium),
+                )
+                .background(NeveraTheme.colors.backgroundSecondary),
+        ) {
+            if (scannedImageUri != null) {
+                AsyncImage(
+                    model = scannedImageUri.toUri(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                )
+            }
         }
-        Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap8))
+        Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap20))
+        val horizontalPadding = NeveraTheme.spacing.padding16
+        Box(
+            modifier = Modifier
+                .height(SectionDividerHeight)
+                .layout { measurable, constraints ->
+                    val paddingPx = horizontalPadding.roundToPx()
+                    val expandedWidth = constraints.maxWidth + paddingPx * 2
+                    val placeable = measurable.measure(
+                        constraints.copy(maxWidth = expandedWidth, minWidth = expandedWidth),
+                    )
+                    layout(constraints.maxWidth, placeable.height) {
+                        placeable.placeRelative(-paddingPx, 0)
+                    }
+                }
+                .background(NeveraTheme.colors.dividerNormal),
+        )
+        Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap4))
     }
 }
 
@@ -231,14 +287,14 @@ private fun AddItemButton(onClick: () -> Unit) {
             Icon(
                 painter = NeveraIcons.CirclePlus,
                 contentDescription = null,
+                modifier = Modifier.size(NeveraTheme.iconSize.xSmall),
                 tint = NeveraTheme.colors.textPrimary,
-                modifier = Modifier.size(NeveraTheme.iconSize.small),
             )
-            Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap4))
+            Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap6))
             Text(
                 text = stringResource(R.string.ingredient_add_item_button),
-                style = NeveraTheme.typography.bodyMedium,
-                color = NeveraTheme.colors.textPrimary,
+                style = NeveraTheme.typography.titleXSmall,
+                color = NeveraTheme.colors.textTertiary,
             )
         }
     }
@@ -272,7 +328,7 @@ private fun IngredientContentPreview() {
                     ),
                 ),
             ),
-            scannedImageUri = null,
+            scannedImageUri = "content://preview/scanned_image",
             onIntent = {},
         )
     }
