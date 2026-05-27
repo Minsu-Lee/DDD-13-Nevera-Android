@@ -4,6 +4,8 @@ import androidx.camera.core.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,24 +34,27 @@ internal fun ReceiptContent(
     onBindCamera: (LifecycleOwner, Preview.SurfaceProvider) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
-        NeveraAppBar(
-            modifier = Modifier.background(Color.Black),
-            title = stringResource(R.string.receipt_scan_title),
-            navigation = NeveraAppBarNavigation.Close(onClick = { onIntent(ReceiptIntent.Close) }),
-            action = when (uiState.mode) {
-                ReceiptMode.Camera -> NeveraAppBarAction.None
-                ReceiptMode.Gallery -> NeveraAppBarAction.Icons.of(
-                    NeveraAppBarAction.Icons.Item(
-                        painter = NeveraIcons.ReceiptCameraWhite,
-                        contentDescription = stringResource(R.string.receipt_switch_to_camera),
-                        onClick = { onIntent(ReceiptIntent.SwitchToCamera) },
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            NeveraAppBar(
+                modifier = Modifier.background(Color.Black),
+                title = stringResource(R.string.receipt_scan_title),
+                navigation = NeveraAppBarNavigation.Close(onClick = { onIntent(ReceiptIntent.Close) }),
+                action = when (uiState.mode) {
+                    ReceiptMode.Camera -> NeveraAppBarAction.None
+                    ReceiptMode.Gallery -> NeveraAppBarAction.Icons.of(
+                        NeveraAppBarAction.Icons.Item(
+                            painter = NeveraIcons.ReceiptCameraWhite,
+                            contentDescription = stringResource(R.string.receipt_switch_to_camera),
+                            onClick = { onIntent(ReceiptIntent.SwitchToCamera) },
+                        )
                     )
-                )
-            },
-            showBackground = false,
-        )
-
+                },
+                showBackground = false,
+            )
+        },
+    ) { innerPadding ->
         when (uiState.mode) {
             ReceiptMode.Camera -> ReceiptCameraContent(
                 hasCameraPermission = cameraPermissionState.hasPermission,
@@ -58,9 +63,11 @@ internal fun ReceiptContent(
                 onBindCamera = onBindCamera,
                 onDismissPermissionDialog = cameraPermissionState.clearDenied,
                 onOpenSettings = { onIntent(ReceiptIntent.OpenCameraSettings) },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
             )
-            ReceiptMode.Gallery -> {
+            ReceiptMode.Gallery -> Column(
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
+            ) {
                 if (galleryPermissionState.isPartialAccess) {
                     GalleryPartialAccessBanner(onSelectMore = galleryPermissionState.requestPermission)
                 }
