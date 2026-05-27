@@ -4,6 +4,7 @@ import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.usecase.home.GetHomeSummaryUseCase
+import com.anddd.nevera.domain.usecase.ingredient.GetRescuedIngredientsUseCase
 import com.anddd.nevera.feature.main.home.model.HomeIntent
 import com.anddd.nevera.feature.main.home.model.HomeMutation
 import com.anddd.nevera.feature.main.home.model.HomeProfileUiModel
@@ -12,13 +13,17 @@ import com.anddd.nevera.feature.main.home.model.HomeSideEffect
 import com.anddd.nevera.feature.main.home.model.HomeUiState
 import com.anddd.nevera.feature.main.home.model.HomeWishUiModel
 import com.anddd.nevera.feature.main.home.model.IngredientFilterTab
+import com.anddd.nevera.feature.main.home.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getHomeSummary: GetHomeSummaryUseCase,
+    private val getRescuedIngredients: GetRescuedIngredientsUseCase,
 ) : NeveraViewModel<HomeUiState, HomeSideEffect, HomeIntent, HomeMutation>(HomeUiState()) {
 
     init {
@@ -34,7 +39,14 @@ class HomeViewModel @Inject constructor(
 
     private fun load() = intent {
         applyMutation(HomeMutation.Loading)
-        getHomeSummary()
+
+        val (summaryResult, ingredientsResult) = coroutineScope {
+            val summaryDeferred = async { getHomeSummary() }
+            val ingredientsDeferred = async { getRescuedIngredients() }
+            summaryDeferred.await() to ingredientsDeferred.await()
+        }
+
+        summaryResult
             .onSuccess { summary ->
                 applyMutation(HomeMutation.ShowProfile(HomeProfileUiModel(summary.nickname)))
                 summary.wish?.let { wish ->
@@ -49,9 +61,7 @@ class HomeViewModel @Inject constructor(
                             )
                         )
                     )
-                } ?: run {
-                    applyMutation(HomeMutation.ShowEmptyWish)
-                }
+                } ?: applyMutation(HomeMutation.ShowEmptyWish)
                 applyMutation(
                     HomeMutation.ShowSavings(
                         HomeSavingsUiModel(
@@ -64,6 +74,15 @@ class HomeViewModel @Inject constructor(
             .onFailure {
                 // TODO 네트워크 에러 처리
             }
+
+        ingredientsResult
+            .onSuccess { ingredients ->
+                applyMutation(HomeMutation.ShowRescuedIngredients(ingredients.toUiModel()))
+            }
+            .onFailure {
+                // TODO 네트워크 에러 처리
+            }
+
         applyMutation(HomeMutation.LoadComplete)
     }
 
@@ -85,6 +104,9 @@ class HomeViewModel @Inject constructor(
             is HomeMutation.ShowWish -> reduce { state.copy(wish = mutation.wish) }
             HomeMutation.ShowEmptyWish -> reduce { state.copy(wish = null) }
             is HomeMutation.ShowSavings -> reduce { state.copy(savings = mutation.savings) }
+            is HomeMutation.ShowRescuedIngredients -> reduce {
+                state.copy(rescuedIngredients = mutation.ingredients)
+            }
         }
     }
 }

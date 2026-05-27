@@ -97,6 +97,7 @@ internal fun HomeContent(
                 }
                 recentIngredientSection(
                     selectedTab = uiState.ingredientFilterTab,
+                    rescuedIngredients = uiState.rescuedIngredients,
                     onTabSelected = { tab ->
                         onIntent(HomeIntent.RecentIngredientTabClick(tab))
                     },

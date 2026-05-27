@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.main.R
 import com.anddd.nevera.feature.main.home.model.IngredientFilterTab
 import com.anddd.nevera.feature.main.home.model.IngredientFilterTabUiModel
+import com.anddd.nevera.feature.main.home.model.IngredientUiModel
 import com.anddd.nevera.feature.main.home.model.toUiModel
 
 private val TabContainerPadding = 4.dp
@@ -38,6 +40,7 @@ private val EmptyIconSize = 64.dp
 
 fun LazyListScope.recentIngredientSection(
     selectedTab: IngredientFilterTab,
+    rescuedIngredients: List<IngredientUiModel>,
     onTabSelected: (IngredientFilterTab) -> Unit,
     onHelpClick: () -> Unit,
 ) {
@@ -60,10 +63,29 @@ fun LazyListScope.recentIngredientSection(
     item(key = "ingredient_tab_spacer") {
         Spacer(Modifier.height(NeveraTheme.spacing.gap20))
     }
-    item(key = "ingredient_empty") {
-        IngredientEmptyContent()
+    ingredientItems(selectedTab = selectedTab, rescuedIngredients = rescuedIngredients)
+}
+
+private fun LazyListScope.ingredientItems(
+    selectedTab: IngredientFilterTab,
+    rescuedIngredients: List<IngredientUiModel>,
+) {
+    val visibleIngredients = if (selectedTab == IngredientFilterTab.Rescue) rescuedIngredients else emptyList()
+    if (visibleIngredients.isEmpty()) {
+        item(key = "ingredient_empty") {
+            IngredientEmptyContent()
+        }
+    } else {
+        items(items = visibleIngredients, key = { it.id }) { ingredient ->
+            IngredientItem(
+                ingredient = ingredient,
+                modifier = Modifier.padding(
+                    horizontal = NeveraTheme.spacing.padding20,
+                    vertical = NeveraTheme.spacing.gap8,
+                ),
+            )
+        }
     }
-    // 향후: items(ingredients, key = { it.id }) { IngredientItem(it) }
 }
 
 @Composable
@@ -196,6 +218,7 @@ private fun RecentIngredientSectionRescuePreview() {
         LazyColumn {
             recentIngredientSection(
                 selectedTab = IngredientFilterTab.Rescue,
+                rescuedIngredients = emptyList(),
                 onTabSelected = {},
                 onHelpClick = {},
             )
@@ -214,6 +237,7 @@ private fun RecentIngredientSectionDisposalPreview() {
         LazyColumn {
             recentIngredientSection(
                 selectedTab = IngredientFilterTab.Disposal,
+                rescuedIngredients = emptyList(),
                 onTabSelected = {},
                 onHelpClick = {},
             )
