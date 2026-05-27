@@ -61,7 +61,7 @@ class IngredientViewModel @Inject constructor(
         if (uri == null) {
             intent {
                 applyMutation(ScanFailed)
-                postSideEffect(IngredientSideEffect.NavigateToError)
+                postSideEffect(IngredientSideEffect.NavigateToOcrError)
             }
             return
         }
@@ -72,7 +72,7 @@ class IngredientViewModel @Inject constructor(
                     is OcrScanEvent.Completed -> applyMutation(ScanCompleted(event.items.toUiModels()))
                     OcrScanEvent.Failed -> {
                         applyMutation(ScanFailed)
-                        postSideEffect(IngredientSideEffect.NavigateToError)
+                        postSideEffect(IngredientSideEffect.NavigateToOcrError)
                     }
                 }
             }

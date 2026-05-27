@@ -57,7 +57,7 @@ fun IngredientScreen(
     // SideEffect 처리
     viewModel.collectSideEffect { effect ->
         when (effect) {
-            IngredientSideEffect.NavigateToError -> onNavigateToError()
+            IngredientSideEffect.NavigateToOcrError -> onNavigateToError()
             is IngredientSideEffect.NavigateToSuccess -> onNavigateToSuccess(effect.totalCost)
             IngredientSideEffect.NavigateBack -> onNavigateBack()
             IngredientSideEffect.ShowRegisterFailedToast -> {
