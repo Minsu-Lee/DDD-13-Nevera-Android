@@ -1,5 +1,6 @@
 package com.anddd.nevera.feature.ingredient.registersuccess
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -44,6 +45,8 @@ fun RegisterSuccessScreen(
     onViewFridge: () -> Unit,
     onClose: () -> Unit,
 ) {
+    BackHandler(onBack = onClose)
+
     val formattedAmount = remember(totalSavedAmount) {
         NumberFormat.getNumberInstance(Locale.KOREA).format(totalSavedAmount) + "원"
     }
