@@ -4,6 +4,8 @@ import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.common.NeveraResult
 import com.anddd.nevera.domain.model.ingredient.OcrExtractError
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
+import com.anddd.nevera.domain.model.common.CommonError
+import com.anddd.nevera.domain.model.ingredient.Ingredient
 
 interface IngredientRepository {
 
@@ -23,4 +25,14 @@ interface IngredientRepository {
      * @param items isSelected = true인 항목만 전달됩니다.
      */
     suspend fun registerIngredients(items: List<OcrIngredient>): NeveraResult<Unit, NetworkError>
+
+    suspend fun getRescuedIngredients(
+        offset: Int,
+        limit: Int,
+    ): NeveraResult<List<Ingredient>, CommonError>
+
+    suspend fun getDisposedIngredients(
+        offset: Int,
+        limit: Int,
+    ): NeveraResult<List<Ingredient>, CommonError>
 }

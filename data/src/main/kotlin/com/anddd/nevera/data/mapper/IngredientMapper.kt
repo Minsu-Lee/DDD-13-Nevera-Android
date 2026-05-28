@@ -1,7 +1,9 @@
 package com.anddd.nevera.data.mapper
 
+import com.anddd.nevera.data.model.ingredient.IngredientResponse
 import com.anddd.nevera.data.model.ingredient.OcrIngredientDto
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
+import com.anddd.nevera.domain.model.ingredient.Ingredient
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 
@@ -10,17 +12,26 @@ import com.anddd.nevera.domain.model.ingredient.StorageLocation
  * 매핑 실패 시 [FoodCategory.Other] 반환
  */
 internal fun String.toFoodCategory(): FoodCategory = when (this) {
-    "VEGETABLE"           -> FoodCategory.Vegetable
-    "FRUIT"               -> FoodCategory.Fruit
-    "MEAT", "EGG"         -> FoodCategory.MeatEgg
-    "SEAFOOD"             -> FoodCategory.Seafood
-    "DAIRY"               -> FoodCategory.Dairy
-    "SAUCE", "SEASONING"  -> FoodCategory.Sauce
-    "BEVERAGE"            -> FoodCategory.Beverage
+    "VEG", "VEGETABLE" -> FoodCategory.Vegetable
+    "FRUIT" -> FoodCategory.Fruit
+    "MEATEGGS", "MEAT", "EGG" -> FoodCategory.MeatEgg
+    "SEA", "SEAFOOD" -> FoodCategory.Seafood
+    "DAIRY" -> FoodCategory.Dairy
+    "SAUCE", "SEASONING" -> FoodCategory.Sauce
+    "DRINK", "BEVERAGE" -> FoodCategory.Beverage
     "CANDRY", "PROCESSED" -> FoodCategory.Processed
     "GRAINS"              -> FoodCategory.Other  // 곡물류 — FoodCategory에 전용 항목 없어 Other로 임시 매핑
     else                  -> FoodCategory.Other
 }
+
+internal fun IngredientResponse.toDomain(): Ingredient = Ingredient(
+    id = id,
+    name = name,
+    category = category.toFoodCategory(),
+    categoryName = categoryDisplayName,
+    quantity = quantity,
+    cost = cost,
+)
 
 /**
  * API 응답 location 값 → StorageLocation 변환

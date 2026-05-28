@@ -1,13 +1,14 @@
 package com.anddd.nevera.feature.main.home.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -34,6 +35,8 @@ internal fun HomeContent(
     uiState: HomeUiState,
     onIntent: (HomeIntent) -> Unit,
 ) {
+    val listState = rememberLazyListState()
+
     Scaffold(
         topBar = {
             NeveraLogoAppBar(
@@ -63,13 +66,14 @@ internal fun HomeContent(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+            ) {
                 item(key = "wish_banner") {
                     WishBanner(
-                        nickname = uiState.wishUiModel.nickname,
-                        wish = uiState.wishUiModel.wish,
-                        savedMoney = uiState.wishUiModel.savedMoney,
-                        goalMoney = uiState.wishUiModel.goalMoney,
+                        nickname = uiState.profile.nickname,
+                        wish = uiState.wish,
                         onCreateWish = {},
                         modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
                     )
@@ -79,8 +83,8 @@ internal fun HomeContent(
                 }
                 item(key = "cost_card") {
                     RescueDisposalCostCard(
-                        rescueAmount = uiState.rescueDisposalCostUiModel.rescueAmount,
-                        disposalAmount = uiState.rescueDisposalCostUiModel.disposalAmount,
+                        rescueAmount = uiState.savings.rescuedAmount,
+                        disposalAmount = uiState.savings.disposalAmount,
                         modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
                     )
                 }
@@ -99,10 +103,14 @@ internal fun HomeContent(
                 }
                 recentIngredientSection(
                     selectedTab = uiState.ingredientFilterTab,
+                    rescuedIngredients = uiState.rescuedIngredients,
+                    disposalIngredients = uiState.disposalIngredients,
+                    listState = listState,
                     onTabSelected = { tab ->
                         onIntent(HomeIntent.RecentIngredientTabClick(tab))
                     },
                     onHelpClick = {},
+                    onLoadMore = { onIntent(HomeIntent.LoadMoreIngredients(uiState.ingredientFilterTab)) },
                 )
             }
 
