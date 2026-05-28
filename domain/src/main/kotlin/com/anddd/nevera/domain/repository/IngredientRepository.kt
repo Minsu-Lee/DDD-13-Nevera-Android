@@ -1,11 +1,11 @@
 package com.anddd.nevera.domain.repository
 
-import com.anddd.nevera.core.common.NetworkError
 import com.anddd.nevera.core.common.NeveraResult
-import com.anddd.nevera.domain.model.ingredient.OcrExtractError
-import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.common.CommonError
 import com.anddd.nevera.domain.model.ingredient.Ingredient
+import com.anddd.nevera.domain.model.ingredient.OcrExtractError
+import com.anddd.nevera.domain.model.ingredient.OcrIngredient
+import com.anddd.nevera.domain.model.ingredient.RegisterIngredientError
 
 interface IngredientRepository {
 
@@ -16,15 +16,7 @@ interface IngredientRepository {
      */
     suspend fun extractIngredients(imageUri: String): NeveraResult<List<OcrIngredient>, OcrExtractError>
 
-    /**
-     * 식재료 서버 등록
-     *
-     * ⚠️ 등록 API 명세 미제공 — 실제 API 준비 후 구현하세요.
-     *    현재는 [NeveraResult.Success] 임시 반환합니다.
-     *
-     * @param items isSelected = true인 항목만 전달됩니다.
-     */
-    suspend fun registerIngredients(items: List<OcrIngredient>): NeveraResult<Unit, NetworkError>
+    suspend fun registerIngredients(items: List<OcrIngredient>): NeveraResult<Unit, RegisterIngredientError>
 
     suspend fun getRescuedIngredients(
         offset: Int,
