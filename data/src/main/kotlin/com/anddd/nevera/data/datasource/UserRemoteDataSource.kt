@@ -5,4 +5,5 @@ import com.anddd.nevera.data.model.user.ProfileResponse
 
 internal interface UserRemoteDataSource {
     suspend fun getProfile(): ApiResponse<ProfileResponse>
+    suspend fun updateNickname(nickname: String): ApiResponse<ProfileResponse>
 }
