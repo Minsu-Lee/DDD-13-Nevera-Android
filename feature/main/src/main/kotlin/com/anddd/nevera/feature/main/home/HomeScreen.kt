@@ -32,7 +32,7 @@ fun HomeScreen(
         when (effect) {
             is HomeSideEffect.ShowError ->
                 Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-            HomeSideEffect.ShowCaptureModeDialog ->
+            HomeSideEffect.ShowCaptureModeBottomSheet ->
                 showCaptureModeBottomSheet = true
         }
     }
