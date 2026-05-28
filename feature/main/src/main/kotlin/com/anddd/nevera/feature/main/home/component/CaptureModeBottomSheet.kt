@@ -57,7 +57,6 @@ fun CaptureModeBottomSheet(
             subtitle = stringResource(R.string.home_capture_mode_gallery_subtitle),
             onClick = onOnlineCapture,
         )
-        Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap16))
         NeveraWeakButton(
             label = stringResource(R.string.home_capture_mode_close),
             color = NeveraButtonColor.Secondary,
