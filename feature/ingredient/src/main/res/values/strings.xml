@@ -50,7 +50,7 @@
     <string name="ingredient_action_deselect_all">모두 해제</string>
     <string name="ingredient_register_button">%d개 등록하기</string>
     <string name="ingredient_add_item_button">직접 추가</string>
-    <string name="ingredient_register_failed">등록 중 오류가 발생했어요</string>
+    <string name="ingredient_register_failed">등록에 실패했습니다. 다시 시도해주세요.</string>
 
     <!-- RegisterSuccessScreen -->
     <string name="register_success_title">나의 냉장고에\n식재료를 등록했어요!</string>
