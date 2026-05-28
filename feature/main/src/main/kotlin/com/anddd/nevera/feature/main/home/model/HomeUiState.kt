@@ -4,12 +4,10 @@ import com.anddd.nevera.core.mvi.NeveraState
 
 data class HomeUiState(
     val isLoading: Boolean = false,
-    val wishUiModel: WishUiModel = WishUiModel(
-        nickname = "",
-        wish = "",
-        savedMoney = 0,
-        goalMoney = 0,
-    ),
-    val rescueDisposalCostUiModel: RescueDisposalCostUiModel = RescueDisposalCostUiModel(),
+    val profile: HomeProfileUiModel = HomeProfileUiModel(nickname = ""),
+    val wish: HomeWishUiModel? = null,
+    val savings: HomeSavingsUiModel = HomeSavingsUiModel(rescuedAmount = 0, disposalAmount = 0),
     val ingredientFilterTab: IngredientFilterTab = IngredientFilterTab.Rescue,
+    val rescuedIngredients: PaginatedListState<IngredientUiModel> = PaginatedListState(),
+    val disposalIngredients: PaginatedListState<IngredientUiModel> = PaginatedListState(),
 ) : NeveraState
