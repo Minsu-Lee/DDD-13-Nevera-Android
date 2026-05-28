@@ -9,6 +9,7 @@ import com.anddd.nevera.feature.ingredient.main.model.IngredientIntent
 import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation
 import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.AllSelectionToggled
 import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.EmptyItemAdded
+import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.ImageUriLoaded
 import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.ItemUpdated
 import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.ProgressUpdated
 import com.anddd.nevera.feature.ingredient.main.model.IngredientMutation.RegisterFailed
@@ -35,12 +36,12 @@ class IngredientViewModel @Inject constructor(
     IngredientUiState()
 ) {
 
-    /** 영수증 캡처 이미지 URI — OCR API 호출 시 사용 */
-    val imageUri: String = savedStateHandle.toRoute<IngredientRoute>().imageUri
+    private val imageUri: String = savedStateHandle.toRoute<IngredientRoute>().imageUri
 
     private var scanJob: Job? = null
 
     init {
+        intent { applyMutation(ImageUriLoaded(imageUri)) }
         handleIntent(IngredientIntent.StartScan)
     }
 
@@ -113,6 +114,10 @@ class IngredientViewModel @Inject constructor(
         mutation: IngredientMutation,
     ) {
         when (mutation) {
+            is ImageUriLoaded -> reduce {
+                state.copy(imageUri = mutation.imageUri)
+            }
+
             is ProgressUpdated -> reduce {
                 state.copy(scanProgress = mutation.progress)
             }

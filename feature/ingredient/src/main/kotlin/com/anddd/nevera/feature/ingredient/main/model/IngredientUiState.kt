@@ -10,6 +10,7 @@ sealed interface IngredientPhase {
 
 data class IngredientUiState(
     val phase: IngredientPhase = IngredientPhase.Scanning,
+    val imageUri: String = "",
     val scanProgress: Float = 0f,
     val items: List<IngredientUiModel> = emptyList(),
 ) : NeveraState {
