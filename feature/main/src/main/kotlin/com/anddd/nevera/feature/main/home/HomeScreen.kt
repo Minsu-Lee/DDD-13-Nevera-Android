@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.main.home.component.CaptureModeBottomSheet
 import com.anddd.nevera.feature.main.home.component.HomeContent
@@ -36,22 +35,6 @@ fun HomeScreen(
             HomeSideEffect.ShowCaptureModeDialog ->
                 showCaptureModeBottomSheet = true
         }
-    }
-
-    if (showCaptureModeDialog) {
-        NeveraConfirmDialog(
-            title = stringResource(R.string.home_capture_mode_title),
-            positive = stringResource(R.string.home_capture_mode_camera),
-            negative = stringResource(R.string.home_capture_mode_gallery),
-            onPositive = {
-                showCaptureModeDialog = false
-                onNavigateToCamera()
-            },
-            onNegative = {
-                showCaptureModeDialog = false
-                onNavigateToGallery()
-            },
-        )
     }
 
     HomeContent(
