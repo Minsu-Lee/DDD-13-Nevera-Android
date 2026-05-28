@@ -96,7 +96,7 @@ private fun WishCard(
     remainingMoney: Int,
     modifier: Modifier = Modifier,
 ) {
-    val progress = if (goalMoney > 0) savedMoney.toFloat() / goalMoney else 0f
+    val progress = if (goalMoney > 0) (savedMoney.toFloat() / goalMoney).coerceIn(0f, 1f) else 0f
     val cardShape = RoundedCornerShape(NeveraTheme.radius.medium)
     val remainingText = stringResource(R.string.home_wish_remaining_amount, remainingMoney)
 
