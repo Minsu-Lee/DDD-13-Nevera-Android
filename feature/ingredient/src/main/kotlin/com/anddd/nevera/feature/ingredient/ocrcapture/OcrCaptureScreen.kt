@@ -5,9 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.ingredient.R
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureIntent
@@ -23,6 +28,8 @@ fun OcrCaptureScreen(
     viewModel: OcrCaptureViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    DarkNavigationBarEffect()
+
     val uiState = viewModel.collectAsState().value
     val cameraPermissionState = rememberCameraPermissionState()
     val galleryPermissionState = rememberGalleryPermissionState(
@@ -64,6 +71,24 @@ fun OcrCaptureScreen(
         onIntent = viewModel::handleIntent,
         onBindCamera = viewModel::bindCamera,
     )
+}
+
+// enableEdgeToEdge() 기본값이 라이트 모드에서 흰색 scrim(#E6FFFFFF)을 네비게이션바에 적용하므로,
+// 다크 배경 화면 진입 시 투명 다크로 전환하고 이탈 시 기본값으로 복원한다.
+@Composable
+private fun DarkNavigationBarEffect() {
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        DisposableEffect(Unit) {
+            val activity = view.context as ComponentActivity
+            activity.enableEdgeToEdge(
+                navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
+            )
+            onDispose {
+                activity.enableEdgeToEdge()
+            }
+        }
+    }
 }
 
 private fun Context.openAppSettings() {

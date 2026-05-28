@@ -47,21 +47,7 @@ fun PhotoDetailScreen(
     onClose: () -> Unit,
 ) {
     BackHandler(onBack = onClose)
-
-    // enableEdgeToEdge()의 기본 navigationBarStyle이 라이트 스크림(흰색)을 적용하므로,
-    // 이 화면에서는 다크 투명으로 전환하고, 화면 이탈 시 기본값으로 복원한다.
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        DisposableEffect(Unit) {
-            val activity = view.context as ComponentActivity
-            activity.enableEdgeToEdge(
-                navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
-            )
-            onDispose {
-                activity.enableEdgeToEdge()
-            }
-        }
-    }
+    DarkNavigationBarEffect()
 
     Box(
         modifier = Modifier
@@ -92,6 +78,24 @@ fun PhotoDetailScreen(
 }
 
 // ─── Private Components ───────────────────────────────────────────────────────
+
+// enableEdgeToEdge() 기본값이 라이트 모드에서 흰색 scrim(#E6FFFFFF)을 네비게이션바에 적용하므로,
+// 다크 배경 화면 진입 시 투명 다크로 전환하고 이탈 시 기본값으로 복원한다.
+@Composable
+private fun DarkNavigationBarEffect() {
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        DisposableEffect(Unit) {
+            val activity = view.context as ComponentActivity
+            activity.enableEdgeToEdge(
+                navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
+            )
+            onDispose {
+                activity.enableEdgeToEdge()
+            }
+        }
+    }
+}
 
 /**
  * 상태바 + AppBar 높이만큼 검정→투명 수직 그라디언트를 렌더링합니다.
