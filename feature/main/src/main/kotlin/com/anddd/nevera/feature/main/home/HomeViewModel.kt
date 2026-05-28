@@ -44,8 +44,14 @@ class HomeViewModel @Inject constructor(
     override fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.RecentIngredientTabClick -> onRecentIngredientTabClick(intent.tab)
+
             HomeIntent.AddIngredientClick -> Unit // TODO: 식재료 추가 화면 이동
+
             is HomeIntent.LoadMoreIngredients -> loadMoreIngredients(intent.tab)
+
+            HomeIntent.DismissSetNicknameBottomSheet -> onDismissSetNicknameBottomSheet()
+
+            is HomeIntent.UpdateNicknameClick -> onConfirmNickname(intent.nickname)
         }
     }
 
@@ -62,6 +68,9 @@ class HomeViewModel @Inject constructor(
         summaryResult
             .onSuccess { summary ->
                 applyMutation(HomeMutation.ShowProfile(HomeProfileUiModel(summary.nickname)))
+                if (summary.nickname == "닉네임설정") { // TODO: 서버 nullable 전환 시 null 체크로 수정
+                    applyMutation(HomeMutation.ShowSetNicknameBottomSheet)
+                }
                 val wishMutation = summary.wish?.let { wish ->
                     HomeMutation.ShowWish(
                         HomeWishUiModel(
@@ -169,6 +178,15 @@ class HomeViewModel @Inject constructor(
         applyMutation(HomeMutation.SetRecentIngredientFilterTab(tab))
     }
 
+    private fun onDismissSetNicknameBottomSheet() = intent {
+        applyMutation(HomeMutation.HideSetNicknameBottomSheet)
+    }
+
+    private fun onConfirmNickname(nickname: String) = intent {
+        // TODO: 닉네임 저장 API 호출
+        applyMutation(HomeMutation.UpdateNickname(nickname))
+    }
+
     override suspend fun Syntax<HomeUiState, HomeSideEffect>.applyMutation(mutation: HomeMutation) {
         when (mutation) {
             HomeMutation.Loading -> reduce { state.copy(isLoading = true) }
@@ -230,6 +248,21 @@ class HomeViewModel @Inject constructor(
                         newItems = mutation.ingredients,
                         hasMore = mutation.hasMore,
                     )
+                )
+            }
+
+            HomeMutation.ShowSetNicknameBottomSheet -> reduce {
+                state.copy(isShowSetNicknameBottomSheet = true)
+            }
+
+            HomeMutation.HideSetNicknameBottomSheet -> reduce {
+                state.copy(isShowSetNicknameBottomSheet = false)
+            }
+
+            is HomeMutation.UpdateNickname -> reduce {
+                state.copy(
+                    profile = state.profile.copy(nickname = mutation.nickname),
+                    isShowSetNicknameBottomSheet = false,
                 )
             }
         }

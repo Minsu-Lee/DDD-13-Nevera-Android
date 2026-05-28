@@ -6,4 +6,6 @@ sealed interface HomeIntent : NeveraIntent {
     data class RecentIngredientTabClick(val tab: IngredientFilterTab) : HomeIntent
     data object AddIngredientClick : HomeIntent
     data class LoadMoreIngredients(val tab: IngredientFilterTab) : HomeIntent
+    data object DismissSetNicknameBottomSheet : HomeIntent
+    data class UpdateNicknameClick(val nickname: String) : HomeIntent
 }

@@ -29,4 +29,8 @@ sealed interface HomeMutation : NeveraMutation {
         val ingredients: List<IngredientUiModel>,
         val hasMore: Boolean,
     ) : HomeMutation
+
+    data object ShowSetNicknameBottomSheet : HomeMutation
+    data object HideSetNicknameBottomSheet : HomeMutation
+    data class UpdateNickname(val nickname: String) : HomeMutation
 }

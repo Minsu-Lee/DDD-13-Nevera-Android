@@ -10,4 +10,5 @@ data class HomeUiState(
     val ingredientFilterTab: IngredientFilterTab = IngredientFilterTab.Rescue,
     val rescuedIngredients: PaginatedListState<IngredientUiModel> = PaginatedListState(),
     val disposalIngredients: PaginatedListState<IngredientUiModel> = PaginatedListState(),
+    val isShowSetNicknameBottomSheet: Boolean = false,
 ) : NeveraState

@@ -28,4 +28,11 @@
     <string name="home_ingredient_tab_rescue">구조</string>
     <string name="home_ingredient_tab_disposal">폐기</string>
     <string name="home_ingredient_empty_message">아직 나의 식재료가 없어요</string>
+
+    <!-- Home Set Nickname Bottom Sheet -->
+    <string name="home_set_nickname_title">어떤 닉네임으로 불리드릴까요?</string>
+    <string name="home_set_nickname_subtitle">식구에서 사용할 닉네임을 입력해주세요</string>
+    <string name="home_set_nickname_placeholder">예: 김식구</string>
+    <string name="home_set_nickname_description">(한글+영문+숫자 조합 2~6자)</string>
+    <string name="home_set_nickname_cta">시작하기</string>
 </resources>
