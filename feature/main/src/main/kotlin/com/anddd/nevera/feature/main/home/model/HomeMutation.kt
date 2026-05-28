@@ -48,4 +48,8 @@ sealed interface HomeMutation : NeveraMutation {
     data object ShowGreetingBottomSheet : HomeMutation
 
     data object HideGreetingBottomSheet : HomeMutation
+
+    data object ShowCreateWishBottomSheet : HomeMutation
+
+    data object HideCreateWishBottomSheet : HomeMutation
 }

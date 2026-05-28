@@ -55,8 +55,13 @@ class HomeViewModel @Inject constructor(
 
             is HomeIntent.UpdateNicknameClick -> onConfirmNickname(intent.nickname)
 
-            HomeIntent.GreetingCreateWishClick -> onDismissGreeting() // TODO: 위시 생성 화면 이동
+            HomeIntent.CreateWishClick -> onGreetingCreateWishClick()
+
             HomeIntent.GreetingSkipClick -> onDismissGreeting()
+
+            is HomeIntent.CreateWishConfirmed -> onCreateWishConfirmed(intent.name, intent.goalAmount)
+
+            HomeIntent.CreateWishDismissed -> onDismissCreateWish()
         }
     }
 
@@ -214,6 +219,20 @@ class HomeViewModel @Inject constructor(
         applyMutation(HomeMutation.HideGreetingBottomSheet)
     }
 
+    private fun onGreetingCreateWishClick() = intent {
+        applyMutation(HomeMutation.HideGreetingBottomSheet)
+        applyMutation(HomeMutation.ShowCreateWishBottomSheet)
+    }
+
+    private fun onCreateWishConfirmed(name: String, goalAmount: Long) = intent {
+        applyMutation(HomeMutation.HideCreateWishBottomSheet)
+        // TODO: 위시 생성 API 연동
+    }
+
+    private fun onDismissCreateWish() = intent {
+        applyMutation(HomeMutation.HideCreateWishBottomSheet)
+    }
+
     override suspend fun Syntax<HomeUiState, HomeSideEffect>.applyMutation(mutation: HomeMutation) {
         when (mutation) {
             HomeMutation.Loading -> reduce { state.copy(isLoading = true) }
@@ -295,6 +314,14 @@ class HomeViewModel @Inject constructor(
 
             HomeMutation.HideGreetingBottomSheet -> reduce {
                 state.copy(isShowGreetingBottomSheet = false)
+            }
+
+            HomeMutation.ShowCreateWishBottomSheet -> reduce {
+                state.copy(isShowCreateWishBottomSheet = true)
+            }
+
+            HomeMutation.HideCreateWishBottomSheet -> reduce {
+                state.copy(isShowCreateWishBottomSheet = false)
             }
         }
     }

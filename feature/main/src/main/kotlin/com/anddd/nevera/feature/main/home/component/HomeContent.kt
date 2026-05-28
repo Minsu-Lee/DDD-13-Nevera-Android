@@ -74,7 +74,7 @@ internal fun HomeContent(
                     WishBanner(
                         nickname = uiState.profile.nickname,
                         wish = uiState.wish,
-                        onCreateWish = {},
+                        onCreateWish = { onIntent(HomeIntent.CreateWishClick) },
                         modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
                     )
                 }
@@ -121,8 +121,16 @@ internal fun HomeContent(
             }
             if (uiState.isShowGreetingBottomSheet) {
                 GreetingBottomSheet(
-                    onCreateWishClick = { onIntent(HomeIntent.GreetingCreateWishClick) },
+                    onCreateWishClick = { onIntent(HomeIntent.CreateWishClick) },
                     onSkipClick = { onIntent(HomeIntent.GreetingSkipClick) },
+                )
+            }
+            if (uiState.isShowCreateWishBottomSheet) {
+                CreateWishBottomSheet(
+                    onWishCreated = { name, amount ->
+                        onIntent(HomeIntent.CreateWishConfirmed(name, amount))
+                    },
+                    onDismissRequest = { onIntent(HomeIntent.CreateWishDismissed) },
                 )
             }
             if (uiState.isLoading) {
