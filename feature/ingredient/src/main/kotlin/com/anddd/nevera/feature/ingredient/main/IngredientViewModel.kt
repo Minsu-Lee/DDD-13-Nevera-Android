@@ -96,9 +96,8 @@ class IngredientViewModel @Inject constructor(
     // ── 식재료 등록 ────────────────────────────────────────────────────────────
     private fun register() = intent {
         applyMutation(RegisterStarted)
-        val stateSnapshot = container.stateFlow.value
-        val selectedIngredients = stateSnapshot.selectedItems.toDomains()
-        val totalCost = stateSnapshot.totalCost
+        val selectedIngredients = state.selectedItems.toDomains()
+        val totalCost = state.totalCost
 
         registerIngredientsUseCase(selectedIngredients)
             .onSuccess {
