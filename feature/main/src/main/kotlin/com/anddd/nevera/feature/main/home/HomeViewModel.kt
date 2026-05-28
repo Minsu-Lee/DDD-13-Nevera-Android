@@ -6,6 +6,7 @@ import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.usecase.home.GetHomeSummaryUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetDisposedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetRescuedIngredientsUseCase
+import com.anddd.nevera.domain.usecase.user.GetOnboardingStatusUseCase
 import com.anddd.nevera.domain.usecase.user.UpdateNicknameUseCase
 import com.anddd.nevera.feature.main.home.model.HomeIntent
 import com.anddd.nevera.feature.main.home.model.HomeMutation
@@ -31,6 +32,7 @@ class HomeViewModel @Inject constructor(
     private val getRescuedIngredients: GetRescuedIngredientsUseCase,
     private val getDisposedIngredients: GetDisposedIngredientsUseCase,
     private val updateNickname: UpdateNicknameUseCase,
+    private val getOnboardingStatus: GetOnboardingStatusUseCase,
 ) : NeveraViewModel<HomeUiState, HomeSideEffect, HomeIntent, HomeMutation>(HomeUiState()) {
 
     private companion object {
@@ -61,19 +63,31 @@ class HomeViewModel @Inject constructor(
     private fun load() = intent {
         applyMutation(HomeMutation.Loading)
 
-        val (summaryResult, rescuedResult, disposalResult) = coroutineScope {
+        val (tripleResult, onboardingResult) = coroutineScope {
             val summaryDeferred = async { getHomeSummary() }
             val rescuedDeferred = async { getRescuedIngredients(limit = INGREDIENT_PAGINATION_LIMIT) }
             val disposalDeferred = async { getDisposedIngredients(limit = INGREDIENT_PAGINATION_LIMIT) }
-            Triple(summaryDeferred.await(), rescuedDeferred.await(), disposalDeferred.await())
+            val onboardingDeferred = async { getOnboardingStatus() }
+            Pair(
+                Triple(summaryDeferred.await(), rescuedDeferred.await(), disposalDeferred.await()),
+                onboardingDeferred.await(),
+            )
         }
+        val (summaryResult, rescuedResult, disposalResult) = tripleResult
+
+        onboardingResult
+            .onSuccess { status ->
+                if (!status.isCompleteOnboarding) {
+                    applyMutation(HomeMutation.ShowSetNicknameBottomSheet)
+                }
+            }
+            .onFailure {
+                // TODO 네트워크 에러 처리
+            }
 
         summaryResult
             .onSuccess { summary ->
                 applyMutation(HomeMutation.ShowProfile(HomeProfileUiModel(summary.nickname)))
-                if (summary.nickname == "닉네임설정") { // TODO: 서버 nullable 전환 시 null 체크로 수정
-                    applyMutation(HomeMutation.ShowSetNicknameBottomSheet)
-                }
                 val wishMutation = summary.wish?.let { wish ->
                     HomeMutation.ShowWish(
                         HomeWishUiModel(

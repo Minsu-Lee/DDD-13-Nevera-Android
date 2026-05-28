@@ -1,6 +1,7 @@
 package com.anddd.nevera.data.api
 
 import com.anddd.nevera.core.network.model.ApiResponse
+import com.anddd.nevera.data.model.user.OnboardingStatusResponse
 import com.anddd.nevera.data.model.user.ProfileResponse
 import com.anddd.nevera.data.model.user.UpdateNicknameRequest
 import retrofit2.http.Body
@@ -14,4 +15,7 @@ internal interface UserApi {
 
     @PUT("api/v1/mypage/nickname")
     suspend fun updateNickname(@Body request: UpdateNicknameRequest): ApiResponse<ProfileResponse>
+
+    @GET("api/v1/mypage/onboarding/complete")
+    suspend fun getOnboardingStatus(): ApiResponse<OnboardingStatusResponse>
 }
