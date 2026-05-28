@@ -92,7 +92,6 @@ internal fun OcrIngredient.toRequest(): RegisterIngredientRequest = RegisterIngr
     quantity = quantity,
     expirationDate = expiryDate
         ?.atStartOfDay(ZoneId.of("Asia/Seoul"))
-        ?.withZoneSameInstant(ZoneId.of("UTC"))
         ?.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     cost = cost,
 )
