@@ -2,10 +2,13 @@ package com.anddd.nevera.data.mapper
 
 import com.anddd.nevera.data.model.ingredient.IngredientResponse
 import com.anddd.nevera.data.model.ingredient.OcrIngredientDto
+import com.anddd.nevera.data.model.ingredient.RegisterIngredientRequest
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.Ingredient
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /**
  * API 응답 category 값 → FoodCategory 변환
@@ -62,10 +65,10 @@ internal fun OcrIngredientDto.toDomain(): OcrIngredient = OcrIngredient(
  * [FoodCategory] → API 요청 문자열 변환
  */
 internal fun FoodCategory.toApiString(): String = when (this) {
-    FoodCategory.Vegetable  -> "VEGETABLE"
+    FoodCategory.Vegetable  -> "VEG"
     FoodCategory.Fruit      -> "FRUIT"
-    FoodCategory.MeatEgg    -> "MEAT"
-    FoodCategory.Seafood    -> "SEAFOOD"
+    FoodCategory.MeatEgg    -> "MEATEGGS"
+    FoodCategory.Seafood    -> "SEA"
     FoodCategory.Dairy      -> "DAIRY"
     FoodCategory.Sauce      -> "SAUCE"
     FoodCategory.Beverage   -> "BEVERAGE"
@@ -81,3 +84,15 @@ internal fun StorageLocation.toApiString(): String = when (this) {
     StorageLocation.Freezer -> "FREEZER"
     StorageLocation.Pantry  -> "PANTRY"
 }
+
+internal fun OcrIngredient.toRequest(): RegisterIngredientRequest = RegisterIngredientRequest(
+    name = name,
+    category = category.toApiString(),
+    location = location.toApiString(),
+    quantity = quantity,
+    expirationDate = expiryDate
+        ?.atStartOfDay(ZoneId.of("Asia/Seoul"))
+        ?.withZoneSameInstant(ZoneId.of("UTC"))
+        ?.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+    cost = cost,
+)
