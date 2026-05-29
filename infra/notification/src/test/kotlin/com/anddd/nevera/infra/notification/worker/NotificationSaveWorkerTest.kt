@@ -11,9 +11,11 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class NotificationSaveWorkerTest {
 
@@ -95,6 +97,26 @@ class NotificationSaveWorkerTest {
 
         assertEquals(Result.failure(), result)
         coVerify(exactly = 0) { repository.insert(any()) }
+    }
+
+    @Test
+    fun `repository insert 중 CancellationException이 발생하면 예외를 재전파한다`() = runTest {
+        val repository = mockk<NotificationRepository> {
+            coEvery { insert(any()) } throws CancellationException("Job was cancelled")
+        }
+        val inputData = NotificationSaveWorker.createInputData(
+            id = "notification-id",
+            type = AppNotificationType.DEFAULT,
+            title = "title",
+            subtitle = null,
+            createdAt = 1_700_000_000_000L,
+            deeplink = "nevera://detail/1",
+        )
+        val (worker, _) = createWorker(inputData, repository)
+
+        assertThrows<CancellationException> {
+            worker.doWork()
+        }
     }
 
     @Test
