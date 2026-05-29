@@ -74,7 +74,10 @@ fun NeveraNavHost(
                 navController.navigate(AuthGraphRoute) {
                     popUpTo(HomeRoute) { inclusive = true }
                 }
-            }
+            },
+            onNavigateToNotification = {
+                navController.navigate(NotificationRoute)
+            },
         )
         ingredientNavGraph(
             navController = navController,
