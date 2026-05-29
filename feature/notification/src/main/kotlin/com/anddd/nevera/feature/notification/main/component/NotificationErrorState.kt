@@ -41,6 +41,7 @@ internal fun NotificationErrorState(
             color = NeveraTheme.colors.textCaption,
         )
 
+        // TODO 임시
         NeveraOutlinedButton(
             label = stringResource(R.string.notification_error_retry),
             onClick = onRetry,
