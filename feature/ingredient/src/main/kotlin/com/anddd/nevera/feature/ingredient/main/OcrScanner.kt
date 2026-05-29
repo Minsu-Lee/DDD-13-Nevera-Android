@@ -4,17 +4,16 @@ import com.anddd.nevera.domain.model.ingredient.OcrExtractEvent
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.usecase.ingredient.ExtractIngredientsUseCase
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.transform
 import javax.inject.Inject
 
 class OcrScanner @Inject constructor(
     private val extractIngredientsUseCase: ExtractIngredientsUseCase,
     private val presentationTimer: OcrScanPresentationTimer,
 ) {
-    fun scan(imageUri: String): Flow<OcrScanEvent> = flow {
+    fun scan(imageUri: String): Flow<OcrScanEvent> {
         val startedAt = presentationTimer.startedAt()
-
-        extractIngredientsUseCase(imageUri).collect { event ->
+        return extractIngredientsUseCase(imageUri).transform { event ->
             when (event) {
                 is OcrExtractEvent.Progress ->
                     emit(OcrScanEvent.Progress(event.percent.toProgressValue()))
