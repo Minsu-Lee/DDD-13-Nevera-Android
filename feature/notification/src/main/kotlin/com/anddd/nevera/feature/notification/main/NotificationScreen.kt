@@ -47,6 +47,8 @@ import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import java.util.concurrent.TimeUnit
 
+private val NotificationFooterHeight = 84.dp
+
 @Composable
 fun NotificationScreen(
     onBack: () -> Unit,
@@ -158,7 +160,7 @@ private fun NotificationContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(84.dp),
+                            .height(NotificationFooterHeight),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
