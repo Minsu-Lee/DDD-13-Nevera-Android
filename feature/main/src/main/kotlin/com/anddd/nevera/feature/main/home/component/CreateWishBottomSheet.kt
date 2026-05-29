@@ -15,6 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.anddd.nevera.core.designsystem.component.bottomsheet.NeveraStepContentBottomSheet
+import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
+import com.anddd.nevera.core.designsystem.component.dialog.NeveraConfirmDialog
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextField
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldConfig
 import com.anddd.nevera.core.designsystem.component.textfield.NeveraTextFieldState
@@ -45,6 +47,7 @@ internal fun CreateWishBottomSheet(
     var step by remember { mutableIntStateOf(1) }
     var wishName by remember { mutableStateOf("") }
     var goalAmount by remember { mutableStateOf("") }
+    var showCancelDialog by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val wishNameState = wishNameFieldState(wishName)
@@ -72,16 +75,14 @@ internal fun CreateWishBottomSheet(
         } else {
             stringResource(R.string.home_create_wish_step2_subtitle)
         },
-        backLabel = stringResource(R.string.home_create_wish_back),
+        backLabel = if (step == 1) null else stringResource(R.string.home_create_wish_back),
         ctaLabel = if (step == 1) {
             stringResource(R.string.home_create_wish_step1_cta)
         } else {
             stringResource(R.string.home_create_wish_step2_cta)
         },
         ctaEnabled = isCurrentStepPositive,
-        onBackClick = {
-            if (step == 1) onDismissRequest() else step = 1
-        },
+        onBackClick = { step = 1 },
         onCtaClick = {
             if (step == 1) {
                 step = 2
@@ -89,7 +90,7 @@ internal fun CreateWishBottomSheet(
                 onWishCreated(wishName, goalAmount.toLongOrNull() ?: 0L)
             }
         },
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = { showCancelDialog = true },
         modifier = modifier,
     ) {
         if (step == 1) {
@@ -124,6 +125,21 @@ internal fun CreateWishBottomSheet(
             )
         }
     }
+
+    if (showCancelDialog) {
+        NeveraConfirmDialog(
+            title = stringResource(R.string.home_create_wish_cancel_dialog_title),
+            subtitle = stringResource(R.string.home_create_wish_cancel_dialog_subtitle),
+            positive = stringResource(R.string.home_create_wish_cancel_dialog_positive),
+            negative = stringResource(R.string.home_create_wish_cancel_dialog_negative),
+            onPositive = {
+                showCancelDialog = false
+                onDismissRequest()
+            },
+            onNegative = { showCancelDialog = false },
+            negativeButtonColor = NeveraButtonColor.Secondary,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -149,10 +165,8 @@ private fun CreateWishBottomSheetStep1PositivePreview() {
             stepIndicator = "1/2",
             title = "나만의 위시는 무엇인가요?",
             subtitle = "절약해서 이루고 싶은 걸 알려주세요",
-            backLabel = "이전",
             ctaLabel = "다음",
             ctaEnabled = true,
-            onBackClick = {},
             onCtaClick = {},
         ) {
             NeveraTextField(

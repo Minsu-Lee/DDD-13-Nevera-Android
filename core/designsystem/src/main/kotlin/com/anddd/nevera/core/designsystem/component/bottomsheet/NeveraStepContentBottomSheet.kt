@@ -26,7 +26,8 @@ import kotlinx.coroutines.launch
 
 /**
  * 단계 진행 표시(stepIndicator), 제목, 설명, 커스텀 content,
- * 뒤로가기 + CTA 이중 액션을 가진 BottomSheet 조합 컴포넌트입니다.
+ * 선택적 뒤로가기 + CTA 액션을 가진 BottomSheet 조합 컴포넌트입니다.
+ * backLabel이 null이면 CTA 버튼만 단독으로 표시됩니다.
  * 다단계 입력 플로우(예: 위시 생성)에 사용합니다.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,11 +37,11 @@ fun NeveraStepContentBottomSheet(
     stepIndicator: String,
     title: String,
     subtitle: String,
-    backLabel: String,
     ctaLabel: String,
-    ctaEnabled: Boolean = true,
-    onBackClick: () -> Unit,
     onCtaClick: () -> Unit,
+    backLabel: String? = null,
+    ctaEnabled: Boolean = true,
+    onBackClick: () -> Unit = {},
     onDismissRequest: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit = {},
@@ -72,11 +73,11 @@ private fun NeveraStepContentBottomSheetContent(
     stepIndicator: String,
     title: String,
     subtitle: String,
-    backLabel: String,
     ctaLabel: String,
-    ctaEnabled: Boolean = true,
-    onBackClick: () -> Unit,
     onCtaClick: () -> Unit,
+    backLabel: String? = null,
+    ctaEnabled: Boolean = true,
+    onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
@@ -125,16 +126,18 @@ private fun NeveraStepContentBottomSheetContent(
                 .padding(NeveraTheme.spacing.padding16),
             horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap8),
         ) {
-            NeveraWeakButton(
-                label = backLabel,
-                onClick = onBackClick,
-                modifier = Modifier.weight(1f),
-                color = NeveraButtonColor.Secondary,
-            )
+            if (backLabel != null) {
+                NeveraWeakButton(
+                    label = backLabel,
+                    onClick = onBackClick,
+                    modifier = Modifier.weight(1f),
+                    color = NeveraButtonColor.Secondary,
+                )
+            }
             NeveraFilledButton(
                 label = ctaLabel,
                 onClick = onCtaClick,
-                modifier = Modifier.weight(1f),
+                modifier = if (backLabel != null) Modifier.weight(1f) else Modifier.fillMaxWidth(),
                 color = NeveraButtonColor.Primary,
                 enabled = ctaEnabled,
             )
@@ -150,10 +153,8 @@ private fun NeveraStepContentBottomSheetStep1DisabledPreview() {
             stepIndicator = "1/2",
             title = "나만의 위시는 무엇인가요?",
             subtitle = "절약해서 이루고 싶은 걸 알려주세요",
-            backLabel = "이전",
             ctaLabel = "다음",
             ctaEnabled = false,
-            onBackClick = {},
             onCtaClick = {},
         )
     }
@@ -167,10 +168,8 @@ private fun NeveraStepContentBottomSheetStep1EnabledPreview() {
             stepIndicator = "1/2",
             title = "나만의 위시는 무엇인가요?",
             subtitle = "절약해서 이루고 싶은 걸 알려주세요",
-            backLabel = "이전",
             ctaLabel = "다음",
             ctaEnabled = true,
-            onBackClick = {},
             onCtaClick = {},
         )
     }
