@@ -12,11 +12,11 @@ data class NotificationItemUiModel(
     val type: NotificationType,
     val title: String,
     val subtitle: String? = null,
-    val receivedAt: Long,
+    val createdAt: Long,
     val isRead: Boolean,
     val deeplink: String,
 )
 
 enum class NotificationType {
-    EXPIRY_DATE,
+    DEFAULT,
 }

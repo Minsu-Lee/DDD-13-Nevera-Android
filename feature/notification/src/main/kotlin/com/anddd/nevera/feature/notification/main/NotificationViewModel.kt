@@ -82,11 +82,11 @@ private fun AppNotification.toUiModel(): NotificationItemUiModel =
     NotificationItemUiModel(
         id = id,
         type = when (type) {
-            AppNotificationType.EXPIRY_DATE -> NotificationType.EXPIRY_DATE
+            AppNotificationType.DEFAULT -> NotificationType.DEFAULT
         },
         title = title,
         subtitle = subtitle,
-        receivedAt = receivedAt,
+        createdAt = createdAt,
         isRead = isRead,
         deeplink = deeplink,
     )

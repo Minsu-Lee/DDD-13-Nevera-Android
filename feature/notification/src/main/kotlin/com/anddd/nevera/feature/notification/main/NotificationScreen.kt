@@ -236,10 +236,10 @@ private fun NotificationContentDarkPreview() {
     val sampleItems = listOf(
         NotificationItemUiModel(
             id = "1",
-            type = NotificationType.EXPIRY_DATE,
+            type = NotificationType.DEFAULT,
             title = "삼겹살(12,000)이 내일까지예요",
             subtitle = "오늘 저녁은 [제육볶음] 어떠세요?",
-            receivedAt = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(59),
+            createdAt = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(59),
             isRead = false,
             deeplink = "nevera://detail/101",
         ),

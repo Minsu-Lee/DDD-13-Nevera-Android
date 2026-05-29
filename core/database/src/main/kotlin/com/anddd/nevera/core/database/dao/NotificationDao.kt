@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NotificationDao {
 
-    @Query("SELECT * FROM notifications ORDER BY receivedAt DESC")
+    @Query("SELECT * FROM notifications ORDER BY createdAt DESC")
     fun getPagingSource(): PagingSource<Int, NotificationEntity>
 
     @Query("SELECT EXISTS(SELECT 1 FROM notifications WHERE isRead = 0 LIMIT 1)")

@@ -11,7 +11,7 @@ internal fun NotificationListResponse.toDomain(): AppNotification = AppNotificat
     type = type.toAppNotificationType(),
     title = message,
     subtitle = null,
-    receivedAt = ZonedDateTime.parse(createdAt).toInstant().toEpochMilli(),
+    createdAt = ZonedDateTime.parse(createdAt).toInstant().toEpochMilli(),
     isRead = false,
     deeplink = deeplink,
 )
@@ -21,7 +21,7 @@ internal fun NotificationListResponse.toEntity(): NotificationEntity = Notificat
     type = type,
     title = message,
     subtitle = null,
-    receivedAt = ZonedDateTime.parse(createdAt).toInstant().toEpochMilli(),
+    createdAt = ZonedDateTime.parse(createdAt).toInstant().toEpochMilli(),
     isRead = false,
     deeplink = deeplink,
 )
@@ -31,7 +31,7 @@ internal fun NotificationEntity.toDomain(): AppNotification = AppNotification(
     type = type.toAppNotificationType(),
     title = title,
     subtitle = subtitle,
-    receivedAt = receivedAt,
+    createdAt = createdAt,
     isRead = isRead,
     deeplink = deeplink,
 )
@@ -41,12 +41,12 @@ internal fun AppNotification.toEntity(): NotificationEntity = NotificationEntity
     type = type.name,
     title = title,
     subtitle = subtitle,
-    receivedAt = receivedAt,
+    createdAt = createdAt,
     isRead = isRead,
     deeplink = deeplink,
 )
 
 private fun String.toAppNotificationType(): AppNotificationType = when (this) {
-    "EXPIRY_DATE" -> AppNotificationType.EXPIRY_DATE
-    else -> AppNotificationType.EXPIRY_DATE // TODO: 서버 타입 추가 시 분기 확장
+    "DEFAULT", "default" -> AppNotificationType.DEFAULT
+    else -> AppNotificationType.DEFAULT // TODO: 서버 타입 추가 시 분기 확장
 }
