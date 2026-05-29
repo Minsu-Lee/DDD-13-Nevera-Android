@@ -103,7 +103,7 @@ private fun NotificationType.labelResId(): Int = when (this) {
     NotificationType.EXPIRY_DATE -> R.string.notification_type_expiry_date
 }
 
-internal fun formatRelativeTime(epochMillis: Long): String {
+private fun formatRelativeTime(epochMillis: Long): String {
     val diffMillis = System.currentTimeMillis() - epochMillis
     val minutes = TimeUnit.MILLISECONDS.toMinutes(diffMillis)
     val hours = TimeUnit.MILLISECONDS.toHours(diffMillis)
