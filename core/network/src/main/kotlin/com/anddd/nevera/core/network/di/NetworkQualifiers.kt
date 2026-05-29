@@ -18,6 +18,3 @@ annotation class RefreshRetrofit
 @Retention(AnnotationRetention.BINARY)
 annotation class RefreshApi
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class BaseUrl
