@@ -8,6 +8,7 @@ import com.anddd.nevera.domain.model.notification.AppNotificationType
 import com.anddd.nevera.domain.usecase.notification.GetNotificationsUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkNotificationAsReadUseCase
 import com.anddd.nevera.feature.notification.main.model.NotificationIntent
+import com.anddd.nevera.feature.notification.main.model.NotificationItemUiModel
 import com.anddd.nevera.feature.notification.main.model.NotificationMutation
 import com.anddd.nevera.feature.notification.main.model.NotificationSideEffect
 import com.anddd.nevera.feature.notification.main.model.NotificationType
