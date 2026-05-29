@@ -3,9 +3,14 @@ package com.anddd.nevera.feature.main.home
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.model.home.HomeSummary
 import com.anddd.nevera.domain.usecase.home.GetHomeSummaryUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetDisposedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetRescuedIngredientsUseCase
+import com.anddd.nevera.domain.usecase.user.GetOnboardingStatusUseCase
+import com.anddd.nevera.domain.usecase.user.UpdateNicknameUseCase
+import com.anddd.nevera.domain.usecase.wish.CreateWishUseCase
+import com.anddd.nevera.domain.usecase.wish.UpdateWishUseCase
 import com.anddd.nevera.feature.main.home.model.HomeIntent
 import com.anddd.nevera.feature.main.home.model.HomeMutation
 import com.anddd.nevera.feature.main.home.model.HomeProfileUiModel
@@ -29,6 +34,10 @@ class HomeViewModel @Inject constructor(
     private val getHomeSummary: GetHomeSummaryUseCase,
     private val getRescuedIngredients: GetRescuedIngredientsUseCase,
     private val getDisposedIngredients: GetDisposedIngredientsUseCase,
+    private val updateNickname: UpdateNicknameUseCase,
+    private val getOnboardingStatus: GetOnboardingStatusUseCase,
+    private val createWish: CreateWishUseCase,
+    private val updateWish: UpdateWishUseCase,
 ) : NeveraViewModel<HomeUiState, HomeSideEffect, HomeIntent, HomeMutation>(HomeUiState()) {
 
     private companion object {
@@ -44,45 +53,56 @@ class HomeViewModel @Inject constructor(
     override fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.RecentIngredientTabClick -> onRecentIngredientTabClick(intent.tab)
+            
             HomeIntent.AddIngredientClick -> onAddIngredientClick()
+            
             is HomeIntent.LoadMoreIngredients -> loadMoreIngredients(intent.tab)
+
+            is HomeIntent.UpdateNicknameClick -> onConfirmNickname(intent.nickname)
+
+            HomeIntent.CreateWishClick -> onGreetingCreateWishClick()
+
+            HomeIntent.GreetingSkipClick -> onDismissGreeting()
+
+            is HomeIntent.CreateWishConfirmed -> onCreateWishConfirmed(intent.name, intent.goalAmount)
+
+            HomeIntent.CreateWishDismissed -> onDismissCreateWish()
+
+            HomeIntent.WishEditClick -> onWishEditClick()
+
+            is HomeIntent.UpdateWishConfirmed -> onUpdateWishConfirmed(intent.id, intent.name, intent.goalAmount)
+
+            HomeIntent.UpdateWishDismissed -> onDismissUpdateWish()
         }
     }
 
     private fun load() = intent {
         applyMutation(HomeMutation.Loading)
 
-        val (summaryResult, rescuedResult, disposalResult) = coroutineScope {
+        val (tripleResult, onboardingResult) = coroutineScope {
             val summaryDeferred = async { getHomeSummary() }
             val rescuedDeferred = async { getRescuedIngredients(limit = INGREDIENT_PAGINATION_LIMIT) }
             val disposalDeferred = async { getDisposedIngredients(limit = INGREDIENT_PAGINATION_LIMIT) }
-            Triple(summaryDeferred.await(), rescuedDeferred.await(), disposalDeferred.await())
+            val onboardingDeferred = async { getOnboardingStatus() }
+            Pair(
+                Triple(summaryDeferred.await(), rescuedDeferred.await(), disposalDeferred.await()),
+                onboardingDeferred.await(),
+            )
         }
+        val (summaryResult, rescuedResult, disposalResult) = tripleResult
+
+        onboardingResult
+            .onSuccess { status ->
+                if (!status.isCompleteOnboarding) {
+                    applyMutation(HomeMutation.ShowSetNicknameBottomSheet)
+                }
+            }
+            .onFailure {
+                // TODO 네트워크 에러 처리
+            }
 
         summaryResult
-            .onSuccess { summary ->
-                applyMutation(HomeMutation.ShowProfile(HomeProfileUiModel(summary.nickname)))
-                val wishMutation = summary.wish?.let { wish ->
-                    HomeMutation.ShowWish(
-                        HomeWishUiModel(
-                            name = wish.name,
-                            goalAmount = wish.goalAmount,
-                            accumulatedAmount = wish.accumulatedAmount,
-                            remainingAmount = wish.remainingAmount,
-                            isAchieved = wish.isAchieved,
-                        )
-                    )
-                } ?: HomeMutation.ShowEmptyWish
-                applyMutation(wishMutation)
-                applyMutation(
-                    HomeMutation.ShowSavings(
-                        HomeSavingsUiModel(
-                            rescuedAmount = summary.rescuedAmount,
-                            disposalAmount = summary.disposalAmount,
-                        )
-                    )
-                )
-            }
+            .onSuccess { summary -> applyHomeSummary(summary) }
             .onFailure {
                 // TODO 네트워크 에러 처리
             }
@@ -173,6 +193,62 @@ class HomeViewModel @Inject constructor(
         applyMutation(HomeMutation.SetRecentIngredientFilterTab(tab))
     }
 
+    private fun onConfirmNickname(nickname: String) = intent {
+        updateNickname(nickname)
+            .onSuccess { profile ->
+                applyMutation(HomeMutation.UpdateNickname(profile.nickname))
+                applyMutation(HomeMutation.ShowGreetingBottomSheet)
+            }
+            .onFailure {
+                // TODO: 닉네임 업데이트 에러 처리
+            }
+    }
+
+    private fun onDismissGreeting() = intent {
+        applyMutation(HomeMutation.HideGreetingBottomSheet)
+    }
+
+    private fun onGreetingCreateWishClick() = intent {
+        applyMutation(HomeMutation.HideGreetingBottomSheet)
+        applyMutation(HomeMutation.ShowCreateWishBottomSheet)
+    }
+
+    private fun onCreateWishConfirmed(name: String, goalAmount: Long) = intent {
+        applyMutation(HomeMutation.HideCreateWishBottomSheet)
+        createWish(name, goalAmount)
+            .onSuccess {
+                getHomeSummary().onSuccess { summary -> applyHomeSummary(summary) }
+                postSideEffect(HomeSideEffect.ShowWishCreatedToast)
+            }
+            .onFailure {
+                // TODO: 에러 처리
+            }
+    }
+
+    private fun onDismissCreateWish() = intent {
+        applyMutation(HomeMutation.HideCreateWishBottomSheet)
+    }
+
+    private fun onWishEditClick() = intent {
+        applyMutation(HomeMutation.ShowUpdateWishBottomSheet)
+    }
+
+    private fun onUpdateWishConfirmed(id: Long, name: String, goalAmount: Long) = intent {
+        applyMutation(HomeMutation.HideUpdateWishBottomSheet)
+        updateWish(id, name, goalAmount)
+            .onSuccess {
+                getHomeSummary().onSuccess { summary -> applyHomeSummary(summary) }
+                postSideEffect(HomeSideEffect.ShowWishUpdatedToast)
+            }
+            .onFailure {
+                // TODO: 에러 처리
+            }
+    }
+
+    private fun onDismissUpdateWish() = intent {
+        applyMutation(HomeMutation.HideUpdateWishBottomSheet)
+    }
+
     override suspend fun Syntax<HomeUiState, HomeSideEffect>.applyMutation(mutation: HomeMutation) {
         when (mutation) {
             HomeMutation.Loading -> reduce { state.copy(isLoading = true) }
@@ -236,6 +312,66 @@ class HomeViewModel @Inject constructor(
                     )
                 )
             }
+
+            HomeMutation.ShowSetNicknameBottomSheet -> reduce {
+                state.copy(isShowSetNicknameBottomSheet = true)
+            }
+
+            is HomeMutation.UpdateNickname -> reduce {
+                state.copy(
+                    profile = state.profile.copy(nickname = mutation.nickname),
+                    isShowSetNicknameBottomSheet = false,
+                )
+            }
+
+            HomeMutation.ShowGreetingBottomSheet -> reduce {
+                state.copy(isShowGreetingBottomSheet = true)
+            }
+
+            HomeMutation.HideGreetingBottomSheet -> reduce {
+                state.copy(isShowGreetingBottomSheet = false)
+            }
+
+            HomeMutation.ShowCreateWishBottomSheet -> reduce {
+                state.copy(isShowCreateWishBottomSheet = true)
+            }
+
+            HomeMutation.HideCreateWishBottomSheet -> reduce {
+                state.copy(isShowCreateWishBottomSheet = false)
+            }
+
+            HomeMutation.ShowUpdateWishBottomSheet -> reduce {
+                state.copy(isShowUpdateWishBottomSheet = true)
+            }
+
+            HomeMutation.HideUpdateWishBottomSheet -> reduce {
+                state.copy(isShowUpdateWishBottomSheet = false)
+            }
         }
+    }
+
+    private suspend fun Syntax<HomeUiState, HomeSideEffect>.applyHomeSummary(summary: HomeSummary) {
+        applyMutation(HomeMutation.ShowProfile(HomeProfileUiModel(summary.nickname)))
+        val wishMutation = summary.wish?.let { wish ->
+            HomeMutation.ShowWish(
+                HomeWishUiModel(
+                    id = wish.id,
+                    name = wish.name,
+                    goalAmount = wish.goalAmount,
+                    accumulatedAmount = wish.accumulatedAmount,
+                    remainingAmount = wish.remainingAmount,
+                    isAchieved = wish.isAchieved,
+                )
+            )
+        } ?: HomeMutation.ShowEmptyWish
+        applyMutation(wishMutation)
+        applyMutation(
+            HomeMutation.ShowSavings(
+                HomeSavingsUiModel(
+                    rescuedAmount = summary.rescuedAmount,
+                    disposalAmount = summary.disposalAmount,
+                )
+            )
+        )
     }
 }
