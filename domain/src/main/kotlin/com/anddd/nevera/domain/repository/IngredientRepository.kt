@@ -10,9 +10,9 @@ import com.anddd.nevera.domain.model.ingredient.RegisterIngredientError
 interface IngredientRepository {
 
     /**
-     * 이미지 URI를 OCR API로 분석하여 식재료 목록 반환
+     * 이미지를 OCR API로 분석하여 식재료 목록 반환
      *
-     * @param imageUri Content URI 문자열 (갤러리 또는 카메라에서 선택한 이미지)
+     * @param imageUri 분석할 이미지 경로
      */
     suspend fun extractIngredients(imageUri: String): NeveraResult<List<OcrIngredient>, OcrExtractError>
 
