@@ -26,6 +26,8 @@ class FridgeViewModel @Inject constructor() :
             is FridgeIntent.SelectStorageFilter -> selectStorageFilter(intent.filter)
 
             is FridgeIntent.SelectCategoryFilter -> selectCategoryFilter(intent.filter)
+
+            FridgeIntent.AddIngredientClick -> addIngredient()
         }
     }
 
@@ -37,6 +39,10 @@ class FridgeViewModel @Inject constructor() :
 
     private fun selectStorageFilter(filter: StorageLocationFilter) = intent {
         applyMutation(FridgeMutation.SelectStorageFilter(filter))
+    }
+
+    private fun addIngredient() = intent {
+        // TODO: 식재료 추가 화면으로 이동
     }
 
     private fun selectCategoryFilter(filter: CategoryFilter) = intent {

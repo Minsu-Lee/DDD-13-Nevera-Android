@@ -16,4 +16,5 @@
     <string name="fridge_category_beverage">음료</string>
     <string name="fridge_category_processed">가공식품</string>
     <string name="fridge_category_other">기타</string>
+    <string name="fridge_fab_label">식재료</string>
 </resources>
