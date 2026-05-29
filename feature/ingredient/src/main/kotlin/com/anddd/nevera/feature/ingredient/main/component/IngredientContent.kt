@@ -177,7 +177,8 @@ internal fun IngredientContent(
         // 바텀시트 / 다이얼로그
         when (val state = editState) {
             is IngredientEditState.EditingCategory -> {
-                val item = uiState.items.find { it.id == state.itemId } ?: return@Box
+                val item = uiState.items.find { it.id == state.itemId }
+                    ?: run { editState = IngredientEditState.None; return@Box }
                 CategoryBottomSheet(
                     selectedCategory = item.category,
                     onCategorySelected = { category ->
@@ -187,7 +188,8 @@ internal fun IngredientContent(
                 )
             }
             is IngredientEditState.EditingLocation -> {
-                val item = uiState.items.find { it.id == state.itemId } ?: return@Box
+                val item = uiState.items.find { it.id == state.itemId }
+                    ?: run { editState = IngredientEditState.None; return@Box }
                 StorageLocationBottomSheet(
                     selectedLocation = item.location,
                     onLocationSelected = { location ->
@@ -197,7 +199,8 @@ internal fun IngredientContent(
                 )
             }
             is IngredientEditState.EditingDate -> {
-                val item = uiState.items.find { it.id == state.itemId } ?: return@Box
+                val item = uiState.items.find { it.id == state.itemId }
+                    ?: run { editState = IngredientEditState.None; return@Box }
                 NeveraDatePickerDialog(
                     selectedDate = item.expiryDate,
                     onDateSelected = { date ->
