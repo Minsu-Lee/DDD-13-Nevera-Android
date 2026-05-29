@@ -1,0 +1,23 @@
+package com.anddd.nevera.feature.notification.main.model
+
+import com.anddd.nevera.core.mvi.NeveraState
+
+data class NotificationUiState(
+    val notifications: List<NotificationItemUiModel> = emptyList(),
+    val hasNotificationPermission: Boolean = true,
+    val isLoading: Boolean = false,
+) : NeveraState
+
+data class NotificationItemUiModel(
+    val id: String,
+    val type: NotificationType,
+    val title: String,
+    val subtitle: String? = null,
+    val receivedAt: Long,
+    val isRead: Boolean,
+    val deeplink: String,
+)
+
+enum class NotificationType {
+    EXPIRY_DATE,
+}
