@@ -28,7 +28,7 @@ internal interface IngredientApi {
     @POST("api/v1/inventory")
     suspend fun registerIngredients(
         @Body items: List<RegisterIngredientRequest>,
-    ): ApiResponse<Unit>
+    ): ApiResponse<Boolean>
 
     @GET("api/v1/savings/consumed")
     suspend fun getRescuedIngredients(
