@@ -3,11 +3,13 @@ package com.anddd.nevera.feature.main.home
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.model.home.HomeSummary
 import com.anddd.nevera.domain.usecase.home.GetHomeSummaryUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetDisposedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetRescuedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.user.GetOnboardingStatusUseCase
 import com.anddd.nevera.domain.usecase.user.UpdateNicknameUseCase
+import com.anddd.nevera.domain.usecase.wish.CreateWishUseCase
 import com.anddd.nevera.feature.main.home.model.HomeIntent
 import com.anddd.nevera.feature.main.home.model.HomeMutation
 import com.anddd.nevera.feature.main.home.model.HomeProfileUiModel
@@ -33,6 +35,7 @@ class HomeViewModel @Inject constructor(
     private val getDisposedIngredients: GetDisposedIngredientsUseCase,
     private val updateNickname: UpdateNicknameUseCase,
     private val getOnboardingStatus: GetOnboardingStatusUseCase,
+    private val createWish: CreateWishUseCase,
 ) : NeveraViewModel<HomeUiState, HomeSideEffect, HomeIntent, HomeMutation>(HomeUiState()) {
 
     private companion object {
@@ -91,29 +94,7 @@ class HomeViewModel @Inject constructor(
             }
 
         summaryResult
-            .onSuccess { summary ->
-                applyMutation(HomeMutation.ShowProfile(HomeProfileUiModel(summary.nickname)))
-                val wishMutation = summary.wish?.let { wish ->
-                    HomeMutation.ShowWish(
-                        HomeWishUiModel(
-                            name = wish.name,
-                            goalAmount = wish.goalAmount,
-                            accumulatedAmount = wish.accumulatedAmount,
-                            remainingAmount = wish.remainingAmount,
-                            isAchieved = wish.isAchieved,
-                        )
-                    )
-                } ?: HomeMutation.ShowEmptyWish
-                applyMutation(wishMutation)
-                applyMutation(
-                    HomeMutation.ShowSavings(
-                        HomeSavingsUiModel(
-                            rescuedAmount = summary.rescuedAmount,
-                            disposalAmount = summary.disposalAmount,
-                        )
-                    )
-                )
-            }
+            .onSuccess { summary -> applyHomeSummary(summary) }
             .onFailure {
                 // TODO 네트워크 에러 처리
             }
@@ -226,7 +207,13 @@ class HomeViewModel @Inject constructor(
 
     private fun onCreateWishConfirmed(name: String, goalAmount: Long) = intent {
         applyMutation(HomeMutation.HideCreateWishBottomSheet)
-        // TODO: 위시 생성 API 연동
+        createWish(name, goalAmount)
+            .onSuccess {
+                getHomeSummary().onSuccess { summary -> applyHomeSummary(summary) }
+            }
+            .onFailure {
+                // TODO: 에러 처리
+            }
     }
 
     private fun onDismissCreateWish() = intent {
@@ -324,5 +311,29 @@ class HomeViewModel @Inject constructor(
                 state.copy(isShowCreateWishBottomSheet = false)
             }
         }
+    }
+
+    private suspend fun Syntax<HomeUiState, HomeSideEffect>.applyHomeSummary(summary: HomeSummary) {
+        applyMutation(HomeMutation.ShowProfile(HomeProfileUiModel(summary.nickname)))
+        val wishMutation = summary.wish?.let { wish ->
+            HomeMutation.ShowWish(
+                HomeWishUiModel(
+                    name = wish.name,
+                    goalAmount = wish.goalAmount,
+                    accumulatedAmount = wish.accumulatedAmount,
+                    remainingAmount = wish.remainingAmount,
+                    isAchieved = wish.isAchieved,
+                )
+            )
+        } ?: HomeMutation.ShowEmptyWish
+        applyMutation(wishMutation)
+        applyMutation(
+            HomeMutation.ShowSavings(
+                HomeSavingsUiModel(
+                    rescuedAmount = summary.rescuedAmount,
+                    disposalAmount = summary.disposalAmount,
+                )
+            )
+        )
     }
 }
