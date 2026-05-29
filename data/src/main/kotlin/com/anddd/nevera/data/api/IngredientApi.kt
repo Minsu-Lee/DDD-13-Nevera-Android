@@ -1,7 +1,6 @@
 package com.anddd.nevera.data.api
 
 import com.anddd.nevera.core.network.model.ApiResponse
-import com.anddd.nevera.data.model.ingredient.DisposedIngredientResponse
 import com.anddd.nevera.data.model.ingredient.IngredientResponse
 import com.anddd.nevera.data.model.ingredient.OcrIngredientDto
 import com.anddd.nevera.data.model.ingredient.RegisterIngredientRequest
@@ -36,5 +35,5 @@ internal interface IngredientApi {
     suspend fun getDisposedIngredients(
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
-    ): ApiResponse<List<DisposedIngredientResponse>>
+    ): ApiResponse<List<IngredientResponse>>
 }
