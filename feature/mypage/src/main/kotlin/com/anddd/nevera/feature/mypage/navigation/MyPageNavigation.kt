@@ -23,12 +23,14 @@ private data object SettingAccountRoute
 fun NavGraphBuilder.myPageNavGraph(
     navController: NavController,
     onNavigateToLogin: () -> Unit,
+    onNavigateToNotification: () -> Unit,
 ) {
     navigation<MyPageGraphRoute>(startDestination = MyPageRoute) {
         composable<MyPageRoute> {
             MyPageScreen(
                 onNavigateToAppInfo = { navController.navigate(AppInfoRoute) },
                 onNavigateToAccountSetting = { navController.navigate(SettingAccountRoute) },
+                onNavigateToNotification = onNavigateToNotification,
             )
         }
         composable<AppInfoRoute> {

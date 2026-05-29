@@ -33,7 +33,12 @@ class MyPageViewModel @Inject constructor(
     override fun handleIntent(intent: MyPageIntent) {
         when (intent) {
             is MyPageIntent.SettingItemClicked -> onSettingItemClicked(intent.item)
+            MyPageIntent.NotificationIconClicked -> onNotificationIconClick()
         }
+    }
+
+    private fun onNotificationIconClick() = intent {
+        postSideEffect(MyPageSideEffect.NavigateToNotification)
     }
 
     private fun load() = intent {
