@@ -74,10 +74,12 @@ class HomeViewModel @Inject constructor(
 
             HomeIntent.UpdateWishDismissed -> onDismissUpdateWish()
 
-            HomeIntent.NotificationIconClicked -> intent {
-                postSideEffect(HomeSideEffect.NavigateToNotification)
-            }
+            HomeIntent.NotificationIconClicked -> onNotificationIconClick()
         }
+    }
+
+    private fun onNotificationIconClick() = intent {
+        postSideEffect(HomeSideEffect.NavigateToNotification)
     }
 
     private fun load() = intent {
