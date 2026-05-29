@@ -35,6 +35,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @BaseUrl
+    fun provideBaseUrl(): String = BuildConfig.BASE_URL
+
+    @Provides
+    @Singleton
     fun provideGson(): Gson = Gson()
 
     @Provides
