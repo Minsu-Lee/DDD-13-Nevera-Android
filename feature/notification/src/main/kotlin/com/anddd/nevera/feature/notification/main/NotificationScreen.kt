@@ -138,7 +138,14 @@ private fun NotificationContent(
                 ) { index, item ->
                     NotificationItemRow(
                         item = item,
-                        onClick = { onIntent(NotificationIntent.NotificationItemClicked(item)) },
+                        onClick = {
+                            onIntent(
+                                NotificationIntent.NotificationItemClicked(
+                                    id = item.id,
+                                    deeplink = item.deeplink,
+                                )
+                            )
+                        },
                     )
                     if (index < uiState.notifications.lastIndex) {
                         HorizontalDivider(

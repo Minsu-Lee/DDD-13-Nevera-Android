@@ -8,7 +8,6 @@ import com.anddd.nevera.domain.model.notification.AppNotificationType
 import com.anddd.nevera.domain.usecase.notification.GetNotificationsUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkNotificationAsReadUseCase
 import com.anddd.nevera.feature.notification.main.model.NotificationIntent
-import com.anddd.nevera.feature.notification.main.model.NotificationItemUiModel
 import com.anddd.nevera.feature.notification.main.model.NotificationMutation
 import com.anddd.nevera.feature.notification.main.model.NotificationSideEffect
 import com.anddd.nevera.feature.notification.main.model.NotificationType
@@ -33,7 +32,7 @@ class NotificationViewModel @Inject constructor(
         when (intent) {
             NotificationIntent.BackClicked -> intent { postSideEffect(NotificationSideEffect.NavigateBack) }
             is NotificationIntent.PermissionChecked -> updatePermission(intent.isGranted)
-            is NotificationIntent.NotificationItemClicked -> onNotificationClicked(intent.item)
+            is NotificationIntent.NotificationItemClicked -> onNotificationClicked(intent.id, intent.deeplink)
             NotificationIntent.EnableNotificationClicked -> onEnableNotificationClicked()
         }
     }
@@ -53,15 +52,15 @@ class NotificationViewModel @Inject constructor(
         applyMutation(NotificationMutation.PermissionUpdated(isGranted))
     }
 
-    private fun onNotificationClicked(item: NotificationItemUiModel) = intent {
-        markNotificationAsReadUseCase(item.id)
+    private fun onNotificationClicked(id: String, deeplink: String) = intent {
+        markNotificationAsReadUseCase(id)
             .onSuccess {
-                applyMutation(NotificationMutation.NotificationRead(item.id))
+                applyMutation(NotificationMutation.NotificationRead(id))
             }
             .onFailure {
                 // TODO: PR2 - DB 연동 후 실패 시 에러 처리 추가
             }
-        postSideEffect(NotificationSideEffect.NavigateByDeeplink(item.deeplink))
+        postSideEffect(NotificationSideEffect.NavigateByDeeplink(deeplink))
     }
 
     private fun onEnableNotificationClicked() = intent {
