@@ -135,15 +135,16 @@ internal fun HomeContent(
                 )
             }
             if (uiState.isShowUpdateWishBottomSheet) {
-                val wish = uiState.wish!!
-                UpdateWishBottomSheet(
-                    wishName = wish.name,
-                    goalAmount = wish.goalAmount.toLong(),
-                    onWishUpdated = { name, amount ->
-                        onIntent(HomeIntent.UpdateWishConfirmed(wish.id, name, amount))
-                    },
-                    onDismissRequest = { onIntent(HomeIntent.UpdateWishDismissed) },
-                )
+                uiState.wish?.let { wish ->
+                    UpdateWishBottomSheet(
+                        wishName = wish.name,
+                        goalAmount = wish.goalAmount.toLong(),
+                        onWishUpdated = { name, amount ->
+                            onIntent(HomeIntent.UpdateWishConfirmed(wish.id, name, amount))
+                        },
+                        onDismissRequest = { onIntent(HomeIntent.UpdateWishDismissed) },
+                    )
+                }
             }
             if (uiState.isLoading) {
                 LoadingContent()
