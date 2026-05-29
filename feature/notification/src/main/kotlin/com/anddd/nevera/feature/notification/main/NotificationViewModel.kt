@@ -55,7 +55,12 @@ class NotificationViewModel @Inject constructor(
 
     private fun onNotificationClicked(item: NotificationItemUiModel) = intent {
         markNotificationAsReadUseCase(item.id)
-        applyMutation(NotificationMutation.NotificationRead(item.id))
+            .onSuccess {
+                applyMutation(NotificationMutation.NotificationRead(item.id))
+            }
+            .onFailure {
+                // TODO: PR2 - DB 연동 후 실패 시 에러 처리 추가
+            }
         postSideEffect(NotificationSideEffect.NavigateByDeeplink(item.deeplink))
     }
 
