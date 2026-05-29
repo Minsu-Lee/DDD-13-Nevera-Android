@@ -2,6 +2,7 @@ package com.anddd.nevera.navigation
 
 import android.widget.Toast
 import androidx.compose.animation.EnterTransition
+import timber.log.Timber
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -99,9 +100,12 @@ fun NeveraNavHost(
                 when {
                     deeplink.startsWith("nevera://detail/") -> {
                         val ingredientId = deeplink.removePrefix("nevera://detail/")
-                        // TODO: 냉장고 탭 구현 후 식재료(id=$ingredientId) 포커스 네비게이션 추가
-                        Toast.makeText(context, "냉장고 탭으로 이동", Toast.LENGTH_SHORT).show()
+                        if (ingredientId.isNotBlank()) {
+                            // TODO: 냉장고 탭 구현 후 식재료(id=$ingredientId) 포커스 네비게이션 추가
+                            Toast.makeText(context, "냉장고 탭으로 이동", Toast.LENGTH_SHORT).show()
+                        }
                     }
+                    else -> Timber.w("알 수 없는 deeplink 형식: $deeplink")
                 }
             },
         )
