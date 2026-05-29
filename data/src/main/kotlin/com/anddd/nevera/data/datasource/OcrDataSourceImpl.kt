@@ -85,7 +85,8 @@ internal class OcrDataSourceImpl @Inject constructor(
 
     private fun Bitmap.toJpegBytes(quality: Int): ByteArray =
         ByteArrayOutputStream().use { outputStream ->
-            compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            val success = compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            check(success) { "JPEG compression failed (quality=$quality)" }
             outputStream.toByteArray()
         }
 
