@@ -1,0 +1,9 @@
+package com.anddd.nevera.feature.notification.main.model
+
+import com.anddd.nevera.core.mvi.NeveraIntent
+
+sealed interface NotificationIntent : NeveraIntent {
+    data class PermissionChecked(val isGranted: Boolean) : NotificationIntent
+    data class NotificationItemClicked(val item: NotificationItemUiModel) : NotificationIntent
+    data object EnableNotificationClicked : NotificationIntent
+}
