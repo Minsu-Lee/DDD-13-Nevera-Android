@@ -118,14 +118,19 @@ onSkipClick = { onIntent(HomeIntent.GreetingSkipClick) }  // ❌
 | 항목 | UiState | SideEffect |
 |---|---|---|
 | 성격 | 현재 화면이 어떻게 보여야 하는가 | 한 번 소비되면 끝인 이벤트 |
-| 예시 | 서버/도메인에서 파생된 상태, 화면 회전 후 복원 필요한 값 | 유저의 일회성 액션으로 트리거되는 바텀시트, 토스트, 네비게이션 |
-| 판단 기준 | "화면 회전 후에도 복원되어야 하는가?" | "한 번 소비되면 끝인가?" |
+| 예시 | 세션 전체에서 항상 반응해야 하는 실시간 도메인 상태 | 유저 액션이나 서버 이벤트로 한 번 트리거되는 바텀시트, 토스트, 네비게이션 |
+| 판단 기준 | "ViewModel 생존 범위 내에서 구독·반응이 지속되는 상태인가?" | "한 번 소비되면 끝인가?" |
 
-### 바텀시트 트리거 예시
+> **참고**: 바텀시트 visibility는 `rememberSaveable`이 Configuration Change를 커버하므로 UiState가 필요 없다. 다른 화면으로 갔다가 돌아올 때 바텀시트가 닫히는 것은 표준 모바일 UX다.
+
+### 예시
 
 ```kotlin
-// ✅ UiState — 온보딩 완료 여부(서버 상태)에서 파생, 화면 회전 후 복원 필요
-val isShowSetNicknameBottomSheet: Boolean = false
+// ✅ UiState — 알림 뱃지는 observeUnreadNotification()으로 세션 내 항상 실시간 반응
+val hasUnreadNotification: Boolean = false
+
+// ✅ SideEffect — 서버 상태 체크 후 일회성으로 발화
+data object ShowSetNicknameBottomSheet : HomeSideEffect
 
 // ✅ SideEffect — 유저 버튼 탭에 반응하는 일회성 이벤트
 data object ShowGreetingBottomSheet : HomeSideEffect
