@@ -10,28 +10,28 @@ import com.anddd.nevera.domain.model.ingredient.FoodCategory
 @Composable
 fun FoodCategory.displayName(): String = stringResource(
     when (this) {
-        FoodCategory.Vegetable -> R.string.ingredient_category_vegetable
+        FoodCategory.Veg -> R.string.ingredient_category_vegetable
         FoodCategory.Fruit -> R.string.ingredient_category_fruit
-        FoodCategory.MeatEgg -> R.string.ingredient_category_meat_egg
-        FoodCategory.Seafood -> R.string.ingredient_category_seafood
+        FoodCategory.MeatEggs -> R.string.ingredient_category_meat_egg
+        FoodCategory.Sea -> R.string.ingredient_category_seafood
         FoodCategory.Dairy -> R.string.ingredient_category_dairy
         FoodCategory.Sauce -> R.string.ingredient_category_sauce
-        FoodCategory.Beverage -> R.string.ingredient_category_beverage
+        FoodCategory.Drink -> R.string.ingredient_category_beverage
         FoodCategory.Processed -> R.string.ingredient_category_processed
-        FoodCategory.Other -> R.string.ingredient_category_other
+        FoodCategory.Etc -> R.string.ingredient_category_other
     }
 )
 
 /** 카테고리 대표 이미지 리소스 ID */
 @DrawableRes
 fun FoodCategory.iconRes(): Int = when (this) {
-    FoodCategory.Vegetable -> R.drawable.img_listcell_vegetable
+    FoodCategory.Veg -> R.drawable.img_listcell_vegetable
     FoodCategory.Fruit -> R.drawable.img_listcell_fruit
-    FoodCategory.MeatEgg -> R.drawable.img_listcell_meat
-    FoodCategory.Seafood -> R.drawable.img_listcell_seafood
+    FoodCategory.MeatEggs -> R.drawable.img_listcell_meat
+    FoodCategory.Sea -> R.drawable.img_listcell_seafood
     FoodCategory.Dairy -> R.drawable.img_listcell_dairy
     FoodCategory.Sauce -> R.drawable.img_listcell_sauce
-    FoodCategory.Beverage -> R.drawable.img_listcell_beverage
+    FoodCategory.Drink -> R.drawable.img_listcell_beverage
     FoodCategory.Processed -> R.drawable.img_listcell_processed
-    FoodCategory.Other -> R.drawable.img_listcell_etc
+    FoodCategory.Etc -> R.drawable.img_listcell_etc
 }

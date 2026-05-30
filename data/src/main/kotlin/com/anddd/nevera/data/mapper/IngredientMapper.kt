@@ -14,19 +14,19 @@ private val KST_ZONE_ID = ZoneId.of("Asia/Seoul")
 
 /**
  * API 응답 category 값 → FoodCategory 변환
- * 매핑 실패 시 [FoodCategory.Other] 반환
+ * 매핑 실패 시 [FoodCategory.Etc] 반환
  */
 internal fun String.toFoodCategory(): FoodCategory = when (this) {
-    "VEG", "VEGETABLE" -> FoodCategory.Vegetable
+    "VEG", "VEGETABLE" -> FoodCategory.Veg
     "FRUIT" -> FoodCategory.Fruit
-    "MEATEGGS", "MEAT", "EGG" -> FoodCategory.MeatEgg
-    "SEA", "SEAFOOD" -> FoodCategory.Seafood
+    "MEATEGGS", "MEAT", "EGG" -> FoodCategory.MeatEggs
+    "SEA", "SEAFOOD" -> FoodCategory.Sea
     "DAIRY" -> FoodCategory.Dairy
     "SAUCE", "SEASONING" -> FoodCategory.Sauce
-    "DRINK", "BEVERAGE" -> FoodCategory.Beverage
+    "DRINK", "BEVERAGE" -> FoodCategory.Drink
     "CANDRY", "PROCESSED" -> FoodCategory.Processed
-    "GRAINS"              -> FoodCategory.Other  // 곡물류 — FoodCategory에 전용 항목 없어 Other로 임시 매핑
-    else                  -> FoodCategory.Other
+    "GRAINS"              -> FoodCategory.Etc  // 곡물류 — FoodCategory에 전용 항목 없어 Etc로 임시 매핑
+    else                  -> FoodCategory.Etc
 }
 
 internal fun IngredientResponse.toDomain(): Ingredient = Ingredient(
@@ -67,15 +67,15 @@ internal fun OcrIngredientDto.toDomain(): OcrIngredient = OcrIngredient(
  * [FoodCategory] → API 요청 문자열 변환
  */
 internal fun FoodCategory.toApiString(): String = when (this) {
-    FoodCategory.Vegetable  -> "VEG"
+    FoodCategory.Veg        -> "VEG"
     FoodCategory.Fruit      -> "FRUIT"
-    FoodCategory.MeatEgg    -> "MEATEGGS"
-    FoodCategory.Seafood    -> "SEA"
+    FoodCategory.MeatEggs   -> "MEATEGGS"
+    FoodCategory.Sea        -> "SEA"
     FoodCategory.Dairy      -> "DAIRY"
     FoodCategory.Sauce      -> "SAUCE"
-    FoodCategory.Beverage   -> "BEVERAGE"
+    FoodCategory.Drink      -> "DRINK"
     FoodCategory.Processed  -> "PROCESSED"
-    FoodCategory.Other      -> "ETC"
+    FoodCategory.Etc        -> "ETC"
 }
 
 /**

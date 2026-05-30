@@ -307,7 +307,7 @@ private fun IngredientContentPreview() {
                 items = listOf(
                     IngredientUiModel(
                         name = "아침에주스 ABC 주스, 18개입",
-                        category = FoodCategory.Beverage,
+                        category = FoodCategory.Drink,
                         location = StorageLocation.Fridge,
                         quantity = 2,
                         cost = 1000,

@@ -21,7 +21,7 @@ data class OcrIngredient(
     val cost: Int,
 ) {
     companion object {
-        val DEFAULT_CATEGORY = FoodCategory.Other
+        val DEFAULT_CATEGORY = FoodCategory.Etc
         val DEFAULT_LOCATION = StorageLocation.Pantry
     }
 }
