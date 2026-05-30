@@ -144,7 +144,7 @@ private fun CategoryItem(
 private fun CategoryListPreview() {
     NeveraTheme {
         CategoryList(
-            selectedCategory = FoodCategory.Beverage,
+            selectedCategory = FoodCategory.Drink,
             onCategoryClick = {},
         )
     }

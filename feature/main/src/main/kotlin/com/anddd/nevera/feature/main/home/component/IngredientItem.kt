@@ -79,7 +79,7 @@ private fun IngredientItemVegetablePreview() {
             ingredient = IngredientUiModel(
                 id = 1L,
                 name = "깐마늘",
-                category = FoodCategory.Vegetable,
+                category = FoodCategory.Veg,
                 categoryName = "채소",
                 quantity = 1,
                 cost = 5600,
@@ -113,7 +113,7 @@ private fun IngredientItemMeatEggPreview() {
             ingredient = IngredientUiModel(
                 id = 3L,
                 name = "닭가슴살",
-                category = FoodCategory.MeatEgg,
+                category = FoodCategory.MeatEggs,
                 categoryName = "육류/계란",
                 quantity = 2,
                 cost = 12000,
@@ -130,7 +130,7 @@ private fun IngredientItemSeafoodPreview() {
             ingredient = IngredientUiModel(
                 id = 4L,
                 name = "참치(생)",
-                category = FoodCategory.Seafood,
+                category = FoodCategory.Sea,
                 categoryName = "해산물",
                 quantity = 1,
                 cost = 32000,
@@ -181,7 +181,7 @@ private fun IngredientItemBeveragePreview() {
             ingredient = IngredientUiModel(
                 id = 7L,
                 name = "코카콜라 제로",
-                category = FoodCategory.Beverage,
+                category = FoodCategory.Drink,
                 categoryName = "음료",
                 quantity = 6,
                 cost = 4800,
@@ -215,7 +215,7 @@ private fun IngredientItemOtherPreview() {
             ingredient = IngredientUiModel(
                 id = 9L,
                 name = "기타 식재료",
-                category = FoodCategory.Other,
+                category = FoodCategory.Etc,
                 categoryName = "기타",
                 quantity = 1,
                 cost = 2000,
@@ -232,7 +232,7 @@ private fun IngredientItemLongNamePreview() {
             ingredient = IngredientUiModel(
                 id = 10L,
                 name = "아주아주길다란이름의처음보는식재...",
-                category = FoodCategory.Vegetable,
+                category = FoodCategory.Veg,
                 categoryName = "채소",
                 quantity = 1,
                 cost = 5600,

@@ -8,20 +8,20 @@ package com.anddd.nevera.domain.model.ingredient
  * @see com.anddd.nevera.feature.ingredient.main.iconRes
  */
 sealed interface FoodCategory {
-    data object Vegetable : FoodCategory
+    data object Veg : FoodCategory
     data object Fruit : FoodCategory
-    data object MeatEgg : FoodCategory
-    data object Seafood : FoodCategory
+    data object MeatEggs : FoodCategory
+    data object Sea : FoodCategory
     data object Dairy : FoodCategory
     data object Sauce : FoodCategory
-    data object Beverage : FoodCategory
+    data object Drink : FoodCategory
     data object Processed : FoodCategory
-    data object Other : FoodCategory
+    data object Etc : FoodCategory
 
     companion object {
         /** 화면에 표시할 모든 카테고리 목록 (선언 순서 유지) */
         val entries: List<FoodCategory> = listOf(
-            Vegetable, Fruit, MeatEgg, Seafood, Dairy, Sauce, Beverage, Processed, Other,
+            Veg, Fruit, MeatEggs, Sea, Dairy, Sauce, Drink, Processed, Etc,
         )
     }
 }

@@ -79,15 +79,15 @@ private fun FridgeCategoryChip(
 
 private val FoodCategory.labelRes: Int
     get() = when (this) {
-        FoodCategory.Vegetable -> R.string.fridge_category_vegetable
+        FoodCategory.Veg -> R.string.fridge_category_vegetable
         FoodCategory.Fruit -> R.string.fridge_category_fruit
-        FoodCategory.MeatEgg -> R.string.fridge_category_meat_egg
-        FoodCategory.Seafood -> R.string.fridge_category_seafood
+        FoodCategory.MeatEggs -> R.string.fridge_category_meat_egg
+        FoodCategory.Sea -> R.string.fridge_category_seafood
         FoodCategory.Dairy -> R.string.fridge_category_dairy
         FoodCategory.Sauce -> R.string.fridge_category_sauce
-        FoodCategory.Beverage -> R.string.fridge_category_beverage
+        FoodCategory.Drink -> R.string.fridge_category_beverage
         FoodCategory.Processed -> R.string.fridge_category_processed
-        FoodCategory.Other -> R.string.fridge_category_other
+        FoodCategory.Etc -> R.string.fridge_category_other
     }
 
 @Preview(showBackground = true, widthDp = 360)
