@@ -58,26 +58,20 @@ class HomeViewModel @Inject constructor(
     override fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.RecentIngredientTabClick -> onRecentIngredientTabClick(intent.tab)
-            
+
             HomeIntent.AddIngredientClick -> onAddIngredientClick()
-            
+
             is HomeIntent.LoadMoreIngredients -> loadMoreIngredients(intent.tab)
 
             is HomeIntent.UpdateNicknameClick -> onConfirmNickname(intent.nickname)
 
             HomeIntent.CreateWishClick -> onGreetingCreateWishClick()
 
-            HomeIntent.GreetingSkipClick -> onDismissGreeting()
-
             is HomeIntent.CreateWishConfirmed -> onCreateWishConfirmed(intent.name, intent.goalAmount)
-
-            HomeIntent.CreateWishDismissed -> onDismissCreateWish()
 
             HomeIntent.WishEditClick -> onWishEditClick()
 
             is HomeIntent.UpdateWishConfirmed -> onUpdateWishConfirmed(intent.id, intent.name, intent.goalAmount)
-
-            HomeIntent.UpdateWishDismissed -> onDismissUpdateWish()
 
             HomeIntent.NotificationIconClicked -> onNotificationIconClick()
         }
@@ -112,7 +106,7 @@ class HomeViewModel @Inject constructor(
         onboardingResult
             .onSuccess { status ->
                 if (!status.isCompleteOnboarding) {
-                    applyMutation(HomeMutation.ShowSetNicknameBottomSheet)
+                    postSideEffect(HomeSideEffect.ShowSetNicknameBottomSheet)
                 }
             }
             .onFailure {
@@ -215,24 +209,18 @@ class HomeViewModel @Inject constructor(
         updateNickname(nickname)
             .onSuccess { profile ->
                 applyMutation(HomeMutation.UpdateNickname(profile.nickname))
-                applyMutation(HomeMutation.ShowGreetingBottomSheet)
+                postSideEffect(HomeSideEffect.ShowGreetingBottomSheet)
             }
             .onFailure {
                 // TODO: 닉네임 업데이트 에러 처리
             }
     }
 
-    private fun onDismissGreeting() = intent {
-        applyMutation(HomeMutation.HideGreetingBottomSheet)
-    }
-
     private fun onGreetingCreateWishClick() = intent {
-        applyMutation(HomeMutation.HideGreetingBottomSheet)
-        applyMutation(HomeMutation.ShowCreateWishBottomSheet)
+        postSideEffect(HomeSideEffect.ShowCreateWishBottomSheet)
     }
 
     private fun onCreateWishConfirmed(name: String, goalAmount: Long) = intent {
-        applyMutation(HomeMutation.HideCreateWishBottomSheet)
         createWish(name, goalAmount)
             .onSuccess {
                 getHomeSummary().onSuccess { summary -> applyHomeSummary(summary) }
@@ -243,16 +231,11 @@ class HomeViewModel @Inject constructor(
             }
     }
 
-    private fun onDismissCreateWish() = intent {
-        applyMutation(HomeMutation.HideCreateWishBottomSheet)
-    }
-
     private fun onWishEditClick() = intent {
-        applyMutation(HomeMutation.ShowUpdateWishBottomSheet)
+        postSideEffect(HomeSideEffect.ShowUpdateWishBottomSheet)
     }
 
     private fun onUpdateWishConfirmed(id: Long, name: String, goalAmount: Long) = intent {
-        applyMutation(HomeMutation.HideUpdateWishBottomSheet)
         updateWish(id, name, goalAmount)
             .onSuccess {
                 getHomeSummary().onSuccess { summary -> applyHomeSummary(summary) }
@@ -261,10 +244,6 @@ class HomeViewModel @Inject constructor(
             .onFailure {
                 // TODO: 에러 처리
             }
-    }
-
-    private fun onDismissUpdateWish() = intent {
-        applyMutation(HomeMutation.HideUpdateWishBottomSheet)
     }
 
     override suspend fun Syntax<HomeUiState, HomeSideEffect>.applyMutation(mutation: HomeMutation) {
@@ -331,39 +310,8 @@ class HomeViewModel @Inject constructor(
                 )
             }
 
-            HomeMutation.ShowSetNicknameBottomSheet -> reduce {
-                state.copy(isShowSetNicknameBottomSheet = true)
-            }
-
             is HomeMutation.UpdateNickname -> reduce {
-                state.copy(
-                    profile = state.profile.copy(nickname = mutation.nickname),
-                    isShowSetNicknameBottomSheet = false,
-                )
-            }
-
-            HomeMutation.ShowGreetingBottomSheet -> reduce {
-                state.copy(isShowGreetingBottomSheet = true)
-            }
-
-            HomeMutation.HideGreetingBottomSheet -> reduce {
-                state.copy(isShowGreetingBottomSheet = false)
-            }
-
-            HomeMutation.ShowCreateWishBottomSheet -> reduce {
-                state.copy(isShowCreateWishBottomSheet = true)
-            }
-
-            HomeMutation.HideCreateWishBottomSheet -> reduce {
-                state.copy(isShowCreateWishBottomSheet = false)
-            }
-
-            HomeMutation.ShowUpdateWishBottomSheet -> reduce {
-                state.copy(isShowUpdateWishBottomSheet = true)
-            }
-
-            HomeMutation.HideUpdateWishBottomSheet -> reduce {
-                state.copy(isShowUpdateWishBottomSheet = false)
+                state.copy(profile = state.profile.copy(nickname = mutation.nickname))
             }
 
             is HomeMutation.BadgeUpdated -> reduce {
