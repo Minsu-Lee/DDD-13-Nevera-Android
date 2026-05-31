@@ -20,6 +20,8 @@ android {
         }
     }
 
+    assetPacks += setOf(":gemma4_e2b_pack_01", ":gemma4_e2b_pack_02", ":gemma4_e2b_pack_03")
+
     buildTypes {
         debug {
             signingConfig = signingConfigs.getByName("debug")
@@ -42,6 +44,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:network"))
     implementation(project(":infra:notification"))
+    implementation(project(":infra:ai"))
 
     implementation(project(":feature:splash"))
     implementation(project(":feature:auth"))
