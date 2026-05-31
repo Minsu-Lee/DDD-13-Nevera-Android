@@ -48,6 +48,7 @@ class GemmaTestViewModel @Inject constructor(
             GemmaTestIntent.RunPrompt -> runPrompt()
             GemmaTestIntent.RunImageAnalysis -> runImageAnalysis()
             GemmaTestIntent.ClearResult -> intent { applyMutation(GemmaTestMutation.ResultCleared) }
+            GemmaTestIntent.OpenImagePicker -> intent { postSideEffect(GemmaTestSideEffect.ShowImagePickerBottomSheet) }
         }
     }
 

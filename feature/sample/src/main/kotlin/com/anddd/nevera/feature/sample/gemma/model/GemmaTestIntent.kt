@@ -10,4 +10,5 @@ sealed interface GemmaTestIntent : NeveraIntent {
     data object RunPrompt : GemmaTestIntent
     data object RunImageAnalysis : GemmaTestIntent
     data object ClearResult : GemmaTestIntent
+    data object OpenImagePicker : GemmaTestIntent
 }

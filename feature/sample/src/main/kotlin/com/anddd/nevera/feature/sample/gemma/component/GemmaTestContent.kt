@@ -11,12 +11,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.domain.model.ai.GemmaModelState
+import com.anddd.nevera.feature.sample.R
 import com.anddd.nevera.feature.sample.gemma.model.GemmaTestIntent
 import com.anddd.nevera.feature.sample.gemma.model.GemmaTestUiState
 
@@ -67,6 +70,13 @@ fun GemmaTestContent(
             label = { Text("이미지 URI (content:// 또는 file://)") },
             modifier = Modifier.fillMaxWidth(),
         )
+
+        OutlinedButton(
+            onClick = { onIntent(GemmaTestIntent.OpenImagePicker) },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(stringResource(R.string.gemma_test_image_picker_button))
+        }
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Gemma Test Screen -->
+    <string name="gemma_test_image_picker_button">이미지 선택</string>
+    <string name="gemma_test_image_picker_title">이미지 가져오기</string>
+    <string name="gemma_test_image_picker_camera">카메라로 촬영</string>
+    <string name="gemma_test_image_picker_gallery">갤러리에서 선택</string>
+    <string name="gemma_test_image_picker_close">닫기</string>
+</resources>
