@@ -38,7 +38,7 @@ internal class GemmaImageNormalizer(
                 bitmap.recycle()
             }
 
-            val outFile = File(outputDir, "gemma_input_${System.currentTimeMillis()}.jpg")
+            val outFile = File(outputDir, "gemma_input.jpg")
             outFile.writeBytes(jpegBytes)
             outFile
         } catch (e: Exception) {
@@ -66,8 +66,10 @@ internal class GemmaImageNormalizer(
                 width = (width * RESIZE_SCALE).roundToInt().coerceAtLeast(1)
                 height = (height * RESIZE_SCALE).roundToInt().coerceAtLeast(1)
                 val resized = Bitmap.createScaledBitmap(currentBitmap, width, height, true)
-                if (currentBitmap !== bitmap) currentBitmap.recycle()
-                currentBitmap = resized
+                if (resized !== currentBitmap) {
+                    if (currentBitmap !== bitmap) currentBitmap.recycle()
+                    currentBitmap = resized
+                }
                 quality = INITIAL_QUALITY
             }
         } finally {
