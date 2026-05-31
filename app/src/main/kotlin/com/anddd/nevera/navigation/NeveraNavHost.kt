@@ -19,6 +19,8 @@ import com.anddd.nevera.feature.main.home.navigation.homeScreen
 import com.anddd.nevera.feature.mypage.navigation.myPageNavGraph
 import com.anddd.nevera.feature.notification.navigation.NotificationRoute
 import com.anddd.nevera.feature.notification.navigation.notificationScreen
+import com.anddd.nevera.feature.sample.gemma.navigation.GemmaTestRoute
+import com.anddd.nevera.feature.sample.gemma.navigation.gemmaTestScreen
 import com.anddd.nevera.feature.splash.main.navigation.SplashRoute
 import com.anddd.nevera.feature.splash.main.navigation.splashScreen
 
@@ -105,5 +107,6 @@ fun NeveraNavHost(
             onBack = { navController.popBackStack() },
             onDeeplink = onDeeplink,
         )
+        gemmaTestScreen()
     }
 }
