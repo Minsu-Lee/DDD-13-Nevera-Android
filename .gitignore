@@ -57,3 +57,9 @@ Thumbs.db
 # Captures / Profiling
 # ======================
 /captures
+
+# ======================
+# Local Gemma model artifacts
+# ======================
+gemma4_e2b_pack_*/src/main/assets/gemma4/*.litertlm*
+infra/ai/model-artifacts/
