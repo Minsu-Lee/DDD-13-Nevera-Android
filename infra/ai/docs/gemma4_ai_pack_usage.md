@@ -142,16 +142,43 @@ val modelPath = getGemmaModelPathUseCase() // 준비 안 됐으면 null
 
 ## 6. 모델 파일 준비 (개발 환경)
 
-실제 모델 파일을 빌드에 포함하려면:
+실기기에서 Gemma 추론을 테스트하려면 모델 파일을 직접 준비해야 한다.
+모델 파일은 git에 포함되지 않으므로 팀원 각자가 아래 절차를 수행한다.
+
+### 6-1. 모델 파일 다운로드
+
+HuggingFace에서 `.litertlm` 파일을 받는다.
+
+1. `https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm` 접속
+2. HuggingFace 계정 로그인 후 **Google Gemma Terms of Use** 동의
+   - 동의가 활성화되려면 HuggingFace 프로필 → Settings → Connected Apps에서 Google 계정 연결 필요
+3. **Files and versions** 탭에서 `gemma4-e2b-it.litertlm` (~2.59 GB) 다운로드
+4. 다운로드한 파일을 원하는 위치에 저장 (프로젝트 외부 권장, 예: `~/Downloads/`)
+
+### 6-2. 준비 스크립트 실행
+
+모델 파일 경로를 인자로 넘겨 스크립트를 실행한다.
+파일은 어디에 있어도 무관하며, 스크립트가 3개 AI Pack 디렉터리에 자동으로 분할·배치한다.
 
 ```bash
-cd /path/to/project
-infra/ai/scripts/prepare_gemma4_e2b_model.sh /path/to/gemma4-e2b-it.litertlm
+# 프로젝트 루트에서 실행
+bash infra/ai/scripts/prepare_gemma4_e2b_model.sh ~/Downloads/gemma4-e2b-it.litertlm
 ```
 
-스크립트 완료 후 `infra/ai/model-artifacts/gemma4_e2b_manifest.json`의 SHA-256 값을
+스크립트 완료 후 생성되는 파일 (모두 .gitignore에 포함되어 git 추적 안 됨):
+
+```
+gemma4_e2b_pack_01/src/main/assets/gemma4/gemma4-e2b-it.litertlm.part01
+gemma4_e2b_pack_02/src/main/assets/gemma4/gemma4-e2b-it.litertlm.part02
+gemma4_e2b_pack_03/src/main/assets/gemma4/gemma4-e2b-it.litertlm.part03
+infra/ai/model-artifacts/gemma4_e2b_manifest.json  ← SHA-256 포함
+```
+
+### 6-3. (선택) 체크섬 검증 활성화
+
+`infra/ai/model-artifacts/gemma4_e2b_manifest.json`의 SHA-256 값을
 `GemmaAiPackConstants`의 `EXPECTED_FULL_SHA256`, `EXPECTED_PART_SHA256`에 채워 넣으면
-merge 후 checksum 검증이 활성화된다.
+merge 후 checksum 검증이 활성화된다. 1차 개발에서는 null(비활성)이 기본값이다.
 
 ## 7. Play 내부 테스트에서 실제 다운로드 검증
 
