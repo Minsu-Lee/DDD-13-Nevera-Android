@@ -10,19 +10,19 @@ import java.security.MessageDigest
 
 internal class GemmaShardMerger(
     private val outputDir: File,
-) {
+) : ShardMerger {
     private val modelFile = File(outputDir, GemmaAiPackConstants.MODEL_FILE_NAME)
     private val tmpFile = File(outputDir, "${GemmaAiPackConstants.MODEL_FILE_NAME}.tmp")
 
-    fun isModelReady(): Boolean {
+    override fun isModelReady(): Boolean {
         if (!modelFile.exists() || modelFile.length() == 0L) return false
         val expectedSha = GemmaAiPackConstants.EXPECTED_FULL_SHA256 ?: return true
         return sha256(modelFile) == expectedSha
     }
 
-    fun modelPath(): String = modelFile.absolutePath
+    override fun modelPath(): String = modelFile.absolutePath
 
-    fun merge(shardFiles: List<File>): GemmaModelState {
+    override fun merge(shardFiles: List<File>): GemmaModelState {
         outputDir.mkdirs()
         tmpFile.delete()
 

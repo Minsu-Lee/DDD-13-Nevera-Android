@@ -1,5 +1,7 @@
 package com.anddd.nevera.infra.ai
 
+import timber.log.Timber
+
 internal object GemmaAiPackConstants {
     const val MODEL_FILE_NAME = "gemma4-e2b-it.litertlm"
 
@@ -18,5 +20,15 @@ internal object GemmaAiPackConstants {
     // Fill in after running prepare_gemma4_e2b_model.sh
     // null means skip checksum verification (size-only check)
     val EXPECTED_FULL_SHA256: String? = null
-    val EXPECTED_PART_SHA256: List<String?> = listOf(null, null, null)
+    val EXPECTED_PART_SHA256: List<String?> = List(PARTS.size) { null }
+
+    init {
+        if (!BuildConfig.DEBUG && EXPECTED_FULL_SHA256 == null) {
+            Timber.w(
+                "⚠️ Release build without checksum validation — " +
+                    "populate GemmaAiPackConstants.EXPECTED_FULL_SHA256 " +
+                    "after running prepare_gemma4_e2b_model.sh",
+            )
+        }
+    }
 }

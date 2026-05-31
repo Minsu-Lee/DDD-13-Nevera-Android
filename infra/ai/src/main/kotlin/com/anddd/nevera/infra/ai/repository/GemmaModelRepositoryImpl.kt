@@ -1,20 +1,23 @@
 package com.anddd.nevera.infra.ai.repository
 
-import android.content.Context
 import com.anddd.nevera.domain.model.ai.GemmaModelError
 import com.anddd.nevera.domain.model.ai.GemmaModelState
 import com.anddd.nevera.domain.repository.GemmaModelRepository
 import com.anddd.nevera.infra.ai.GemmaAiPackConstants
 import com.anddd.nevera.infra.ai.datasource.PlayAiPackDataSource
-import com.anddd.nevera.infra.ai.merger.GemmaShardMerger
+import com.anddd.nevera.infra.ai.merger.ShardMerger
 import com.google.android.play.core.aipacks.AiPackState
 import com.google.android.play.core.aipacks.AiPackStateUpdateListener
 import com.google.android.play.core.aipacks.model.AiPackErrorCode
 import com.google.android.play.core.aipacks.model.AiPackStatus
-import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
@@ -23,25 +26,38 @@ import javax.inject.Singleton
 
 @Singleton
 internal class GemmaModelRepositoryImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context,
     private val dataSource: PlayAiPackDataSource,
+    private val merger: ShardMerger,
 ) : GemmaModelRepository {
 
     private val _state = MutableStateFlow<GemmaModelState>(GemmaModelState.NotRequested)
-    private val merger = GemmaShardMerger(outputDir = File(context.noBackupFilesDir, "gemma4"))
-
-    // per-pack state 추적 (listener가 pack별로 단일 AiPackState를 전달하기 때문)
     private val packStateCache = ConcurrentHashMap<String, AiPackState>()
     private var listenerRegistered = false
+
+    // 리스너 콜백에서 블로킹 I/O를 실행하기 위한 전용 스코프
+    private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val listener = AiPackStateUpdateListener { packState ->
         packStateCache[packState.name()] = packState
         val allPackStates = GemmaAiPackConstants.PACK_NAMES.mapNotNull { packStateCache[it] }
-        val combined = combinePackStates(allPackStates)
-        Timber.d("AI pack state update [${packState.name()}]: $combined")
-        _state.value = combined
-        if (isTerminalState(combined)) {
-            unregisterListenerIfNeeded()
+
+        val allCompleted = allPackStates.size == GemmaAiPackConstants.PACK_NAMES.size &&
+            allPackStates.all { it.status() == AiPackStatus.COMPLETED }
+
+        if (allCompleted) {
+            // 모든 pack이 COMPLETED → IO 스코프에서 블로킹 머지 실행
+            repositoryScope.launch {
+                val result = mergeShards()
+                _state.value = result
+                unregisterListenerIfNeeded()
+            }
+        } else {
+            val combined = mapPackStates(allPackStates)
+            Timber.d("AI pack state update [${packState.name()}]: $combined")
+            _state.value = combined
+            if (isTerminalState(combined)) {
+                unregisterListenerIfNeeded()
+            }
         }
     }
 
@@ -50,15 +66,14 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
     override suspend fun refreshGemmaModelState(): GemmaModelState {
         _state.value = GemmaModelState.Checking
         return try {
-            if (merger.isModelReady()) {
+            if (withContext(Dispatchers.IO) { merger.isModelReady() }) {
                 GemmaModelState.Ready(merger.modelPath()).also { _state.value = it }
             } else {
                 val states = dataSource.getPackStates(GemmaAiPackConstants.PACK_NAMES)
                 val packStates = states.packStates().values.toList()
                 packStates.forEach { packStateCache[it.name()] = it }
-                val allCompleted = GemmaAiPackConstants.PACK_NAMES.all { name ->
-                    packStateCache[name]?.status() == AiPackStatus.COMPLETED
-                }
+                val allCompleted = packStates.size == GemmaAiPackConstants.PACK_NAMES.size &&
+                    packStates.all { it.status() == AiPackStatus.COMPLETED }
                 if (allCompleted) {
                     mergeShards()
                 } else {
@@ -74,7 +89,7 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
     override suspend fun requestGemmaModelDownload() {
         _state.value = GemmaModelState.Checking
 
-        if (merger.isModelReady()) {
+        if (withContext(Dispatchers.IO) { merger.isModelReady() }) {
             _state.value = GemmaModelState.Ready(merger.modelPath())
             return
         }
@@ -82,11 +97,22 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
         try {
             registerListenerIfNeeded()
             val states = dataSource.fetch(GemmaAiPackConstants.PACK_NAMES)
-            states.packStates().values.forEach { packStateCache[it.name()] = it }
-            val combined = combinePackStates(packStateCache.values.toList())
-            _state.value = combined
-            if (isTerminalState(combined)) {
+            val packStates = states.packStates().values.toList()
+            packStates.forEach { packStateCache[it.name()] = it }
+
+            val allCompleted = packStates.size == GemmaAiPackConstants.PACK_NAMES.size &&
+                packStates.all { it.status() == AiPackStatus.COMPLETED }
+
+            if (allCompleted) {
+                val result = mergeShards()
+                _state.value = result
                 unregisterListenerIfNeeded()
+            } else {
+                val combined = mapPackStates(packStates)
+                _state.value = combined
+                if (isTerminalState(combined)) {
+                    unregisterListenerIfNeeded()
+                }
             }
         } catch (e: Exception) {
             Timber.e(e, "Error requesting Gemma model download")
@@ -113,9 +139,12 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getGemmaModelPath(): String? =
-        if (merger.isModelReady()) merger.modelPath() else null
+        withContext(Dispatchers.IO) {
+            if (merger.isModelReady()) merger.modelPath() else null
+        }
 
-    internal fun combinePackStates(packStates: List<AiPackState>): GemmaModelState {
+    // 순수 상태 매핑 — 부수효과 없음. COMPLETED 처리는 호출 측에서 담당
+    internal fun mapPackStates(packStates: List<AiPackState>): GemmaModelState {
         if (packStates.isEmpty()) return GemmaModelState.NotInstalled
 
         val statuses = packStates.map { it.status() }
@@ -137,9 +166,6 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
         if (statuses.any { it == AiPackStatus.CANCELED }) {
             return GemmaModelState.Canceled
         }
-        if (statuses.all { it == AiPackStatus.COMPLETED }) {
-            return mergeShards()
-        }
         if (statuses.any { it == AiPackStatus.TRANSFERRING }) {
             val avgPercent = packStates.map { it.transferProgressPercentage() }
                 .average().toFloat().div(100f)
@@ -159,15 +185,16 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
         return GemmaModelState.NotInstalled
     }
 
-    private fun mergeShards(): GemmaModelState {
+    // 블로킹 I/O → 항상 Dispatchers.IO에서 실행
+    private suspend fun mergeShards(): GemmaModelState = withContext(Dispatchers.IO) {
         val shardFiles = GemmaAiPackConstants.PARTS.map { part ->
             val location = dataSource.getPackLocation(part.packName)
-                ?: return GemmaModelState.Failed(GemmaModelError.MissingPackLocation)
+                ?: return@withContext GemmaModelState.Failed(GemmaModelError.MissingPackLocation)
             val assetsPath = location.assetsPath()
-                ?: return GemmaModelState.Failed(GemmaModelError.MissingPackLocation)
+                ?: return@withContext GemmaModelState.Failed(GemmaModelError.MissingPackLocation)
             File(assetsPath, part.relativeAssetPath)
         }
-        return merger.merge(shardFiles).also { _state.value = it }
+        merger.merge(shardFiles).also { _state.value = it }
     }
 
     private fun isTerminalState(state: GemmaModelState): Boolean =

@@ -1,9 +1,9 @@
 package com.anddd.nevera.infra.ai.repository
 
-import android.content.Context
 import com.anddd.nevera.domain.model.ai.GemmaModelError
 import com.anddd.nevera.domain.model.ai.GemmaModelState
 import com.anddd.nevera.infra.ai.datasource.PlayAiPackDataSource
+import com.anddd.nevera.infra.ai.merger.ShardMerger
 import com.google.android.play.core.aipacks.AiPackState
 import com.google.android.play.core.aipacks.AiPackStateUpdateListener
 import com.google.android.play.core.aipacks.AiPackStates
@@ -20,47 +20,38 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File
-import java.nio.file.Files
 
 class GemmaModelRepositoryTest {
 
-    private lateinit var tmpDir: File
-    private lateinit var context: Context
     private lateinit var dataSource: PlayAiPackDataSource
+    private lateinit var merger: ShardMerger
     private lateinit var repository: GemmaModelRepositoryImpl
 
     @BeforeEach
     fun setUp() {
-        tmpDir = Files.createTempDirectory("repo_test").toFile()
-        context = mockk {
-            every { noBackupFilesDir } returns tmpDir
-        }
         dataSource = mockk(relaxed = true)
-        repository = GemmaModelRepositoryImpl(context, dataSource)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        tmpDir.deleteRecursively()
+        merger = mockk(relaxed = true) {
+            every { isModelReady() } returns false
+            every { modelPath() } returns "/fake/model/path"
+        }
+        repository = GemmaModelRepositoryImpl(dataSource, merger)
     }
 
     // ── merged model already valid ───────────────────────────────────────────
 
     @Test
     fun `이미 merge된 모델이 유효하면 fetch 없이 Ready를 emit한다`() = runTest {
-        val modelDir = File(tmpDir, "gemma4").apply { mkdirs() }
-        File(modelDir, "gemma4-e2b-it.litertlm").writeBytes(ByteArray(10) { 1 })
+        every { merger.isModelReady() } returns true
 
         repository.requestGemmaModelDownload()
 
         val state = repository.observeGemmaModelState().first()
         assertTrue(state is GemmaModelState.Ready)
+        assertEquals("/fake/model/path", (state as GemmaModelState.Ready).modelPath)
         verify(exactly = 0) { dataSource.registerListener(any()) }
     }
 
@@ -77,7 +68,7 @@ class GemmaModelRepositoryTest {
         val state = repository.observeGemmaModelState().first() as GemmaModelState.Downloading
         assertEquals(500L, state.bytesDownloaded)
         assertEquals(2000L, state.totalBytes)
-        assertEquals(0.25f, state.percent)
+        assertEquals(0.25f, state.percent, 0.0001f)
     }
 
     @Test
@@ -88,7 +79,7 @@ class GemmaModelRepositoryTest {
         repository.requestGemmaModelDownload()
 
         val state = repository.observeGemmaModelState().first() as GemmaModelState.Downloading
-        assertEquals(0f, state.percent)
+        assertEquals(0f, state.percent, 0.0001f)
     }
 
     // ── status mappings ──────────────────────────────────────────────────────
@@ -123,7 +114,7 @@ class GemmaModelRepositoryTest {
     @Test
     fun `FAILED 상태는 Failed(PlayError)로 매핑된다`() = runTest {
         coEvery { dataSource.fetch(any()) } returns mockAiPackStates(
-            mockPackState(AiPackStatus.FAILED, errorCode = AiPackErrorCode.NETWORK_ERROR)
+            mockPackState(AiPackStatus.FAILED, errorCode = AiPackErrorCode.NETWORK_ERROR),
         )
         repository.requestGemmaModelDownload()
 
@@ -160,6 +151,14 @@ class GemmaModelRepositoryTest {
         assertEquals(GemmaModelState.NotInstalled, repository.observeGemmaModelState().first())
     }
 
+    @Test
+    fun `fetch 예외 발생 시 Failed(Unknown)으로 매핑된다`() = runTest {
+        coEvery { dataSource.fetch(any()) } throws RuntimeException("network error")
+        repository.requestGemmaModelDownload()
+
+        assertTrue(repository.observeGemmaModelState().first() is GemmaModelState.Failed)
+    }
+
     // ── listener state update ────────────────────────────────────────────────
 
     @Test
@@ -170,7 +169,6 @@ class GemmaModelRepositoryTest {
 
         repository.requestGemmaModelDownload()
 
-        // listener receives single AiPackState per callback
         listenerSlot.captured.onStateUpdate(mockPackState(AiPackStatus.WAITING_FOR_WIFI))
 
         assertEquals(GemmaModelState.WaitingForWifi, repository.observeGemmaModelState().first())
@@ -181,7 +179,6 @@ class GemmaModelRepositoryTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `cancelGemmaModelDownload 호출 시 Canceling을 먼저 emit하고 이후 Canceled를 emit한다`() =
-        // UnconfinedTestDispatcher: 상태 변경 시 collector가 즉시(eager) 실행되어 두 중간 상태를 모두 캡처
         runTest(UnconfinedTestDispatcher()) {
             val emittedStates = mutableListOf<GemmaModelState>()
             val job = launch {
