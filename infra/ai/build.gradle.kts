@@ -22,6 +22,8 @@ dependencies {
     implementation(libs.coroutines.android)
     implementation(libs.timber)
     implementation(libs.play.ai.delivery)
+    implementation(libs.litertlm.android)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.coroutines.test)
     testImplementation(libs.mockk)

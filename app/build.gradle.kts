@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":feature:notification"))
     implementation(project(":feature:ingredient"))
     implementation(project(":feature:fridge"))
+    implementation(project(":feature:sample"))
 
     implementation(project(":domain"))
     implementation(project(":data"))

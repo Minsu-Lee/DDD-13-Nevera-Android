@@ -44,6 +44,7 @@ camerax = "1.6.1"
 hiltWork = "1.2.0"
 paging = "3.5.0"
 playAiDelivery = "0.1.1-alpha01"
+litertLm = "0.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -119,6 +120,7 @@ androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplaye
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
 
 play-ai-delivery = { group = "com.google.android.play", name = "ai-delivery", version.ref = "playAiDelivery" }
+litertlm-android = { group = "com.google.ai.edge.litertlm", name = "litertlm-android", version.ref = "litertLm" }
 
 # Gradle plugin artifacts (build-logic 컴파일용)
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
