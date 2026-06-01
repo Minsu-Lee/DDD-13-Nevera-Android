@@ -20,6 +20,7 @@ import com.anddd.nevera.core.designsystem.component.button.NeveraButtonSize
 import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.component.EmptyContent
 import com.anddd.nevera.core.ui.component.LoadingContent
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
@@ -95,14 +96,23 @@ internal fun FridgeContent(
                         modifier = Modifier.padding(top = NeveraTheme.spacing.gap8),
                     )
                 }
-                // TODO: 페이지네이션 아이템 목록
-                items(mockIngredients, key = { it.id }) { item ->
-                    FridgeIngredientItem(
-                        item = item,
-                        onRescueClick = {},
-                        onDisposeClick = {},
-                        onMoreClick = {},
-                    )
+                if (uiState.ingredients.isEmpty()) {
+                    item {
+                        EmptyContent(
+                            message = stringResource(R.string.fridge_list_empty_message),
+                            modifier = Modifier.padding(vertical = NeveraTheme.spacing.gap40),
+                        )
+                    }
+                } else {
+                    // TODO: 페이지네이션 아이템 목록
+                    items(uiState.ingredients, key = { it.id }) { item ->
+                        FridgeIngredientItem(
+                            item = item,
+                            onRescueClick = {},
+                            onDisposeClick = {},
+                            onMoreClick = {},
+                        )
+                    }
                 }
             }
             if (uiState.isLoading) {
@@ -113,16 +123,16 @@ internal fun FridgeContent(
 }
 
 private val mockIngredients = listOf(
-    FridgeIngredientUiModel(1L, "제주 햇당근", FoodCategory.Veg, "채소", 1, 6500, LocalDate.now().plusDays(28)),
-    FridgeIngredientUiModel(2L, "삼겹살", FoodCategory.MeatEggs, "육류/계란", 1, 0, LocalDate.now().minusDays(3)),
-    FridgeIngredientUiModel(3L, "서울우유 1L", FoodCategory.Dairy, "유제품", 2, 3200, LocalDate.now().plusDays(5)),
-    FridgeIngredientUiModel(4L, "새우", FoodCategory.Sea, "수산물", 3, 12000, LocalDate.now().plusDays(1)),
-    FridgeIngredientUiModel(5L, "청포도", FoodCategory.Fruit, "과일", 1, 4500, LocalDate.now().plusDays(14)),
-    FridgeIngredientUiModel(6L, "간장", FoodCategory.Sauce, "소스/양념", 1, 2800, LocalDate.now().plusDays(180)),
-    FridgeIngredientUiModel(7L, "콜라 1.5L", FoodCategory.Drink, "음료", 2, 1800, LocalDate.now().plusDays(90)),
-    FridgeIngredientUiModel(8L, "두부", FoodCategory.Processed, "가공식품", 1, 1500, LocalDate.now()),
-    FridgeIngredientUiModel(9L, "계란 10구", FoodCategory.MeatEggs, "육류/계란", 10, 3000, LocalDate.now().minusDays(1)),
-    FridgeIngredientUiModel(10L, "오징어", FoodCategory.Sea, "수산물", 2, 8000, LocalDate.now().plusDays(3)),
+    FridgeIngredientUiModel(id = 1L, name = "제주 햇당근", category = FoodCategory.Veg, quantity = 1, cost = 6500, expiryDate = LocalDate.now().plusDays(28)),
+    FridgeIngredientUiModel(id = 2L, name = "삼겹살", category = FoodCategory.MeatEggs, quantity = 1, cost = 0, expiryDate = LocalDate.now().minusDays(3)),
+    FridgeIngredientUiModel(id = 3L, name = "서울우유 1L", category = FoodCategory.Dairy, quantity = 2, cost = 3200, expiryDate = LocalDate.now().plusDays(5)),
+    FridgeIngredientUiModel(id = 4L, name = "새우", category = FoodCategory.Sea, quantity = 3, cost = 12000, expiryDate = LocalDate.now().plusDays(1)),
+    FridgeIngredientUiModel(id = 5L, name = "청포도", category = FoodCategory.Fruit, quantity = 1, cost = 4500, expiryDate = LocalDate.now().plusDays(14)),
+    FridgeIngredientUiModel(id = 6L, name = "간장", category = FoodCategory.Sauce, quantity = 1, cost = 2800, expiryDate = LocalDate.now().plusDays(180)),
+    FridgeIngredientUiModel(id = 7L, name = "콜라 1.5L", category = FoodCategory.Drink, quantity = 2, cost = 1800, expiryDate = LocalDate.now().plusDays(90)),
+    FridgeIngredientUiModel(id = 8L, name = "두부", category = FoodCategory.Processed, quantity = 1, cost = 1500, expiryDate = LocalDate.now()),
+    FridgeIngredientUiModel(id = 9L, name = "계란 10구", category = FoodCategory.MeatEggs, quantity = 10, cost = 3000, expiryDate = LocalDate.now().minusDays(1)),
+    FridgeIngredientUiModel(id = 10L, name = "오징어", category = FoodCategory.Sea, quantity = 2, cost = 8000, expiryDate = LocalDate.now().plusDays(3)),
 )
 
 @Preview(showBackground = true, widthDp = 360)
@@ -130,7 +140,7 @@ private val mockIngredients = listOf(
 private fun FridgeContentPreview() {
     NeveraTheme {
         FridgeContent(
-            uiState = FridgeUiState(),
+            uiState = FridgeUiState(ingredients = mockIngredients),
             onIntent = {},
         )
     }
@@ -143,6 +153,7 @@ private fun FridgeContentFridgeSelectedPreview() {
         FridgeContent(
             uiState = FridgeUiState(
                 selectedStorageFilter = StorageLocationFilter.Specific(StorageLocation.Fridge),
+                ingredients = mockIngredients,
             ),
             onIntent = {},
         )
