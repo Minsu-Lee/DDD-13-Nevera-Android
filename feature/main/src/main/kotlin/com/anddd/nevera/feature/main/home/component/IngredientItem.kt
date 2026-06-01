@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
-import com.anddd.nevera.feature.main.home.iconRes
+import com.anddd.nevera.core.ui.iconRes
 import com.anddd.nevera.feature.main.home.model.IngredientUiModel
 
 private val CategoryImageSize = 56.dp
