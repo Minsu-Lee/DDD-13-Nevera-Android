@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -50,9 +49,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
-import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.core.ui.iconRes
+import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.feature.fridge.main.model.FridgeIngredientUiModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -66,8 +66,7 @@ private val RevealWidth = 160.dp
 private val ItemHeight = 69.dp
 private val CategoryImageBorderWidth = 1.dp
 private val IndicatorStrokeWidth = 2.dp
-private val ExpiredBadgeSize = 16.dp
-private val ExpiredBadgeOffset = (-4).dp
+private val ExpiredBadgeOffset = 8.dp
 
 private fun FridgeIngredientUiModel.expiryState(): ExpiryState {
     val days = expiryDate?.let { ChronoUnit.DAYS.between(LocalDate.now(), it) }
@@ -307,8 +306,8 @@ private fun IngredientCategoryIcon(
         if (expiryState == ExpiryState.Expired) {
             ExpiredBadge(
                 modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = ExpiredBadgeOffset, y = ExpiredBadgeOffset),
+                    .align(Alignment.TopEnd)
+                    .offset(x = ExpiredBadgeOffset, y = -ExpiredBadgeOffset),
             )
         }
     }
@@ -316,19 +315,11 @@ private fun IngredientCategoryIcon(
 
 @Composable
 private fun ExpiredBadge(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .size(ExpiredBadgeSize)
-            .background(NeveraTheme.colors.statusNegativeNormal, CircleShape),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = "!",
-            style = NeveraTheme.typography.captionMedium,
-            color = NeveraTheme.colors.textInverse,
-            fontWeight = FontWeight.Bold,
-        )
-    }
+    Image(
+        painter = NeveraIcons.CircleWarning,
+        contentDescription = null,
+        modifier = modifier.size(NeveraTheme.iconSize.small)
+    )
 }
 
 @Composable
