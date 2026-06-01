@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.displayName
 import com.anddd.nevera.core.ui.iconRes
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.feature.fridge.R
@@ -334,7 +335,7 @@ private fun IngredientInfoColumn(
             append(stringResource(R.string.fridge_ingredient_cost_format, item.cost))
             append(" • ")
         }
-        append(item.categoryName)
+        append(item.category.displayName())
         append(" • ")
         append(stringResource(R.string.fridge_ingredient_quantity_format, item.quantity))
     }
@@ -386,7 +387,6 @@ private fun FridgeIngredientItemPreview() {
                 id = 1L,
                 name = "제주 햇당근",
                 category = FoodCategory.Veg,
-                categoryName = "채소",
                 quantity = 1,
                 cost = 6500,
                 expiryDate = LocalDate.now().plusDays(28),
@@ -407,7 +407,6 @@ private fun FridgeIngredientItemWarningPreview() {
                 id = 3L,
                 name = "동물복지 유정란",
                 category = FoodCategory.MeatEggs,
-                categoryName = "육류/계란",
                 quantity = 4,
                 cost = 8900,
                 expiryDate = LocalDate.now().plusDays(4),
@@ -428,7 +427,6 @@ private fun FridgeIngredientItemDDayPreview() {
                 id = 4L,
                 name = "서울우유 1L",
                 category = FoodCategory.Dairy,
-                categoryName = "유제품",
                 quantity = 1,
                 cost = 3570,
                 expiryDate = LocalDate.now(),
@@ -449,7 +447,6 @@ private fun FridgeIngredientItemExpiredPreview() {
                 id = 2L,
                 name = "한돈 1등급 삼겹살",
                 category = FoodCategory.MeatEggs,
-                categoryName = "육류/계란",
                 quantity = 1,
                 cost = 24990,
                 expiryDate = LocalDate.now().minusDays(3),

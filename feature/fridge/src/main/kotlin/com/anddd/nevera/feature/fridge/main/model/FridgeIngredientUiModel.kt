@@ -8,7 +8,6 @@ data class FridgeIngredientUiModel(
     val id: Long,
     val name: String,
     val category: FoodCategory,
-    val categoryName: String,
     val quantity: Int,
     val cost: Int,
     val expiryDate: LocalDate?,
