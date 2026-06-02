@@ -1,6 +1,8 @@
 package com.anddd.nevera.feature.sample.gemma
 
+import android.Manifest
 import android.content.ContentValues
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.MediaStore
 import android.widget.Toast
@@ -15,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.sample.R
 import com.anddd.nevera.feature.sample.gemma.component.GemmaImagePickerBottomSheet
@@ -34,20 +37,35 @@ fun GemmaTestScreen(
     val imagePickerSheetState = rememberModalBottomSheetState()
     var showImagePickerBottomSheet by rememberSaveable { mutableStateOf(false) }
     var pendingCameraUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var pendingCameraLaunchAfterPermission by rememberSaveable { mutableStateOf(false) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
     ) { uri ->
-        uri?.let { viewModel.handleIntent(GemmaTestIntent.UpdateImageUri(it.toString())) }
+        uri?.let { viewModel.handleIntent(GemmaTestIntent.UpdateImageUriFromPicker(it.toString())) }
     }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
     ) { success ->
         if (success) {
-            pendingCameraUri?.let { viewModel.handleIntent(GemmaTestIntent.UpdateImageUri(it.toString())) }
+            pendingCameraUri?.let { viewModel.handleIntent(GemmaTestIntent.UpdateImageUriFromPicker(it.toString())) }
         }
         pendingCameraUri = null
+        pendingCameraLaunchAfterPermission = false
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        val uri = pendingCameraUri
+        if (granted && uri != null && pendingCameraLaunchAfterPermission) {
+            cameraLauncher.launch(uri)
+        } else if (!granted && pendingCameraLaunchAfterPermission) {
+            Toast.makeText(context, "카메라 권한이 필요합니다", Toast.LENGTH_SHORT).show()
+            pendingCameraUri = null
+        }
+        pendingCameraLaunchAfterPermission = false
     }
 
     val imagePickerTitle = stringResource(R.string.gemma_test_image_picker_title)
@@ -81,7 +99,22 @@ fun GemmaTestScreen(
                 )
                 if (uri != null) {
                     pendingCameraUri = uri
-                    cameraLauncher.launch(uri)
+                    val cameraGranted = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.CAMERA,
+                    ) == PackageManager.PERMISSION_GRANTED
+                    if (cameraGranted) {
+                        runCatching {
+                            cameraLauncher.launch(uri)
+                        }.onFailure {
+                            pendingCameraUri = null
+                            pendingCameraLaunchAfterPermission = false
+                            Toast.makeText(context, "카메라를 실행할 수 없습니다", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        pendingCameraLaunchAfterPermission = true
+                        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
                 } else {
                     Toast.makeText(context, imagePickerTitle, Toast.LENGTH_SHORT).show()
                 }

@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -18,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.anddd.nevera.domain.model.ai.GemmaModelState
 import com.anddd.nevera.feature.sample.R
 import com.anddd.nevera.feature.sample.gemma.model.GemmaTestIntent
 import com.anddd.nevera.feature.sample.gemma.model.GemmaTestUiState
@@ -28,34 +30,21 @@ fun GemmaTestContent(
     uiState: GemmaTestUiState,
     onIntent: (GemmaTestIntent) -> Unit,
 ) {
+    val buttonsEnabled = !uiState.isGenerating
+    val canRunPrompt = !uiState.isGenerating &&
+        uiState.prompt.isNotBlank()
+    val canRunImageAnalysis = canRunPrompt && uiState.imageUri.isNotBlank()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .imePadding()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text("모델 상태: ${uiState.modelState::class.simpleName}")
-
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(
-                onClick = { onIntent(GemmaTestIntent.DownloadModel) },
-                enabled = uiState.modelState !is GemmaModelState.Downloading &&
-                    uiState.modelState !is GemmaModelState.Pending,
-            ) {
-                Text("다운로드")
-            }
-            Button(
-                onClick = { onIntent(GemmaTestIntent.CancelDownload) },
-                enabled = uiState.modelState is GemmaModelState.Downloading ||
-                    uiState.modelState is GemmaModelState.Pending,
-            ) {
-                Text("취소")
-            }
-        }
-
-        HorizontalDivider()
-
         OutlinedTextField(
             value = uiState.prompt,
             onValueChange = { onIntent(GemmaTestIntent.UpdatePrompt(it)) },
@@ -74,6 +63,7 @@ fun GemmaTestContent(
         OutlinedButton(
             onClick = { onIntent(GemmaTestIntent.OpenImagePicker) },
             modifier = Modifier.fillMaxWidth(),
+            enabled = buttonsEnabled,
         ) {
             Text(stringResource(R.string.gemma_test_image_picker_button))
         }
@@ -81,24 +71,26 @@ fun GemmaTestContent(
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
                 onClick = { onIntent(GemmaTestIntent.RunPrompt) },
-                enabled = !uiState.isGenerating && uiState.modelState is GemmaModelState.Ready,
+                enabled = canRunPrompt,
             ) {
                 Text("프롬프트 실행")
             }
             Button(
                 onClick = { onIntent(GemmaTestIntent.RunImageAnalysis) },
-                enabled = !uiState.isGenerating &&
-                    uiState.modelState is GemmaModelState.Ready &&
-                    uiState.imageUri.isNotBlank(),
+                enabled = canRunImageAnalysis,
             ) {
                 Text("이미지 분석")
             }
             Button(
                 onClick = { onIntent(GemmaTestIntent.ClearResult) },
-                enabled = !uiState.isGenerating,
+                enabled = buttonsEnabled,
             ) {
                 Text("초기화")
             }
+        }
+
+        uiState.elapsedTimeText?.let {
+            Text("경과시간: $it")
         }
 
         if (uiState.isGenerating) CircularProgressIndicator()
