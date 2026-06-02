@@ -72,6 +72,9 @@ fun NeveraNavHost(
             onNavigateToNotification = {
                 navController.navigate(NotificationRoute) { launchSingleTop = true }
             },
+            onNavigateToGemmaTest = {
+                navController.navigate(GemmaTestRoute) { launchSingleTop = true }
+            },
         )
         fridgeScreen(
             onNavigateToCamera = {
