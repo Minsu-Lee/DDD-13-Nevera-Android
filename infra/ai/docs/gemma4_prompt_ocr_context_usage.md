@@ -100,7 +100,30 @@ parseResult.onSuccess { result ->
 `feature:sample` 모듈의 `GemmaTestScreen`에서 수동 검증 가능:
 
 1. `NavHost`에서 `navController.navigate(GemmaTestRoute)` 호출
-2. 모델 상태 확인 → 다운로드 → 텍스트/이미지 prompt 실행
+2. 로컬 USB 설치 앱에서는 모델 다운로드/취소를 테스트하지 않는다.
+3. 먼저 앱 내부 저장소에 단일 모델 파일을 주입한다.
+
+```bash
+# 원본 .litertlm 파일이 있는 경우
+bash infra/ai/scripts/install_gemma4_e2b_model_to_device.sh ~/Downloads/gemma4-e2b-it.litertlm
+
+# 원본 파일 없이 AI Pack shard만 있는 경우
+bash infra/ai/scripts/install_gemma4_e2b_model_to_device.sh --from-shards
+```
+
+4. `GemmaTestScreen`에서 텍스트/이미지 prompt를 실행한다.
+
+로컬 샘플이 기대하는 모델 위치:
+
+```
+/data/user/0/com.anddd.nevera/no_backup/gemma4/gemma4-e2b-it.litertlm
+```
+
+이 경로는 프로젝트 폴더가 아니라 설치된 앱의 내부 저장소(`Context.noBackupFilesDir`)이다.
+해당 파일이 없거나 SHA-256 검증에 실패하면 `GetGemmaModelPathUseCase()`가 null을 반환하고,
+엔진은 `Failed(ModelNotReady)`를 emit한다.
+
+Play AI Delivery 다운로드/취소 검증은 Google Play 내부 테스트 트랙에서 설치한 앱으로만 수행한다.
 
 ---
 
