@@ -5,7 +5,3 @@ plugins {
 android {
     namespace = "com.anddd.nevera.feature.splash"
 }
-
-dependencies {
-    implementation(project(":infra:permission"))
-}
