@@ -19,7 +19,7 @@ internal object GemmaAiPackConstants {
 
     // Fill in after running prepare_gemma4_e2b_model.sh
     // null means skip checksum verification (size-only check)
-    val EXPECTED_FULL_SHA256: String? = null
+    val EXPECTED_FULL_SHA256: String? = "181938105e0eefd105961417e8da75903eacda102c4fce9ce90f50b97139a63c"
     val EXPECTED_PART_SHA256: List<String?> = List(PARTS.size) { null }
 
     init {

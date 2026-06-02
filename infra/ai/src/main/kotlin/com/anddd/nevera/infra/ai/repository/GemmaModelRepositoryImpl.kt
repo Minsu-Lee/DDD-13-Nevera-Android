@@ -10,6 +10,7 @@ import com.google.android.play.core.aipacks.AiPackState
 import com.google.android.play.core.aipacks.AiPackStateUpdateListener
 import com.google.android.play.core.aipacks.model.AiPackErrorCode
 import com.google.android.play.core.aipacks.model.AiPackStatus
+import com.google.android.play.core.assetpacks.AssetPackException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -77,12 +78,17 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
                 if (allCompleted) {
                     mergeShards()
                 } else {
-                    GemmaModelState.NotInstalled.also { _state.value = it }
+                    mapPackStates(packStates).also { state ->
+                        _state.value = state
+                        if (!isTerminalState(state)) {
+                            registerListenerIfNeeded()
+                        }
+                    }
                 }
             }
         } catch (e: Exception) {
             Timber.e(e, "Error refreshing Gemma model state")
-            GemmaModelState.Failed(GemmaModelError.Unknown(e)).also { _state.value = it }
+            GemmaModelState.Failed(e.toGemmaModelError()).also { _state.value = it }
         }
     }
 
@@ -117,7 +123,7 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Timber.e(e, "Error requesting Gemma model download")
             unregisterListenerIfNeeded()
-            _state.value = GemmaModelState.Failed(GemmaModelError.Unknown(e))
+            _state.value = GemmaModelState.Failed(e.toGemmaModelError())
         }
     }
 
@@ -134,7 +140,7 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
             unregisterListenerIfNeeded()
         } catch (e: Exception) {
             Timber.e(e, "Error canceling Gemma model download")
-            _state.value = GemmaModelState.Failed(GemmaModelError.Unknown(e))
+            _state.value = GemmaModelState.Failed(e.toGemmaModelError())
         }
     }
 
@@ -216,4 +222,22 @@ internal class GemmaModelRepositoryImpl @Inject constructor(
             listenerRegistered = false
         }
     }
+
+    private fun Throwable.toGemmaModelError(): GemmaModelError {
+        val assetPackException = generateSequence(this) { throwable ->
+            throwable.cause?.takeUnless { cause -> cause === throwable }
+        }.filterIsInstance<AssetPackException>().firstOrNull()
+
+        return assetPackException?.errorCode?.toGemmaModelError()
+            ?: GemmaModelError.Unknown(this)
+    }
+
+    private fun Int.toGemmaModelError(): GemmaModelError =
+        when (this) {
+            AiPackErrorCode.APP_NOT_OWNED -> GemmaModelError.AppNotOwned
+            AiPackErrorCode.APP_UNAVAILABLE,
+            AiPackErrorCode.API_NOT_AVAILABLE -> GemmaModelError.PlayStoreUnavailable
+            AiPackErrorCode.NETWORK_ERROR -> GemmaModelError.DownloadFailed
+            else -> GemmaModelError.PlayError(this)
+        }
 }
