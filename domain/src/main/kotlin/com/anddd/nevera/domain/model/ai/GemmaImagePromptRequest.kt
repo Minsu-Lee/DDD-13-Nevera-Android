@@ -5,4 +5,5 @@ data class GemmaImagePromptRequest(
     val prompt: String,
     val systemPrompt: String? = null,
     val maxTokens: Int = 768,
+    val traceId: String? = null,
 )

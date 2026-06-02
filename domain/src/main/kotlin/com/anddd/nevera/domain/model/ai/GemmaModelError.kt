@@ -5,6 +5,7 @@ sealed interface GemmaModelError {
     data object PlayStoreUnavailable : GemmaModelError
     data object DownloadFailed : GemmaModelError
     data object CanceledByUser : GemmaModelError
+    data object AppNotOwned : GemmaModelError
     data object MissingPackLocation : GemmaModelError
     data object MissingShard : GemmaModelError
     data object MergeFailed : GemmaModelError
