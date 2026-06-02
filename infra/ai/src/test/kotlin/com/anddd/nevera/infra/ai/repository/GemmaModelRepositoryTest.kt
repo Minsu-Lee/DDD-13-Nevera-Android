@@ -9,6 +9,8 @@ import com.google.android.play.core.aipacks.AiPackStateUpdateListener
 import com.google.android.play.core.aipacks.AiPackStates
 import com.google.android.play.core.aipacks.model.AiPackErrorCode
 import com.google.android.play.core.aipacks.model.AiPackStatus
+import com.google.android.play.core.assetpacks.AssetPackException
+import com.google.android.play.core.assetpacks.model.AssetPackErrorCode
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -53,6 +55,19 @@ class GemmaModelRepositoryTest {
         assertTrue(state is GemmaModelState.Ready)
         assertEquals("/fake/model/path", (state as GemmaModelState.Ready).modelPath)
         verify(exactly = 0) { dataSource.registerListener(any()) }
+    }
+
+    @Test
+    fun `refresh 시 현재 pack 상태가 REQUIRES_USER_CONFIRMATION이면 RequiresUserConfirmation으로 매핑한다`() = runTest {
+        coEvery { dataSource.getPackStates(any()) } returns mockAiPackStates(
+            mockPackState(AiPackStatus.REQUIRES_USER_CONFIRMATION),
+        )
+
+        val state = repository.refreshGemmaModelState()
+
+        assertEquals(GemmaModelState.RequiresUserConfirmation, state)
+        assertEquals(GemmaModelState.RequiresUserConfirmation, repository.observeGemmaModelState().first())
+        verify { dataSource.registerListener(any()) }
     }
 
     // ── download percent calculation ─────────────────────────────────────────
@@ -159,6 +174,18 @@ class GemmaModelRepositoryTest {
         assertTrue(repository.observeGemmaModelState().first() is GemmaModelState.Failed)
     }
 
+    @Test
+    fun `fetch에서 APP_NOT_OWNED 예외 발생 시 AppNotOwned로 매핑된다`() = runTest {
+        coEvery { dataSource.fetch(any()) } throws assetPackException(AssetPackErrorCode.APP_NOT_OWNED)
+
+        repository.requestGemmaModelDownload()
+
+        assertEquals(
+            GemmaModelState.Failed(GemmaModelError.AppNotOwned),
+            repository.observeGemmaModelState().first(),
+        )
+    }
+
     // ── listener state update ────────────────────────────────────────────────
 
     @Test
@@ -224,5 +251,11 @@ class GemmaModelRepositoryTest {
     private fun mockAiPackStates(vararg states: AiPackState): AiPackStates {
         val statesMap = states.associateBy { it.name() }
         return mockk { every { packStates() } returns statesMap }
+    }
+
+    private fun assetPackException(errorCode: Int): AssetPackException {
+        val constructor = AssetPackException::class.java.getDeclaredConstructor(Int::class.javaPrimitiveType)
+        constructor.isAccessible = true
+        return constructor.newInstance(errorCode)
     }
 }

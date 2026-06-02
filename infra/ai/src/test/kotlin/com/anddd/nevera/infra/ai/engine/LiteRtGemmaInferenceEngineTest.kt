@@ -7,6 +7,7 @@ import com.anddd.nevera.domain.model.ai.GemmaPromptRequest
 import com.anddd.nevera.domain.usecase.ai.GetGemmaModelPathUseCase
 import com.anddd.nevera.infra.ai.image.GemmaImageNormalizer
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
@@ -92,7 +93,7 @@ class LiteRtGemmaInferenceEngineTest {
     @Test
     fun `imageNormalizer가 null을 반환하면 analyzeImage는 ImageReadFailed를 emit한다`() = runTest {
         coEvery { getGemmaModelPath() } returns "/fake/model.litertlm"
-        coEvery { imageNormalizer.normalize(any()) } returns null
+        every { imageNormalizer.normalize(any(), any()) } returns null
 
         val events = engine.analyzeImage(
             GemmaImagePromptRequest(imageUri = "content://invalid", prompt = "분석"),
@@ -102,6 +103,40 @@ class LiteRtGemmaInferenceEngineTest {
         assertTrue(events[0] is GemmaGenerationEvent.Failed)
         assertEquals(
             GemmaGenerationError.ImageReadFailed,
+            (events[0] as GemmaGenerationEvent.Failed).error,
+        )
+    }
+
+    @Test
+    fun `imageNormalizer가 OOM을 던지면 analyzeImage는 ImageNormalizeFailed를 emit한다`() = runTest {
+        coEvery { getGemmaModelPath() } returns "/fake/model.litertlm"
+        every { imageNormalizer.normalize(any(), any()) } throws OutOfMemoryError("boom")
+
+        val events = engine.analyzeImage(
+            GemmaImagePromptRequest(imageUri = "content://invalid", prompt = "분석"),
+        ).toList()
+
+        assertEquals(1, events.size)
+        assertTrue(events[0] is GemmaGenerationEvent.Failed)
+        assertEquals(
+            GemmaGenerationError.ImageNormalizeFailed,
+            (events[0] as GemmaGenerationEvent.Failed).error,
+        )
+    }
+
+    @Test
+    fun `imageNormalizer가 빈 파일을 반환하면 analyzeImage는 ImageNormalizeFailed를 emit한다`() = runTest {
+        coEvery { getGemmaModelPath() } returns "/fake/model.litertlm"
+        every { imageNormalizer.normalize(any(), any()) } returns File.createTempFile("gemma_test_", ".jpg")
+
+        val events = engine.analyzeImage(
+            GemmaImagePromptRequest(imageUri = "content://invalid", prompt = "분석"),
+        ).toList()
+
+        assertEquals(1, events.size)
+        assertTrue(events[0] is GemmaGenerationEvent.Failed)
+        assertEquals(
+            GemmaGenerationError.ImageNormalizeFailed,
             (events[0] as GemmaGenerationEvent.Failed).error,
         )
     }
