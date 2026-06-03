@@ -7,9 +7,14 @@ on:
       - 'release/**'
   workflow_dispatch:   # 수동 트리거 (긴급 배포 시 사용)
 
+concurrency:
+  group: cd-firebase-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   distribute:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
 
