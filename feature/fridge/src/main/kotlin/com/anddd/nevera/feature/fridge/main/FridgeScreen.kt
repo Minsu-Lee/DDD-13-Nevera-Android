@@ -1,10 +1,8 @@
 package com.anddd.nevera.feature.fridge.main
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,10 +13,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.core.designsystem.component.bottomsheet.NeveraActionBottomSheet
-import com.anddd.nevera.core.designsystem.component.dialog.NeveraConfirmDialog
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.component.NotificationPermissionDescriptionItem
 import com.anddd.nevera.core.ui.component.ReceiptCaptureModeBottomSheet
 import com.anddd.nevera.feature.fridge.R
 import com.anddd.nevera.feature.fridge.main.component.FridgeContent
@@ -92,25 +90,10 @@ fun FridgeScreen(
                         onConfirm = onConfirm,
                         onDismissRequest = onDismiss,
                     ) {
-                        Text(
-                            text = stringResource(R.string.notification_permission_request_description),
-                            style = NeveraTheme.typography.bodyMedium,
-                            color = NeveraTheme.colors.textSecondary,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = NeveraTheme.spacing.padding20),
+                        NotificationPermissionDescriptionItem(
+                            modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20)
                         )
                     }
-                },
-                rationaleContent = { onConfirm, onDismiss ->
-                    NeveraConfirmDialog(
-                        title = stringResource(R.string.notification_permission_rationale_title),
-                        subtitle = stringResource(R.string.notification_permission_rationale_message),
-                        negative = stringResource(R.string.notification_permission_rationale_dismiss),
-                        positive = stringResource(R.string.notification_permission_rationale_confirm),
-                        onNegative = onDismiss,
-                        onPositive = onConfirm,
-                    )
                 },
             )
         }
