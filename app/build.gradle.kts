@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId = "com.anddd.nevera"
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0.0"
     }
 
