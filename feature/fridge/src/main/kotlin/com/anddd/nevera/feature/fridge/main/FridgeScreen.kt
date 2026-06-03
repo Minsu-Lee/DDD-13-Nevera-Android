@@ -82,13 +82,13 @@ fun FridgeScreen(
                 permission = AppPermission.Notification,
                 onGranted = { permissionHandled = true },
                 onDenied = { permissionHandled = true },
-                content = { onConfirm, onDismiss ->
+                content = { onConfirm, _ ->
                     NeveraActionBottomSheet(
                         sheetState = notificationPermissionSheetState,
                         title = stringResource(R.string.fridge_notification_permission_request_title),
                         confirmLabel = stringResource(R.string.fridge_notification_permission_request_confirm),
                         onConfirm = onConfirm,
-                        onDismissRequest = onDismiss,
+                        onDismissRequest = { permissionHandled = true },
                     ) {
                         NotificationPermissionDescriptionItem(
                             modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20)
