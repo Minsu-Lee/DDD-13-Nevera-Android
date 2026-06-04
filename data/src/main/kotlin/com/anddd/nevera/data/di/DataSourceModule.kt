@@ -1,18 +1,34 @@
 package com.anddd.nevera.data.di
 
 import com.anddd.nevera.data.datasource.AndroidKeyStoreProvider
+import com.anddd.nevera.data.datasource.AuthRemoteDataSource
+import com.anddd.nevera.data.datasource.AuthRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.OcrDataSource
+import com.anddd.nevera.data.datasource.OcrDataSourceImpl
+import com.anddd.nevera.data.datasource.OcrProgressDataSource
+import com.anddd.nevera.data.datasource.OcrProgressDataSourceImpl
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSource
 import com.anddd.nevera.data.datasource.FcmTokenLocalDataSourceImpl
-import com.anddd.nevera.data.datasource.FirebaseFcmTokenProvider
-import com.anddd.nevera.data.datasource.KeyProvider
 import com.anddd.nevera.data.datasource.FcmTokenRemoteDataSource
 import com.anddd.nevera.data.datasource.FcmTokenRemoteDataSourceImpl
-import com.anddd.nevera.data.datasource.TokenDataSourceImpl
+import com.anddd.nevera.data.datasource.FirebaseFcmTokenProvider
+import com.anddd.nevera.data.datasource.KeyProvider
 import com.anddd.nevera.data.datasource.RefreshDataSource
 import com.anddd.nevera.data.datasource.RefreshDataSourceImpl
 import com.anddd.nevera.data.datasource.TokenDataSource
-import com.anddd.nevera.data.datasource.UserDataSourceImpl
-import com.anddd.nevera.data.datasource.UserDataSource
+import com.anddd.nevera.data.datasource.TokenDataSourceImpl
+import com.anddd.nevera.data.datasource.UserRemoteDataSource
+import com.anddd.nevera.data.datasource.UserRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.HomeRemoteDataSource
+import com.anddd.nevera.data.datasource.HomeRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.IngredientRemoteDataSource
+import com.anddd.nevera.data.datasource.IngredientRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.WishRemoteDataSource
+import com.anddd.nevera.data.datasource.WishRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.NotificationRemoteDataSource
+import com.anddd.nevera.data.datasource.NotificationRemoteDataSourceImpl
+import com.anddd.nevera.data.datasource.NotificationLocalDataSource
+import com.anddd.nevera.data.datasource.NotificationLocalDataSourceImpl
 import com.anddd.nevera.domain.repository.FcmTokenProvider
 import dagger.Binds
 import dagger.Module
@@ -34,7 +50,11 @@ internal abstract class DataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindUserDataSource(impl: UserDataSourceImpl): UserDataSource
+    abstract fun bindAuthRemoteDataSource(impl: AuthRemoteDataSourceImpl): AuthRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRemoteDataSource(impl: UserRemoteDataSourceImpl): UserRemoteDataSource
 
     @Binds
     @Singleton
@@ -51,4 +71,32 @@ internal abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindFcmTokenProvider(impl: FirebaseFcmTokenProvider): FcmTokenProvider
+
+    @Binds
+    @Singleton
+    abstract fun bindHomeRemoteDataSource(impl: HomeRemoteDataSourceImpl): HomeRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindOcrDataSource(impl: OcrDataSourceImpl): OcrDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindOcrProgressDataSource(impl: OcrProgressDataSourceImpl): OcrProgressDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindIngredientRemoteDataSource(impl: IngredientRemoteDataSourceImpl): IngredientRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindWishRemoteDataSource(impl: WishRemoteDataSourceImpl): WishRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindNotificationRemoteDataSource(impl: NotificationRemoteDataSourceImpl): NotificationRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindNotificationLocalDataSource(impl: NotificationLocalDataSourceImpl): NotificationLocalDataSource
 }

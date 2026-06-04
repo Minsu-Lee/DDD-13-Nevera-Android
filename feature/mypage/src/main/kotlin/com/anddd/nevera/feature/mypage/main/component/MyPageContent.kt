@@ -3,6 +3,7 @@ package com.anddd.nevera.feature.mypage.main.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,13 +38,14 @@ internal fun MyPageContent(
                 title = stringResource(MyPageR.string.mypage_title),
                 action = NeveraAppBarAction.Icons.of(
                     NeveraAppBarAction.Icons.Item(
-                        painter = NeveraIcons.Bell,
+                        painter = if (uiState.hasUnreadNotification) NeveraIcons.BellOn else NeveraIcons.Bell,
                         contentDescription = stringResource(MyPageR.string.mypage_notification_icon_desc),
-                        onClick = {},
+                        onClick = { onIntent(MyPageIntent.NotificationIconClicked) },
                     )
                 ),
             )
-        }
+        },
+        contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -51,7 +53,6 @@ internal fun MyPageContent(
                 .padding(innerPadding),
         ) {
             Column {
-                // TODO: 실데이터 연결 시 uiState에서 주입
                 ProfileContent(profile = uiState.profile)
 
                 Box(

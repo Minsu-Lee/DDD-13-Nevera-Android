@@ -1,0 +1,75 @@
+name: CD - Firebase App Distribution
+
+on:
+  push:
+    branches:
+      - develop
+      - 'release/**'
+  workflow_dispatch:   # 수동 트리거 (긴급 배포 시 사용)
+
+jobs:
+  distribute:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'build-logic/src/**/*.kt', 'gradle/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Restore debug keystore
+        run: |
+          mkdir -p keystore
+          echo "${{ secrets.DEBUG_KEYSTORE_BASE64 }}" | base64 --decode > keystore/debug.keystore
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --no-daemon
+        env:
+          GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+
+      # develop 브랜치 → 개발자 그룹에만 배포
+      - name: Upload to Firebase (developers)
+        if: github.ref == 'refs/heads/develop'
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: android-developers
+          file: app/build/outputs/apk/debug/app-debug.apk
+          releaseNotes: |
+            브랜치: ${{ github.ref_name }}
+            커밋: ${{ github.sha }}
+            메시지: ${{ github.event.head_commit.message }}
+
+      # release/* 브랜치 → 개발자 + QA + 팀 전체 배포
+      - name: Upload to Firebase (qa-and-team)
+        if: startsWith(github.ref, 'refs/heads/release/')
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: android-developers, qa-and-team
+          file: app/build/outputs/apk/debug/app-debug.apk
+          releaseNotes: |
+            브랜치: ${{ github.ref_name }}
+            커밋: ${{ github.sha }}
+            메시지: ${{ github.event.head_commit.message }}

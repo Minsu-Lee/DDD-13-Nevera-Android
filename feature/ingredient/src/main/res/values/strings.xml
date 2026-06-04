@@ -4,17 +4,6 @@
     <string name="ingredient_category_title">카테고리</string>
     <string name="ingredient_category_confirm">확인</string>
 
-    <!-- FoodCategory displayName -->
-    <string name="ingredient_category_vegetable">채소</string>
-    <string name="ingredient_category_fruit">과일</string>
-    <string name="ingredient_category_meat_egg">육류/계란</string>
-    <string name="ingredient_category_seafood">해산물</string>
-    <string name="ingredient_category_dairy">유제품</string>
-    <string name="ingredient_category_sauce">소스/양념</string>
-    <string name="ingredient_category_beverage">음료</string>
-    <string name="ingredient_category_processed">가공식품</string>
-    <string name="ingredient_category_other">기타</string>
-
     <!-- StorageLocationBottomSheet -->
     <string name="ingredient_storage_location_title">보관 방법</string>
     <string name="ingredient_storage_location_confirm">확인</string>
@@ -25,11 +14,6 @@
     <string name="ingredient_storage_location_pantry">실온</string>
 
     <!-- IngredientItemCard -->
-    <string name="ingredient_item_edit_name">식재료 이름 수정</string>
-    <string name="ingredient_item_edit_name_placeholder">식재료 이름을 입력해주세요</string>
-    <string name="ingredient_item_edit_confirm">확인</string>
-    <string name="ingredient_item_edit_dismiss">취소</string>
-    <string name="ingredient_item_edit_icon_description">식재료 이름 수정</string>
     <string name="ingredient_item_checkbox_description">식재료 선택</string>
     <string name="ingredient_item_label_quantity">수량</string>
     <string name="ingredient_item_label_cost">금액</string>
@@ -39,4 +23,58 @@
     <string name="ingredient_item_placeholder_select">선택</string>
     <string name="ingredient_item_placeholder_date">날짜 선택</string>
     <string name="ingredient_item_cost_unit">원</string>
+
+    <!-- OcrScanningDialog -->
+    <string name="ocr_scanning_title_reading_receipt">영수증을 읽는 중...</string>
+    <string name="ocr_scanning_title_recognizing_ingredients">식재료를 인식 중...</string>
+    <string name="ocr_scanning_title_analyzing_text">텍스트를 분석 중...</string>
+    <string name="ocr_scanning_title_scanning_carefully">꼼꼼하게 스캔 중...</string>
+    <string name="ocr_scanning_close_description">취소</string>
+
+    <!-- IngredientScreen -->
+    <string name="ingredient_screen_close_confirm_title">작성을 취소할까요?</string>
+    <string name="ingredient_screen_close_confirm_message">지금까지 내용들이 모두 삭제돼요</string>
+    <string name="ingredient_screen_close_confirm_positive">작성 취소</string>
+    <string name="ingredient_screen_close_confirm_negative">닫기</string>
+    <string name="ingredient_list_title">AI가 식재료를 분석했어요</string>
+    <string name="ingredient_list_subtitle">추천 카테고리와 보관 방법을 확인해보세요</string>
+    <string name="ingredient_action_select_all">모두 선택</string>
+    <string name="ingredient_action_deselect_all">모두 해제</string>
+    <string name="ingredient_register_button">%d개 등록하기</string>
+    <string name="ingredient_add_item_button">직접 추가</string>
+    <string name="ingredient_register_failed">등록에 실패했습니다. 다시 시도해주세요.</string>
+
+    <!-- RegisterSuccessScreen -->
+    <string name="register_success_title">나의 냉장고에\n식재료를 등록했어요!</string>
+    <string name="register_success_saving_prefix">"식재료를 모두 구조하면 "</string>
+    <string name="register_success_saving_suffix">을 절약할 수 있어요</string>
+    <string name="register_success_button">나의 냉장고 보기</string>
+    <string name="register_success_close_description">닫기</string>
+
+    <!-- OcrErrorScreen -->
+    <string name="ocr_error_title">이런! 식재료를 인식하지 못했어요</string>
+    <string name="ocr_error_subtitle">글자와 이미지가 잘 보이도록 다시 시도해주세요</string>
+    <string name="ocr_error_tip_header">이렇게 해보세요!</string>
+    <string name="ocr_error_tip_1">밝고 그림자가 없는 곳에서 촬영해주세요</string>
+    <string name="ocr_error_tip_2">영수증은 구겨지지 않게 펼쳐서 올려주세요</string>
+    <string name="ocr_error_tip_3">내용 전체가 화면 안에 들어오게 맞춰주세요</string>
+    <string name="ocr_error_retry">다시 시도하기</string>
+
+    <!-- OcrCaptureScreen -->
+    <string name="ocr_capture_scan_title">영수증 스캔</string>
+    <string name="ocr_capture_switch_to_camera">카메라 모드</string>
+    <string name="ocr_capture_hint_line1">영수증이 잘 보일 수 있도록</string>
+    <string name="ocr_capture_hint_line2">종이가 구겨지지 않게 평평하게 펴주세요</string>
+    <string name="ocr_capture_hint_combined">영수증이 잘 보일 수 있도록\n종이가 구겨지지 않게 평평하게 펴주세요</string>
+    <string name="ocr_capture_permission_dialog_title">기기의 권한이 꺼져있어요</string>
+    <string name="ocr_capture_permission_dialog_subtitle">설정에서 권한을 허용해주세요</string>
+    <string name="ocr_capture_permission_dialog_positive">설정으로 이동</string>
+    <string name="ocr_capture_permission_dialog_negative">닫기</string>
+    <string name="ocr_capture_gallery_partial_access">현재 선택한 사진만 사용할 수 있어요.</string>
+    <string name="ocr_capture_gallery_partial_access_select">추가</string>
+    <string name="ocr_capture_error">촬영에 실패했습니다.</string>
+    <string name="ocr_capture_gallery_icon_description">갤러리</string>
+    <string name="ocr_capture_camera_swap_icon_description">카메라 전환</string>
+    <string name="ocr_capture_shutter_icon_description">사진 촬영</string>
+    <string name="ocr_capture_gallery_image_description">영수증 사진 선택</string>
 </resources>

@@ -22,6 +22,7 @@ import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.In
 import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientExpiryDateRow
 import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientHeaderRow
 import com.anddd.nevera.feature.ingredient.main.component.ingredient.internal.IngredientQuantityField
+import com.anddd.nevera.core.ui.displayName
 import com.anddd.nevera.feature.ingredient.main.displayName
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import java.time.LocalDate
@@ -37,7 +38,6 @@ import java.time.LocalDate
  *
  * @param item               현재 식재료 모델
  * @param onSelectionChanged 체크박스 토글 콜백
- * @param onNameEditClick    이름 편집 아이콘 탭 → 부모가 다이얼로그 표시
  * @param onQuantityChanged  수량 변경 값 전달
  * @param onCostChanged      금액 변경 값 전달
  * @param onCategoryClick    카테고리 탭 → 부모가 바텀시트 표시
@@ -49,7 +49,6 @@ import java.time.LocalDate
 fun IngredientItemCard(
     item: IngredientUiModel,
     onSelectionChanged: (Boolean) -> Unit,
-    onNameEditClick: () -> Unit,
     onQuantityChanged: (Int) -> Unit,
     onCostChanged: (Int) -> Unit,
     onCategoryClick: () -> Unit,
@@ -71,7 +70,6 @@ fun IngredientItemCard(
                 name = item.name,
                 isSelected = item.isSelected,
                 onSelectionChanged = onSelectionChanged,
-                onEditClick = onNameEditClick,
             )
 
             IngredientQuantityField(
@@ -123,7 +121,7 @@ private fun IngredientItemCardSelectedPreview() {
             IngredientItemCard(
                 item = IngredientUiModel(
                     name = "아침에주스 ABC 주스, 18개입 과즙 음료",
-                    category = FoodCategory.Beverage,
+                    category = FoodCategory.Drink,
                     location = StorageLocation.Fridge,
                     quantity = 2,
                     cost = 1000,
@@ -131,7 +129,6 @@ private fun IngredientItemCardSelectedPreview() {
                     isSelected = true,
                 ),
                 onSelectionChanged = {},
-                onNameEditClick = {},
                 onQuantityChanged = {},
                 onCostChanged = {},
                 onCategoryClick = {},
@@ -161,7 +158,6 @@ private fun IngredientItemCardUnselectedPreview() {
                     isSelected = false,
                 ),
                 onSelectionChanged = {},
-                onNameEditClick = {},
                 onQuantityChanged = {},
                 onCostChanged = {},
                 onCategoryClick = {},

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -31,8 +32,10 @@ fun NeveraContentBottomSheet(
     title: String,
     subtitle: String,
     cta: String,
+    ctaEnabled: Boolean = true,
     onCtaClick: () -> Unit,
     onDismissRequest: (() -> Unit)? = null,
+    properties: ModalBottomSheetProperties = ModalBottomSheetProperties(),
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -41,6 +44,7 @@ fun NeveraContentBottomSheet(
         onDismissRequest = onDismissRequest ?: defaultDismissRequest,
         sheetState = sheetState,
         modifier = modifier,
+        properties = properties,
     ) {
         ContentBottomSheetHeader(
             title = title,
@@ -59,6 +63,7 @@ fun NeveraContentBottomSheet(
                 .fillMaxWidth()
                 .padding(NeveraTheme.spacing.padding16),
             color = NeveraButtonColor.Primary,
+            enabled = ctaEnabled,
         )
     }
 }

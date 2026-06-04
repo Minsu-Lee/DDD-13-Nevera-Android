@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.feature.main.R
+import com.anddd.nevera.feature.main.home.model.HomeWishUiModel
 
 private val RescuerSize = 130.dp
 private val ProgressBarHeight = 8.dp
@@ -44,14 +47,14 @@ private val BorderWidth = 1.dp
 private val BorderDashPathSize = 6.dp
 private val BorderDashPathEmptySize = 6.dp
 private val AddWishButtonHeight = 34.dp
+private val WishBottomPadding = 2.dp
 
 @Composable
-fun WishBanner(
+internal fun WishBanner(
     nickname: String,
-    wish: String,
-    savedMoney: Int,
-    goalMoney: Int,
+    wish: HomeWishUiModel?,
     onCreateWish: () -> Unit,
+    onEditWish: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -74,10 +77,16 @@ fun WishBanner(
                 modifier = Modifier.padding(NeveraTheme.spacing.padding8)
             )
             Spacer(modifier = Modifier.height(NeveraTheme.spacing.padding8))
-            if (wish.isEmpty()) {
+            wish?.let {
+                WishCard(
+                    wish = it.name,
+                    savedMoney = it.accumulatedAmount,
+                    goalMoney = it.goalAmount,
+                    remainingMoney = it.remainingAmount,
+                    onClick = onEditWish,
+                )
+            } ?: run {
                 EmptyWishCard(onCreateWish = onCreateWish)
-            } else {
-                WishCard(wish = wish, savedMoney = savedMoney, goalMoney = goalMoney)
             }
         }
     }
@@ -88,18 +97,24 @@ private fun WishCard(
     wish: String,
     savedMoney: Int,
     goalMoney: Int,
+    remainingMoney: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val progress = if (goalMoney > 0) savedMoney.toFloat() / goalMoney else 0f
-    val remaining = goalMoney - savedMoney
+    val progress = if (goalMoney > 0) (savedMoney.toFloat() / goalMoney).coerceIn(0f, 1f) else 0f
     val cardShape = RoundedCornerShape(NeveraTheme.radius.medium)
-    val remainingText = stringResource(R.string.home_wish_remaining_amount, remaining)
+    val remainingText = stringResource(R.string.home_wish_remaining_amount, remainingMoney)
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(NeveraTheme.colors.surfacePrimary)
             .border(BorderWidth, NeveraTheme.colors.borderNormal, cardShape)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick,
+            )
             .padding(NeveraTheme.spacing.padding16),
     ) {
         Row(
@@ -115,13 +130,13 @@ private fun WishCard(
                 text = stringResource(R.string.home_wish_amount_separator),
                 style = NeveraTheme.typography.bodySmall,
                 color = NeveraTheme.colors.textCaption,
-                modifier = Modifier.padding(bottom = 2.dp),
+                modifier = Modifier.padding(bottom = WishBottomPadding),
             )
             Text(
                 text = stringResource(R.string.home_wish_amount_format, goalMoney),
                 style = NeveraTheme.typography.bodySmall,
                 color = NeveraTheme.colors.textCaption,
-                modifier = Modifier.padding(bottom = 2.dp),
+                modifier = Modifier.padding(bottom = WishBottomPadding),
             )
         }
         Spacer(Modifier.height(NeveraTheme.spacing.gap12))
@@ -221,25 +236,55 @@ private fun EmptyWishCard(
 }
 
 @Preview(
-    name = "WishBanner",
+    name = "WishBanner - 위시 있음",
     showBackground = true,
     widthDp = 360,
 )
 @Composable
-private fun WishBannerPreview() {
+private fun WishBannerWithWishPreview() {
     NeveraTheme {
         WishBanner(
-            nickname = "김푸드",
-            wish = "제주도 여행",
-            savedMoney = 240000,
-            goalMoney = 480000,
+            nickname = "닉네임",
+            wish = HomeWishUiModel(
+                id = 1L,
+                name = "새 맥북",
+                goalAmount = 2000000,
+                accumulatedAmount = 1200000,
+                remainingAmount = 800000,
+                isAchieved = false,
+            ),
             onCreateWish = {},
+            onEditWish = {},
         )
     }
 }
 
 @Preview(
-    name = "WishBanner - Empty",
+    name = "WishBanner - 위시 달성",
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun WishBannerAchievedPreview() {
+    NeveraTheme {
+        WishBanner(
+            nickname = "닉네임",
+            wish = HomeWishUiModel(
+                id = 1L,
+                name = "새 맥북",
+                goalAmount = 2000000,
+                accumulatedAmount = 2000000,
+                remainingAmount = 0,
+                isAchieved = true,
+            ),
+            onCreateWish = {},
+            onEditWish = {},
+        )
+    }
+}
+
+@Preview(
+    name = "WishBanner - 위시 없음",
     showBackground = true,
     widthDp = 360,
 )
@@ -247,11 +292,10 @@ private fun WishBannerPreview() {
 private fun WishBannerEmptyPreview() {
     NeveraTheme {
         WishBanner(
-            nickname = "김푸드",
-            wish = "",
-            savedMoney = 0,
-            goalMoney = 0,
+            nickname = "닉네임",
+            wish = null,
             onCreateWish = {},
+            onEditWish = {},
         )
     }
 }

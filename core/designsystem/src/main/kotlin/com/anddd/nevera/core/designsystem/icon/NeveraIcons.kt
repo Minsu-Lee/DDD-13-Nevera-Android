@@ -24,12 +24,16 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_search)
     val Bell: Painter
         @Composable get() = painterResource(R.drawable.ic_bell)
+    val BellOn: Painter
+        @Composable get() = painterResource(R.drawable.ic_bell_on)
     val LogoAppBar: Painter
         @Composable get() = ColorPainter(NeveraTheme.colors.primaryNormal)
     val Check: Painter
         @Composable get() = painterResource(R.drawable.ic_check)
     val Warning: Painter
         @Composable get() = painterResource(R.drawable.ic_warning)
+    val CircleWarning: Painter
+        @Composable get() = painterResource(R.drawable.ic_circle_warning)
     val Eye: Painter
         @Composable get() = painterResource(R.drawable.ic_eyes)
     val EyeOff: Painter
@@ -48,6 +52,14 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_user)
     val NavMyFilled: Painter
         @Composable get() = painterResource(R.drawable.ic_user_filled)
+    val OcrCaptureCameraWhite: Painter
+        @Composable get() = painterResource(R.drawable.ic_ocr_capture_camera_white)
+    val OcrCaptureCloseWhite: Painter
+        @Composable get() = painterResource(R.drawable.ic_ocr_capture_close_white)
+    val OcrCaptureCameraSwap: Painter
+        @Composable get() = painterResource(R.drawable.ic_ocr_capture_cameraswap_white)
+    val OcrCaptureGallery: Painter
+        @Composable get() = painterResource(R.drawable.ic_ocr_capture_gallery)
     val ChevronSmallLeft: Painter
         @Composable get() = painterResource(R.drawable.ic_chevron_left_small)
     val ChevronSmallUp: Painter
@@ -62,4 +74,8 @@ object NeveraIcons {
         @Composable get() = painterResource(R.drawable.ic_circle_help)
     val EmptyStateWarning: Painter
         @Composable get() = painterResource(R.drawable.ic_empty_state_warning)
+    val IllustLighting: Painter
+        @Composable get() = painterResource(R.drawable.ic_illust_lighting)
+    val IllustExpirationDate: Painter
+        @Composable get() = painterResource(R.drawable.ic_illust_expiration_date)
 }

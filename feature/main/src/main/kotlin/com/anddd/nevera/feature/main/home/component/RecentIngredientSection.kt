@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,10 +13,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,19 +33,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
+import com.anddd.nevera.core.ui.component.EmptyContent
 import com.anddd.nevera.feature.main.R
 import com.anddd.nevera.feature.main.home.model.IngredientFilterTab
 import com.anddd.nevera.feature.main.home.model.IngredientFilterTabUiModel
+import com.anddd.nevera.feature.main.home.model.IngredientUiModel
+import com.anddd.nevera.feature.main.home.model.PaginatedListState
 import com.anddd.nevera.feature.main.home.model.toUiModel
 
 private val TabContainerPadding = 4.dp
 private val TabHeight = 44.dp
-private val EmptyIconSize = 64.dp
+private const val PREFETCH_THRESHOLD = 3
 
 fun LazyListScope.recentIngredientSection(
     selectedTab: IngredientFilterTab,
+    rescuedIngredients: PaginatedListState<IngredientUiModel>,
+    disposalIngredients: PaginatedListState<IngredientUiModel>,
+    listState: LazyListState,
     onTabSelected: (IngredientFilterTab) -> Unit,
     onHelpClick: () -> Unit,
+    onLoadMore: () -> Unit,
 ) {
     item(key = "ingredient_header") {
         RecentIngredientSectionHeader(
@@ -51,6 +64,15 @@ fun LazyListScope.recentIngredientSection(
         Spacer(Modifier.height(NeveraTheme.spacing.gap16))
     }
     item(key = "ingredient_tab") {
+        val currentIngredients = when (selectedTab) {
+            IngredientFilterTab.Rescue -> rescuedIngredients
+            IngredientFilterTab.Disposal -> disposalIngredients
+        }
+        IngredientLoadMoreEffect(
+            listState = listState,
+            currentIngredients = currentIngredients,
+            onLoadMore = onLoadMore,
+        )
         IngredientFilterTabRow(
             selectedTab = selectedTab,
             onTabSelected = onTabSelected,
@@ -60,10 +82,40 @@ fun LazyListScope.recentIngredientSection(
     item(key = "ingredient_tab_spacer") {
         Spacer(Modifier.height(NeveraTheme.spacing.gap20))
     }
-    item(key = "ingredient_empty") {
-        IngredientEmptyContent()
+    ingredientItems(
+        selectedTab = selectedTab,
+        rescuedIngredients = rescuedIngredients,
+        disposalIngredients = disposalIngredients,
+    )
+}
+
+private fun LazyListScope.ingredientItems(
+    selectedTab: IngredientFilterTab,
+    rescuedIngredients: PaginatedListState<IngredientUiModel>,
+    disposalIngredients: PaginatedListState<IngredientUiModel>,
+) {
+    val visibleIngredients = when (selectedTab) {
+        IngredientFilterTab.Rescue -> rescuedIngredients.items
+        IngredientFilterTab.Disposal -> disposalIngredients.items
     }
-    // 향후: items(ingredients, key = { it.id }) { IngredientItem(it) }
+    if (visibleIngredients.isEmpty()) {
+        item(key = "ingredient_empty") {
+            EmptyContent(
+                message = stringResource(R.string.home_ingredient_empty_message),
+                modifier = Modifier.padding(vertical = NeveraTheme.spacing.padding40),
+            )
+        }
+    } else {
+        items(items = visibleIngredients, key = { it.id }) { ingredient ->
+            IngredientItem(
+                ingredient = ingredient,
+                modifier = Modifier.padding(
+                    horizontal = NeveraTheme.spacing.padding20,
+                    vertical = NeveraTheme.spacing.gap8,
+                ),
+            )
+        }
+    }
 }
 
 @Composable
@@ -101,12 +153,10 @@ private fun IngredientFilterTabRow(
     onTabSelected: (IngredientFilterTab) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val containerShape = RoundedCornerShape(NeveraTheme.radius.medium)
-
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(containerShape)
+            .clip(RoundedCornerShape(NeveraTheme.radius.medium))
             .background(NeveraTheme.colors.surfaceSecondary)
             .padding(TabContainerPadding),
     ) {
@@ -164,26 +214,22 @@ private fun IngredientFilterTabItem(
 }
 
 @Composable
-private fun IngredientEmptyContent(
-    modifier: Modifier = Modifier,
+private fun IngredientLoadMoreEffect(
+    listState: LazyListState,
+    currentIngredients: PaginatedListState<IngredientUiModel>,
+    onLoadMore: () -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = NeveraTheme.spacing.padding40),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap16),
-    ) {
-        Image(
-            painter = NeveraIcons.EmptyStateWarning,
-            contentDescription = null,
-            modifier = Modifier.size(EmptyIconSize),
-        )
-        Text(
-            text = stringResource(R.string.home_ingredient_empty_message),
-            style = NeveraTheme.typography.titleSmall,
-            color = NeveraTheme.colors.textCaption,
-        )
+    val currentIngredientsState = rememberUpdatedState(currentIngredients)
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val ingredients = currentIngredientsState.value
+            if (ingredients.items.isEmpty()) return@derivedStateOf false
+            val lastFiveIds = ingredients.items.takeLast(PREFETCH_THRESHOLD).map { it.id }
+            listState.layoutInfo.visibleItemsInfo.any { it.key in lastFiveIds }
+        }
+    }
+    LaunchedEffect(shouldLoadMore) {
+        if (shouldLoadMore) onLoadMore()
     }
 }
 
@@ -195,11 +241,16 @@ private fun IngredientEmptyContent(
 @Composable
 private fun RecentIngredientSectionRescuePreview() {
     NeveraTheme {
-        LazyColumn {
+        val listState = rememberLazyListState()
+        LazyColumn(state = listState) {
             recentIngredientSection(
                 selectedTab = IngredientFilterTab.Rescue,
+                rescuedIngredients = PaginatedListState(),
+                disposalIngredients = PaginatedListState(),
+                listState = listState,
                 onTabSelected = {},
                 onHelpClick = {},
+                onLoadMore = {},
             )
         }
     }
@@ -213,11 +264,16 @@ private fun RecentIngredientSectionRescuePreview() {
 @Composable
 private fun RecentIngredientSectionDisposalPreview() {
     NeveraTheme {
-        LazyColumn {
+        val listState = rememberLazyListState()
+        LazyColumn(state = listState) {
             recentIngredientSection(
                 selectedTab = IngredientFilterTab.Disposal,
+                rescuedIngredients = PaginatedListState(),
+                disposalIngredients = PaginatedListState(),
+                listState = listState,
                 onTabSelected = {},
                 onHelpClick = {},
+                onLoadMore = {},
             )
         }
     }
