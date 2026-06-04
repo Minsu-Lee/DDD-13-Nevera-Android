@@ -1,13 +1,16 @@
 package com.anddd.nevera.feature.main.home.component
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,15 +25,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
 import com.anddd.nevera.core.ui.component.EmptyContent
@@ -51,12 +64,10 @@ fun LazyListScope.recentIngredientSection(
     disposalIngredients: PaginatedListState<IngredientUiModel>,
     listState: LazyListState,
     onTabSelected: (IngredientFilterTab) -> Unit,
-    onHelpClick: () -> Unit,
     onLoadMore: () -> Unit,
 ) {
     item(key = "ingredient_header") {
         RecentIngredientSectionHeader(
-            onHelpClick = onHelpClick,
             modifier = Modifier.padding(horizontal = NeveraTheme.spacing.padding20),
         )
     }
@@ -120,9 +131,11 @@ private fun LazyListScope.ingredientItems(
 
 @Composable
 private fun RecentIngredientSectionHeader(
-    onHelpClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showTooltip by remember { mutableStateOf(false) }
+    val density = LocalDensity.current
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -133,17 +146,72 @@ private fun RecentIngredientSectionHeader(
             style = NeveraTheme.typography.titleMedium,
             color = NeveraTheme.colors.textSecondary,
         )
-        Image(
-            painter = NeveraIcons.CircleHelp,
-            contentDescription = stringResource(R.string.home_ingredient_section_help_description),
+        Box {
+            Image(
+                painter = NeveraIcons.CircleHelp,
+                contentDescription = stringResource(R.string.home_ingredient_section_help_description),
+                modifier = Modifier
+                    .size(NeveraTheme.iconSize.small)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = { showTooltip = !showTooltip },
+                    ),
+            )
+            if (showTooltip) {
+                Popup(
+                    popupPositionProvider = remember(density) {
+                        object : PopupPositionProvider {
+                            override fun calculatePosition(
+                                anchorBounds: IntRect,
+                                windowSize: IntSize,
+                                layoutDirection: LayoutDirection,
+                                popupContentSize: IntSize,
+                            ): IntOffset = with(density) {
+                                IntOffset(
+                                    x = anchorBounds.right + 4.dp.roundToPx(),
+                                    y = anchorBounds.top + anchorBounds.height / 2 - popupContentSize.height / 2,
+                                )
+                            }
+                        }
+                    },
+                ) {
+                    IngredientHelpTooltip()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun IngredientHelpTooltip() {
+    val bgColor = NeveraTheme.colors.secondaryNormal
+    Row(
+        modifier = Modifier.widthIn(max = 240.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Canvas(modifier = Modifier.size(width = 6.dp, height = 12.dp)) {
+            drawPath(
+                path = Path().apply {
+                    moveTo(size.width, 0f)
+                    lineTo(0f, size.height / 2f)
+                    lineTo(size.width, size.height)
+                    close()
+                },
+                color = bgColor,
+            )
+        }
+        Box(
             modifier = Modifier
-                .size(NeveraTheme.iconSize.small)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onHelpClick,
-                ),
-        )
+                .background(bgColor, RoundedCornerShape(NeveraTheme.radius.small))
+                .padding(horizontal = NeveraTheme.spacing.padding12, vertical = NeveraTheme.spacing.gap8),
+        ) {
+            Text(
+                text = stringResource(R.string.home_ingredient_section_tooltip),
+                style = NeveraTheme.typography.bodyMedium,
+                color = NeveraTheme.colors.textInverse,
+            )
+        }
     }
 }
 
@@ -249,7 +317,6 @@ private fun RecentIngredientSectionRescuePreview() {
                 disposalIngredients = PaginatedListState(),
                 listState = listState,
                 onTabSelected = {},
-                onHelpClick = {},
                 onLoadMore = {},
             )
         }
@@ -272,7 +339,6 @@ private fun RecentIngredientSectionDisposalPreview() {
                 disposalIngredients = PaginatedListState(),
                 listState = listState,
                 onTabSelected = {},
-                onHelpClick = {},
                 onLoadMore = {},
             )
         }

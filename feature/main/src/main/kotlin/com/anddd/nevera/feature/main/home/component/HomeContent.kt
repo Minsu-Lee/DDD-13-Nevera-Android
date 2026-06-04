@@ -110,7 +110,6 @@ internal fun HomeContent(
                     onTabSelected = { tab ->
                         onIntent(HomeIntent.RecentIngredientTabClick(tab))
                     },
-                    onHelpClick = {},
                     onLoadMore = { onIntent(HomeIntent.LoadMoreIngredients(uiState.ingredientFilterTab)) },
                 )
             }
