@@ -41,7 +41,7 @@ class OcrCaptureViewModel @Inject constructor(
         when (action) {
             OcrCaptureIntent.Close -> onClose()
             OcrCaptureIntent.OpenGallery -> onOpenGallery()
-            OcrCaptureIntent.CameraPermissionResolved -> onCameraPermissionResolved()
+            OcrCaptureIntent.EnsureGalleryIfNeeded -> onEnsureGalleryIfNeeded()
             OcrCaptureIntent.TakePicture -> onTakePicture()
             OcrCaptureIntent.SwapCamera -> onSwapCamera()
             is OcrCaptureIntent.SelectImage -> onSelectImage(action.uri)
@@ -61,7 +61,7 @@ class OcrCaptureViewModel @Inject constructor(
         postSideEffect(OcrCaptureSideEffect.LaunchPhotoPicker)
     }
 
-    private fun onCameraPermissionResolved() = intent {
+    private fun onEnsureGalleryIfNeeded() = intent {
         if (openGallery && !galleryAutoLaunched) {
             galleryAutoLaunched = true
             postSideEffect(OcrCaptureSideEffect.LaunchPhotoPicker)

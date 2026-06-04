@@ -49,7 +49,7 @@ fun OcrCaptureScreen(
 
     LaunchedEffect(cameraPermissionState.hasPermission, cameraPermissionState.isDenied) {
         if (cameraPermissionState.hasPermission || cameraPermissionState.isDenied) {
-            viewModel.handleIntent(OcrCaptureIntent.CameraPermissionResolved)
+            viewModel.handleIntent(OcrCaptureIntent.EnsureGalleryIfNeeded)
         }
     }
 
