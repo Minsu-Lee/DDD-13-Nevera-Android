@@ -61,10 +61,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          NOTES=$(gh release list --limit 5 \
+          NOTES=$(gh release list --limit 1 \
             --json isDraft,body \
             --jq 'map(select(.isDraft == true)) | first | .body // ""' \
-            2>/dev/null)
+            2>/dev/null || echo "")
 
           if [ -z "$NOTES" ]; then
             NOTES="빌드: #${{ github.run_number }}"
