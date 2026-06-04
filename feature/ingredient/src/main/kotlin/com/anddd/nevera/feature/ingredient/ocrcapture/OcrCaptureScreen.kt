@@ -9,7 +9,10 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -18,58 +21,57 @@ import androidx.compose.ui.platform.LocalView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.ingredient.R
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureIntent
-import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMode
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureSideEffect
-import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun OcrCaptureScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToResult: (Uri, OcrCaptureMode) -> Unit,
+    onNavigateToResult: (Uri) -> Unit,
     viewModel: OcrCaptureViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     DarkNavigationBarEffect()
 
-    val uiState = viewModel.collectAsState().value
     val cameraPermissionState = rememberCameraPermissionState()
-    val galleryPermissionState = rememberGalleryPermissionState(
-        onGranted = { viewModel.handleIntent(OcrCaptureIntent.LoadGalleryImages) }
-    )
 
-    LaunchedEffect(uiState.mode, galleryPermissionState.hasPermission) {
-        when (uiState.mode) {
-            OcrCaptureMode.Camera -> if (!cameraPermissionState.hasPermission) cameraPermissionState.requestPermission()
-            OcrCaptureMode.Gallery -> if (!galleryPermissionState.hasPermission) {
-                galleryPermissionState.requestPermission()
-            } else {
-                viewModel.handleIntent(OcrCaptureIntent.LoadGalleryImages)
-            }
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) viewModel.handleIntent(OcrCaptureIntent.SelectImage(uri))
+    }
+
+    LaunchedEffect(Unit) {
+        if (!cameraPermissionState.hasPermission) {
+            cameraPermissionState.requestPermission()
+        }
+    }
+
+    LaunchedEffect(cameraPermissionState.hasPermission, cameraPermissionState.isDenied) {
+        if (cameraPermissionState.hasPermission || cameraPermissionState.isDenied) {
+            viewModel.handleIntent(OcrCaptureIntent.EnsureGalleryIfNeeded)
         }
     }
 
     viewModel.collectSideEffect { effect ->
         when (effect) {
             OcrCaptureSideEffect.NavigateBack -> onNavigateBack()
-            is OcrCaptureSideEffect.NavigateToResult -> onNavigateToResult(effect.uri, effect.mode)
+            is OcrCaptureSideEffect.NavigateToResult -> onNavigateToResult(effect.uri)
             OcrCaptureSideEffect.OpenCameraSettings -> {
                 cameraPermissionState.clearDenied()
                 context.openAppSettings()
             }
-            OcrCaptureSideEffect.OpenGallerySettings -> {
-                galleryPermissionState.clearDenied()
-                context.openAppSettings()
-            }
+            OcrCaptureSideEffect.LaunchPhotoPicker ->
+                photoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
             OcrCaptureSideEffect.ShowCaptureError ->
                 Toast.makeText(context, context.getString(R.string.ocr_capture_error), Toast.LENGTH_SHORT).show()
         }
     }
 
     OcrCaptureContent(
-        uiState = uiState,
         cameraPermissionState = cameraPermissionState,
-        galleryPermissionState = galleryPermissionState,
         onIntent = viewModel::handleIntent,
         onBindCamera = viewModel::bindCamera,
     )
