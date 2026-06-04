@@ -12,7 +12,6 @@ import com.anddd.nevera.feature.auth.navigation.authNavGraph
 import com.anddd.nevera.feature.fridge.main.navigation.fridgeScreen
 import com.anddd.nevera.feature.ingredient.main.navigation.IngredientGraphRoute
 import com.anddd.nevera.feature.ingredient.main.navigation.ingredientNavGraph
-import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMode
 import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.navigateToIngredientCapture
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
 import com.anddd.nevera.feature.main.home.navigation.homeScreen
@@ -62,10 +61,10 @@ fun NeveraNavHost(
         )
         homeScreen(
             onNavigateToCamera = {
-                navController.navigateToIngredientCapture(OcrCaptureMode.Camera)
+                navController.navigateToIngredientCapture()
             },
             onNavigateToGallery = {
-                navController.navigateToIngredientCapture(OcrCaptureMode.Gallery)
+                navController.navigateToIngredientCapture(openGallery = true)
             },
             onNavigateToNotification = {
                 navController.navigate(NotificationRoute) { launchSingleTop = true }
@@ -73,10 +72,10 @@ fun NeveraNavHost(
         )
         fridgeScreen(
             onNavigateToCamera = {
-                navController.navigateToIngredientCapture(OcrCaptureMode.Camera)
+                navController.navigateToIngredientCapture()
             },
             onNavigateToGallery = {
-                navController.navigateToIngredientCapture(OcrCaptureMode.Gallery)
+                navController.navigateToIngredientCapture(openGallery = true)
             },
             onNavigateToNotification = {
                 navController.navigate(NotificationRoute) { launchSingleTop = true }
