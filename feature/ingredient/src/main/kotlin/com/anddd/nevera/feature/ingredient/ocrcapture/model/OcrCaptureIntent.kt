@@ -6,6 +6,7 @@ import com.anddd.nevera.core.mvi.NeveraIntent
 sealed interface OcrCaptureIntent : NeveraIntent {
     data object Close : OcrCaptureIntent
     data object OpenGallery : OcrCaptureIntent
+    data object CameraPermissionResolved : OcrCaptureIntent
     data object TakePicture : OcrCaptureIntent
     data object SwapCamera : OcrCaptureIntent
     data class SelectImage(val uri: Uri) : OcrCaptureIntent

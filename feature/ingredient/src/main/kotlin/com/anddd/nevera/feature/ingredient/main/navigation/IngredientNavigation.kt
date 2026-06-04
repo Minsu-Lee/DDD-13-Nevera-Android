@@ -50,10 +50,8 @@ fun NavGraphBuilder.ingredientNavGraph(
     onNavigateToHome: () -> Unit,
 ) {
     navigation<IngredientGraphRoute>(startDestination = OcrCaptureRoute()) {
-        composable<OcrCaptureRoute> { backStackEntry ->
-            val openGallery = backStackEntry.toRoute<OcrCaptureRoute>().openGallery
+        composable<OcrCaptureRoute> {
             OcrCaptureScreen(
-                openGallery = openGallery,
                 // X 버튼 → 이전 화면으로 복귀
                 onNavigateBack = { navController.popBackStack() },
                 // 촬영/갤러리 선택 완료 → IngredientScreen으로 이동, OcrCaptureScreen은 스택에서 제거

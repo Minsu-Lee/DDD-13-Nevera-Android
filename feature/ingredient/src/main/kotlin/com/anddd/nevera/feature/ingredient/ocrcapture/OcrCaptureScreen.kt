@@ -16,10 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -30,7 +26,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun OcrCaptureScreen(
-    openGallery: Boolean,
     onNavigateBack: () -> Unit,
     onNavigateToResult: (Uri) -> Unit,
     viewModel: OcrCaptureViewModel = hiltViewModel(),
@@ -46,8 +41,6 @@ fun OcrCaptureScreen(
         if (uri != null) viewModel.handleIntent(OcrCaptureIntent.SelectImage(uri))
     }
 
-    var galleryAutoLaunched by remember { mutableStateOf(false) }
-
     LaunchedEffect(Unit) {
         if (!cameraPermissionState.hasPermission) {
             cameraPermissionState.requestPermission()
@@ -55,11 +48,8 @@ fun OcrCaptureScreen(
     }
 
     LaunchedEffect(cameraPermissionState.hasPermission, cameraPermissionState.isDenied) {
-        if (openGallery && !galleryAutoLaunched) {
-            if (cameraPermissionState.hasPermission || cameraPermissionState.isDenied) {
-                galleryAutoLaunched = true
-                viewModel.handleIntent(OcrCaptureIntent.OpenGallery)
-            }
+        if (cameraPermissionState.hasPermission || cameraPermissionState.isDenied) {
+            viewModel.handleIntent(OcrCaptureIntent.CameraPermissionResolved)
         }
     }
 

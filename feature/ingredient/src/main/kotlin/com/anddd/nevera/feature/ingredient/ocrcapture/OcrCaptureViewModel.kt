@@ -3,12 +3,15 @@ package com.anddd.nevera.feature.ingredient.ocrcapture
 import android.net.Uri
 import androidx.camera.core.Preview
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.toRoute
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.feature.ingredient.ocrcapture.component.camera.CameraManager
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureIntent
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMutation
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureSideEffect
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureUiState
+import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.OcrCaptureRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlin.coroutines.cancellation.CancellationException
 import org.orbitmvi.orbit.syntax.Syntax
@@ -16,10 +19,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OcrCaptureViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val cameraManager: CameraManager,
 ) : NeveraViewModel<OcrCaptureUiState, OcrCaptureSideEffect, OcrCaptureIntent, OcrCaptureMutation>(
     OcrCaptureUiState
 ) {
+    private val openGallery = savedStateHandle.toRoute<OcrCaptureRoute>().openGallery
+    private var galleryAutoLaunched = false
 
     fun bindCamera(lifecycleOwner: LifecycleOwner, surfaceProvider: Preview.SurfaceProvider) {
         intent {
@@ -35,6 +41,7 @@ class OcrCaptureViewModel @Inject constructor(
         when (action) {
             OcrCaptureIntent.Close -> onClose()
             OcrCaptureIntent.OpenGallery -> onOpenGallery()
+            OcrCaptureIntent.CameraPermissionResolved -> onCameraPermissionResolved()
             OcrCaptureIntent.TakePicture -> onTakePicture()
             OcrCaptureIntent.SwapCamera -> onSwapCamera()
             is OcrCaptureIntent.SelectImage -> onSelectImage(action.uri)
@@ -52,6 +59,13 @@ class OcrCaptureViewModel @Inject constructor(
 
     private fun onOpenGallery() = intent {
         postSideEffect(OcrCaptureSideEffect.LaunchPhotoPicker)
+    }
+
+    private fun onCameraPermissionResolved() = intent {
+        if (openGallery && !galleryAutoLaunched) {
+            galleryAutoLaunched = true
+            postSideEffect(OcrCaptureSideEffect.LaunchPhotoPicker)
+        }
     }
 
     private fun onSwapCamera() = intent { cameraManager.swapCamera() }
