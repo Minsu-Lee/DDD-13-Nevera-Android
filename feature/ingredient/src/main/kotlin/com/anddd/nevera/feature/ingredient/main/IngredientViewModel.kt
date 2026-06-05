@@ -98,7 +98,7 @@ class IngredientViewModel @Inject constructor(
     // ── 빈 아이템 추가 ─────────────────────────────────────────────────────────
     private fun addEmptyItem() = intent {
         applyMutation(EmptyItemAdded)
-        postSideEffect(IngredientSideEffect.ScrollToNewItem)
+        postSideEffect(IngredientSideEffect.ScrollToNewItem(state.items.size))
     }
 
     // ── 식재료 등록 ────────────────────────────────────────────────────────────

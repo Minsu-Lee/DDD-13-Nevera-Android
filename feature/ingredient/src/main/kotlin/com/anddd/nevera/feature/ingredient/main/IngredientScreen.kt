@@ -70,9 +70,9 @@ fun IngredientScreen(
                     Toast.LENGTH_SHORT,
                 ).show()
             }
-            IngredientSideEffect.ScrollToNewItem -> {
+            is IngredientSideEffect.ScrollToNewItem -> {
                 withFrameMillis {}
-                listState.animateScrollToItem(uiState.items.size)
+                listState.animateScrollToItem(effect.itemsCount)
             }
             is IngredientSideEffect.NavigateToPhotoDetail ->
                 onNavigateToPhotoDetail(effect.imageUri)
