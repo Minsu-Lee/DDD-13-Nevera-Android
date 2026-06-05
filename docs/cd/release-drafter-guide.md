@@ -72,84 +72,59 @@ Draft Release의 이름과 태그가 `v1.2.3` 형식으로 자동 설정된다. 
 ```yaml
 categories:
   - title: '✨ 새 기능'
-    semver-increment: minor
-    when:
-      labels: [feat, feature]
+    labels: [feat, feature]
 
   - title: '🐛 버그 수정'
-    semver-increment: patch
-    when:
-      labels: [fix, bug]
+    labels: [fix, bug]
 
   - title: '🎨 디자인 변경'
-    semver-increment: patch
-    when:
-      labels: [design, ui]
+    labels: [design, ui]
 
   - title: '⚡️ 성능 개선'
-    semver-increment: patch
-    when:
-      labels: [perf, performance]
+    labels: [perf, performance]
 
   - title: '🔧 내부 작업'
-    when:
-      labels: [chore, refactor, ci, test, docs]
+    labels: [chore, refactor, ci, test, docs]
 
-  - type: pre-exclude
-    title: '🚫 제외'
-    when:
-      labels: [skip-changelog]
+exclude-labels:
+  - 'skip-changelog'
 
-  - type: version-resolver
-    title: '💥 주요 변경'
-    semver-increment: major
-    when:
-      labels: [breaking-change]
-
-  - type: version-resolver
-    title: '기본'
-    semver-increment: patch
+version-resolver:
+  major:
+    labels: [breaking-change]
+  minor:
+    labels: [feat, feature]
+  default: patch
 ```
 
-#### 렌더링되는 카테고리 (`type: changelog`)
+각 카테고리는 `labels`에 지정된 라벨을 가진 PR을 묶어 릴리즈 노트 섹션으로 표시한다.
 
-`type`을 명시하지 않으면 기본값 `changelog`로, 릴리즈 노트에 섹션으로 표시된다.
+| 카테고리 | 라벨 |
+|---|---|
+| ✨ 새 기능 | `feat`, `feature` |
+| 🐛 버그 수정 | `fix`, `bug` |
+| 🎨 디자인 변경 | `design`, `ui` |
+| ⚡️ 성능 개선 | `perf`, `performance` |
+| 🔧 내부 작업 | `chore`, `refactor`, `ci`, `test`, `docs` |
 
-| 카테고리 | 라벨 | 버전 증가 |
-|---|---|---|
-| ✨ 새 기능 | `feat`, `feature` | minor (`v0.1.0` → `v0.2.0`) |
-| 🐛 버그 수정 | `fix`, `bug` | patch (`v0.1.0` → `v0.1.1`) |
-| 🎨 디자인 변경 | `design`, `ui` | patch |
-| ⚡️ 성능 개선 | `perf`, `performance` | patch |
-| 🔧 내부 작업 | `chore`, `refactor`, `ci`, `test`, `docs` | patch (기본값) |
-
-`🔧 내부 작업`은 `semver-increment`를 지정하지 않았으므로, 아래 `type: version-resolver`의 기본값 `patch`가 적용된다.
-
-#### `type: pre-exclude` — 완전 제외
-
-```yaml
-- type: pre-exclude
-  when:
-    labels: [skip-changelog]
-```
+#### `exclude-labels` — 완전 제외
 
 `skip-changelog` 라벨이 붙은 PR은 릴리즈 노트에 전혀 표시되지 않는다. 버전 계산에도 기여하지 않는다.
 
-#### `type: version-resolver` — 버전 계산 전용
+#### `version-resolver` — 버전 계산
+
+`categories`와 별도로 버전 증가 규칙을 정의한다.
 
 ```yaml
-# breaking-change 라벨 → major 증가
-- type: version-resolver
-  semver-increment: major
-  when:
-    labels: [breaking-change]
-
-# 기본값 (when 없음) → 아무 라벨도 매칭 안 될 때 patch
-- type: version-resolver
-  semver-increment: patch
+version-resolver:
+  major:
+    labels: [breaking-change]   # major 증가
+  minor:
+    labels: [feat, feature]     # minor 증가
+  default: patch                # 그 외 모두 patch
 ```
 
-릴리즈 노트에는 렌더링되지 않고 버전 계산에만 기여한다. `breaking-change` 라벨이 붙은 PR이 있으면 major가 증가하고, 마지막 `when` 없는 항목이 기본 fallback이다.
+릴리즈 노트에는 렌더링되지 않고 버전 결정에만 사용된다.
 
 #### 버전 결정 규칙 요약
 
@@ -160,8 +135,8 @@ categories:
 | `feat` + `fix` | minor (`feat`이 더 높음) |
 | `fix` + `design` | patch |
 | `breaking-change` + `feat` | major (`breaking-change`가 가장 높음) |
-| `chore`만 | patch (기본값) |
-| `skip-changelog`만 | patch (기본값, pre-exclude 후 fallback) |
+| `chore`만 | patch (default) |
+| `skip-changelog`만 | 버전 변화 없음 (제외됨) |
 
 ---
 
