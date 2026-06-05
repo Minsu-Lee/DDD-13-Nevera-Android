@@ -5,12 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -52,6 +54,7 @@ fun IngredientScreen(
 ) {
     val uiState = viewModel.collectAsState().value
     val context = LocalContext.current
+    val listState = rememberLazyListState()
     var showCloseConfirm by remember { mutableStateOf(false) }
 
     // SideEffect 처리
@@ -66,6 +69,10 @@ fun IngredientScreen(
                     context.getString(R.string.ingredient_register_failed),
                     Toast.LENGTH_SHORT,
                 ).show()
+            }
+            IngredientSideEffect.ScrollToNewItem -> {
+                withFrameMillis {}
+                listState.animateScrollToItem(uiState.items.size)
             }
         }
     }
@@ -131,6 +138,7 @@ fun IngredientScreen(
                 IngredientPhase.Registering -> {
                     IngredientContent(
                         uiState = uiState,
+                        listState = listState,
                         scannedImageUri = uiState.imageUri,
                         onIntent = viewModel::handleIntent,
                         onImageClick = { onNavigateToPhotoDetail(uiState.imageUri) },

@@ -7,27 +7,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +34,9 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
+import com.anddd.nevera.core.designsystem.component.button.NeveraButtonColor
 import com.anddd.nevera.core.designsystem.component.button.NeveraFilledButton
+import com.anddd.nevera.core.designsystem.component.button.NeveraWeakIconButton
 import com.anddd.nevera.core.designsystem.component.datepicker.NeveraDatePickerDialog
 import com.anddd.nevera.core.designsystem.icon.NeveraIcons
 import com.anddd.nevera.core.designsystem.ui.theme.NeveraTheme
@@ -54,6 +49,7 @@ import com.anddd.nevera.feature.ingredient.main.model.IngredientUiModel
 import com.anddd.nevera.feature.ingredient.main.model.IngredientUiState
 import java.time.LocalDate
 import androidx.core.net.toUri
+import com.anddd.nevera.core.designsystem.component.button.NeveraButtonSize
 
 // ─── 상수 ──────────────────────────────────────────────────────────────────
 private val ScannedImageSize = 72.dp
@@ -80,16 +76,13 @@ private sealed interface IngredientEditState {
 @Composable
 internal fun IngredientContent(
     uiState: IngredientUiState,
+    listState: LazyListState,
     scannedImageUri: String?,
     onIntent: (IngredientIntent) -> Unit,
     onImageClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var editState by remember { mutableStateOf<IngredientEditState>(IngredientEditState.None) }
-    val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-    // uiState가 일반 파라미터이므로 snapshotFlow 추적을 위해 State로 래핑
-    val currentItemsSize by rememberUpdatedState(uiState.items.size)
 
     Box(
         modifier = modifier
@@ -140,6 +133,13 @@ internal fun IngredientContent(
                         },
                     )
                 }
+
+                // 직접 등록 버튼 (리스트 마지막 아이템)
+                item {
+                    AddItemButton(
+                        onClick = { onIntent(IngredientIntent.AddEmptyItem) }
+                    )
+                }
             }
 
             // 하단 고정 버튼 영역
@@ -154,22 +154,6 @@ internal fun IngredientContent(
                     onClick = { onIntent(IngredientIntent.Register) },
                     enabled = uiState.isRegisterEnabled,
                     modifier = Modifier.fillMaxWidth(),
-                )
-                Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap8))
-                AddItemButton(
-                    onClick = {
-                        val sizeBeforeAdd = currentItemsSize
-                        onIntent(IngredientIntent.AddEmptyItem)
-                        // 버튼 클릭 즉시 코루틴 시작 — 아이템 추가 감지 후 바로 스크롤
-                        // snapshotFlow가 rememberUpdatedState(State)를 추적하므로
-                        // 컴포지션 사이클 대기 없이 상태 변화 즉시 반응
-                        coroutineScope.launch {
-                            snapshotFlow { currentItemsSize }
-                                .first { it > sizeBeforeAdd }
-                            // LazyColumn index: 0=header, 1..N=items → 마지막 index = items.size
-                            listState.animateScrollToItem(currentItemsSize)
-                        }
-                    }
                 )
             }
         }
@@ -276,23 +260,18 @@ private fun IngredientListHeader(scannedImageUri: String?, onImageClick: () -> U
 
 @Composable
 private fun AddItemButton(onClick: () -> Unit) {
-    TextButton(onClick = onClick) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                painter = NeveraIcons.CirclePlus,
-                contentDescription = null,
-                modifier = Modifier.size(NeveraTheme.iconSize.xSmall),
-                tint = NeveraTheme.colors.textPrimary,
-            )
-            Spacer(modifier = Modifier.width(NeveraTheme.spacing.gap6))
-            Text(
-                text = stringResource(R.string.ingredient_add_item_button),
-                style = NeveraTheme.typography.titleXSmall,
-                color = NeveraTheme.colors.textTertiary,
-            )
-        }
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center,
+    ) {
+        NeveraWeakIconButton(
+            painter = NeveraIcons.Plus,
+            contentDescription = stringResource(R.string.ingredient_add_item_button),
+            onClick = onClick,
+            color = NeveraButtonColor.Secondary,
+            size = NeveraButtonSize.Medium,
+            shape = CircleShape,
+        )
     }
 }
 
@@ -324,6 +303,7 @@ private fun IngredientContentPreview() {
                     ),
                 ),
             ),
+            listState = rememberLazyListState(),
             scannedImageUri = "content://preview/scanned_image",
             onIntent = {},
             onImageClick = {},
