@@ -2,8 +2,10 @@ package com.anddd.nevera.data.mapper
 
 import com.anddd.nevera.core.database.entity.NotificationEntity
 import com.anddd.nevera.data.model.notification.NotificationListResponse
+import com.anddd.nevera.data.model.notification.NotificationTimeResponse
 import com.anddd.nevera.domain.model.notification.AppNotification
 import com.anddd.nevera.domain.model.notification.AppNotificationType
+import com.anddd.nevera.domain.model.notification.NotificationTime
 import java.time.ZonedDateTime
 
 internal fun NotificationListResponse.toDomain(): AppNotification = AppNotification(
@@ -49,6 +51,9 @@ internal fun AppNotification.toEntity(): NotificationEntity = NotificationEntity
     isRead = isRead,
     deeplink = deeplink,
 )
+
+internal fun NotificationTimeResponse.toDomain(): NotificationTime =
+    NotificationTime(hour = notificationHour, minute = notificationMinute)
 
 private fun String.toAppNotificationType(): AppNotificationType = when (this) {
     "DEFAULT", "default" -> AppNotificationType.DEFAULT
