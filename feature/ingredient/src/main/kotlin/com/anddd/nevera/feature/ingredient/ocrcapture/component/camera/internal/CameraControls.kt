@@ -35,7 +35,7 @@ private val CameraControlIconSize = 48.dp
 @Composable
 internal fun CameraControls(
     hasCameraPermission: Boolean,
-    onSwitchToGallery: () -> Unit,
+    onOpenGallery: () -> Unit,
     onTakePicture: () -> Unit,
     onSwapCamera: () -> Unit,
     modifier: Modifier = Modifier,
@@ -69,7 +69,7 @@ internal fun CameraControls(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
-                onClick = onSwitchToGallery,
+                onClick = onOpenGallery,
                 modifier = Modifier.clip(CircleShape),
             ) {
                 Icon(
@@ -112,7 +112,7 @@ private fun CameraControlsPreview() {
     NeveraTheme {
         CameraControls(
             hasCameraPermission = true,
-            onSwitchToGallery = {},
+            onOpenGallery = {},
             onTakePicture = {},
             onSwapCamera = {},
         )

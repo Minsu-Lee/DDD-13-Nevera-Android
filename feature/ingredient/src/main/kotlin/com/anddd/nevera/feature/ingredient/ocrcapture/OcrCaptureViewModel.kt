@@ -4,16 +4,14 @@ import android.net.Uri
 import androidx.camera.core.Preview
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.toRoute
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.feature.ingredient.ocrcapture.component.camera.CameraManager
-import com.anddd.nevera.feature.ingredient.ocrcapture.component.gallery.GalleryManager
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureIntent
-import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMode
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMutation
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureSideEffect
 import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureUiState
 import com.anddd.nevera.feature.ingredient.ocrcapture.navigation.OcrCaptureRoute
-import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlin.coroutines.cancellation.CancellationException
 import org.orbitmvi.orbit.syntax.Syntax
@@ -23,12 +21,11 @@ import javax.inject.Inject
 class OcrCaptureViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val cameraManager: CameraManager,
-    private val galleryManager: GalleryManager,
 ) : NeveraViewModel<OcrCaptureUiState, OcrCaptureSideEffect, OcrCaptureIntent, OcrCaptureMutation>(
-    OcrCaptureUiState(
-        mode = savedStateHandle.toRoute<OcrCaptureRoute>().mode
-    )
+    OcrCaptureUiState
 ) {
+    private val openGallery = savedStateHandle.toRoute<OcrCaptureRoute>().openGallery
+    private var galleryAutoLaunched = false
 
     fun bindCamera(lifecycleOwner: LifecycleOwner, surfaceProvider: Preview.SurfaceProvider) {
         intent {
@@ -43,14 +40,12 @@ class OcrCaptureViewModel @Inject constructor(
     override fun handleIntent(action: OcrCaptureIntent) {
         when (action) {
             OcrCaptureIntent.Close -> onClose()
-            OcrCaptureIntent.SwitchToGallery -> onSwitchToGallery()
-            OcrCaptureIntent.SwitchToCamera -> onSwitchToCamera()
+            OcrCaptureIntent.OpenGallery -> onOpenGallery()
+            OcrCaptureIntent.EnsureGalleryIfNeeded -> onEnsureGalleryIfNeeded()
             OcrCaptureIntent.TakePicture -> onTakePicture()
             OcrCaptureIntent.SwapCamera -> onSwapCamera()
-            OcrCaptureIntent.LoadGalleryImages -> onLoadGalleryImages()
             is OcrCaptureIntent.SelectImage -> onSelectImage(action.uri)
             OcrCaptureIntent.OpenCameraSettings -> onOpenCameraSettings()
-            OcrCaptureIntent.OpenGallerySettings -> onOpenGallerySettings()
         }
     }
 
@@ -62,22 +57,21 @@ class OcrCaptureViewModel @Inject constructor(
         postSideEffect(OcrCaptureSideEffect.OpenCameraSettings)
     }
 
-    private fun onOpenGallerySettings() = intent {
-        postSideEffect(OcrCaptureSideEffect.OpenGallerySettings)
+    private fun onOpenGallery() = intent {
+        postSideEffect(OcrCaptureSideEffect.LaunchPhotoPicker)
     }
 
-    private fun onSwitchToGallery() = intent {
-        applyMutation(OcrCaptureMutation.ModeChanged(OcrCaptureMode.Gallery))
-    }
-
-    private fun onSwitchToCamera() = intent {
-        applyMutation(OcrCaptureMutation.ModeChanged(OcrCaptureMode.Camera))
+    private fun onEnsureGalleryIfNeeded() = intent {
+        if (openGallery && !galleryAutoLaunched) {
+            galleryAutoLaunched = true
+            postSideEffect(OcrCaptureSideEffect.LaunchPhotoPicker)
+        }
     }
 
     private fun onSwapCamera() = intent { cameraManager.swapCamera() }
 
     private fun onSelectImage(uri: Uri) = intent {
-        postSideEffect(OcrCaptureSideEffect.NavigateToResult(uri, OcrCaptureMode.Gallery))
+        postSideEffect(OcrCaptureSideEffect.NavigateToResult(uri))
     }
 
     private fun onTakePicture() = intent {
@@ -89,21 +83,12 @@ class OcrCaptureViewModel @Inject constructor(
             }
     }
 
-    private fun onLoadGalleryImages() = intent {
-        val images = galleryManager.loadImages()
-        applyMutation(OcrCaptureMutation.GalleryLoaded(images))
-    }
-
     override suspend fun Syntax<OcrCaptureUiState, OcrCaptureSideEffect>.applyMutation(
         mutation: OcrCaptureMutation,
     ) {
         when (mutation) {
-            is OcrCaptureMutation.ModeChanged ->
-                reduce { state.copy(mode = mutation.mode) }
-            is OcrCaptureMutation.GalleryLoaded ->
-                reduce { state.copy(galleryImages = mutation.images) }
             is OcrCaptureMutation.CaptureSuccess ->
-                postSideEffect(OcrCaptureSideEffect.NavigateToResult(mutation.uri, OcrCaptureMode.Camera))
+                postSideEffect(OcrCaptureSideEffect.NavigateToResult(mutation.uri))
         }
     }
 

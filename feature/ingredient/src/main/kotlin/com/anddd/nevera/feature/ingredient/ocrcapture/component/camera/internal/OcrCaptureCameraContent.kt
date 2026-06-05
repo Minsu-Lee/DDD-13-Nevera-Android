@@ -59,7 +59,7 @@ internal fun OcrCaptureCameraContent(
 
         CameraControls(
             hasCameraPermission = hasCameraPermission,
-            onSwitchToGallery = { onIntent(OcrCaptureIntent.SwitchToGallery) },
+            onOpenGallery = { onIntent(OcrCaptureIntent.OpenGallery) },
             onTakePicture = { onIntent(OcrCaptureIntent.TakePicture) },
             onSwapCamera = { onIntent(OcrCaptureIntent.SwapCamera) },
             modifier = Modifier.fillMaxWidth(),

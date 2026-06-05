@@ -132,7 +132,7 @@ class NeveraMessagingService : FirebaseMessagingService() {
 
         return builder.setContentTitle(title)
             .setContentText(body)
-            .setSmallIcon(applicationInfo.icon)
+            .setSmallIcon(R.drawable.ic_notification)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()
