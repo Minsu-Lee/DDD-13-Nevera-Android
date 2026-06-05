@@ -3,20 +3,19 @@ package com.anddd.nevera.feature.ingredient.ocrcapture.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navOptions
-import com.anddd.nevera.feature.ingredient.ocrcapture.model.OcrCaptureMode
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class OcrCaptureRoute(val mode: OcrCaptureMode = OcrCaptureMode.Camera)
+internal data class OcrCaptureRoute(val openGallery: Boolean = false)
 
 /**
- * 홈 화면 FAB → 캡처 모드 선택 후 OcrCaptureScreen 진입
+ * 캡처 화면 진입
  *
- * @param mode 카메라 또는 갤러리 모드
+ * @param openGallery true이면 카메라 권한 결정 이후 PhotoPicker 자동 실행
  */
 fun NavController.navigateToIngredientCapture(
-    mode: OcrCaptureMode = OcrCaptureMode.Camera,
+    openGallery: Boolean = false,
     builder: NavOptionsBuilder.() -> Unit = {},
 ) {
-    navigate(OcrCaptureRoute(mode), navOptions(builder))
+    navigate(OcrCaptureRoute(openGallery), navOptions(builder))
 }
