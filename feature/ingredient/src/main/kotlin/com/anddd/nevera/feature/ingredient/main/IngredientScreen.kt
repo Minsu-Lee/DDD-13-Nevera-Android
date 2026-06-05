@@ -74,6 +74,8 @@ fun IngredientScreen(
                 withFrameMillis {}
                 listState.animateScrollToItem(uiState.items.size)
             }
+            is IngredientSideEffect.NavigateToPhotoDetail ->
+                onNavigateToPhotoDetail(effect.imageUri)
         }
     }
 
@@ -139,9 +141,7 @@ fun IngredientScreen(
                     IngredientContent(
                         uiState = uiState,
                         listState = listState,
-                        scannedImageUri = uiState.imageUri,
                         onIntent = viewModel::handleIntent,
-                        onImageClick = { onNavigateToPhotoDetail(uiState.imageUri) },
                         modifier = Modifier.fillMaxSize(),
                     )
                     if (uiState.phase is IngredientPhase.Registering) {

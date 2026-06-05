@@ -67,19 +67,16 @@ private sealed interface IngredientEditState {
 /**
  * 식재료 목록 편집 콘텐츠
  *
- * @param uiState         현재 UI 상태
- * @param scannedImageUri 스캔한 이미지 URI (썸네일 표시용)
- * @param onIntent        Intent 전달 콜백
- * @param onImageClick    썸네일 이미지 탭 시 콜백 (사진 상세 화면 이동)
- * @param modifier        외부 Modifier
+ * @param uiState   현재 UI 상태
+ * @param listState 리스트 스크롤 상태
+ * @param onIntent  Intent 전달 콜백
+ * @param modifier  외부 Modifier
  */
 @Composable
 internal fun IngredientContent(
     uiState: IngredientUiState,
     listState: LazyListState,
-    scannedImageUri: String?,
     onIntent: (IngredientIntent) -> Unit,
-    onImageClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var editState by remember { mutableStateOf<IngredientEditState>(IngredientEditState.None) }
@@ -104,8 +101,8 @@ internal fun IngredientContent(
                 // 헤더: 타이틀 + 부제목 + 이미지 썸네일
                 item {
                     IngredientListHeader(
-                        scannedImageUri = scannedImageUri,
-                        onImageClick = onImageClick,
+                        imageUri = uiState.imageUri,
+                        onImageClick = { onIntent(IngredientIntent.ImageClick) },
                     )
                 }
 
@@ -199,7 +196,7 @@ internal fun IngredientContent(
 }
 
 @Composable
-private fun IngredientListHeader(scannedImageUri: String?, onImageClick: () -> Unit) {
+private fun IngredientListHeader(imageUri: String, onImageClick: () -> Unit) {
     Column {
         Text(
             text = stringResource(R.string.ingredient_list_title),
@@ -224,13 +221,13 @@ private fun IngredientListHeader(scannedImageUri: String?, onImageClick: () -> U
                 )
                 .background(NeveraTheme.colors.backgroundSecondary)
                 .clickable(
-                    enabled = scannedImageUri != null,
+                    enabled = imageUri.isNotEmpty(),
                     onClick = onImageClick,
                 ),
         ) {
-            if (scannedImageUri != null) {
+            if (imageUri.isNotEmpty()) {
                 AsyncImage(
-                    model = scannedImageUri.toUri(),
+                    model = imageUri.toUri(),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
@@ -283,6 +280,7 @@ private fun IngredientContentPreview() {
     NeveraTheme {
         IngredientContent(
             uiState = IngredientUiState(
+                imageUri = "content://preview/scanned_image",
                 items = listOf(
                     IngredientUiModel(
                         name = "아침에주스 ABC 주스, 18개입",
@@ -304,9 +302,7 @@ private fun IngredientContentPreview() {
                 ),
             ),
             listState = rememberLazyListState(),
-            scannedImageUri = "content://preview/scanned_image",
             onIntent = {},
-            onImageClick = {},
         )
     }
 }

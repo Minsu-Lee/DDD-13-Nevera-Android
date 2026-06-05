@@ -53,6 +53,7 @@ class IngredientViewModel @Inject constructor(
             is IngredientIntent.ToggleAllSelection -> toggleAllSelection(intent.selectAll)
             IngredientIntent.AddEmptyItem -> addEmptyItem()
             IngredientIntent.Register -> register()
+            IngredientIntent.ImageClick -> navigateToPhotoDetail()
         }
     }
 
@@ -87,6 +88,11 @@ class IngredientViewModel @Inject constructor(
     // ── 전체 선택 / 해제 ───────────────────────────────────────────────────────
     private fun toggleAllSelection(selectAll: Boolean) = intent {
         applyMutation(AllSelectionToggled(selectAll))
+    }
+
+    // ── 사진 상세 화면 이동 ────────────────────────────────────────────────────
+    private fun navigateToPhotoDetail() = intent {
+        postSideEffect(IngredientSideEffect.NavigateToPhotoDetail(state.imageUri))
     }
 
     // ── 빈 아이템 추가 ─────────────────────────────────────────────────────────

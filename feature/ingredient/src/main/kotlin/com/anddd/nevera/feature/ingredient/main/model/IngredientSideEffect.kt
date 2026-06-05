@@ -9,4 +9,5 @@ sealed interface IngredientSideEffect : NeveraSideEffect {
     data object ShowRegisterFailedToast   : IngredientSideEffect
     data object NavigateBack              : IngredientSideEffect
     data object ScrollToNewItem           : IngredientSideEffect
+    data class  NavigateToPhotoDetail(val imageUri: String) : IngredientSideEffect
 }
