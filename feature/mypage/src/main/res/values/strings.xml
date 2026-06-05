@@ -37,4 +37,6 @@
     <string name="setting_notification_time_picker_confirm">완료</string>
     <string name="setting_notification_time_am">오전</string>
     <string name="setting_notification_time_pm">오후</string>
+    <string name="setting_notification_load_alarm_time_error">알림 시간을 불러오지 못했어요</string>
+    <string name="setting_notification_update_alarm_time_error">알림 시간 저장에 실패했어요</string>
 </resources>

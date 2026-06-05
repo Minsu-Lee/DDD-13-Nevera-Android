@@ -7,4 +7,6 @@ sealed interface SettingNotificationSideEffect : NeveraSideEffect {
     data object ShowTimePickerDialog : SettingNotificationSideEffect
     data object ShowPermissionDeniedDialog : SettingNotificationSideEffect
     data object OpenNotificationSettings : SettingNotificationSideEffect
+    data object ShowLoadAlarmTimeError : SettingNotificationSideEffect
+    data object ShowUpdateAlarmTimeError : SettingNotificationSideEffect
 }

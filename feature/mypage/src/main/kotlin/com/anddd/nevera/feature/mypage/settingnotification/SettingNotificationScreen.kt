@@ -2,6 +2,7 @@ package com.anddd.nevera.feature.mypage.settingnotification
 
 import android.content.Intent
 import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,14 @@ fun SettingNotificationScreen(
                     putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
                 }
                 context.startActivity(intent)
+            }
+
+            SettingNotificationSideEffect.ShowLoadAlarmTimeError -> {
+                Toast.makeText(context, context.getString(MyPageR.string.setting_notification_load_alarm_time_error), Toast.LENGTH_SHORT).show()
+            }
+
+            SettingNotificationSideEffect.ShowUpdateAlarmTimeError -> {
+                Toast.makeText(context, context.getString(MyPageR.string.setting_notification_update_alarm_time_error), Toast.LENGTH_SHORT).show()
             }
         }
     }
