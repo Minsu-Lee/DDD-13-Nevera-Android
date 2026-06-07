@@ -3,6 +3,7 @@ package com.anddd.nevera.feature.fridge.main
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
+import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientsUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
@@ -11,7 +12,6 @@ import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
 import com.anddd.nevera.feature.fridge.main.model.FridgeMutation
 import com.anddd.nevera.feature.fridge.main.model.FridgeSideEffect
 import com.anddd.nevera.feature.fridge.main.model.FridgeUiState
-import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
 import com.anddd.nevera.feature.fridge.main.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,7 +52,7 @@ class FridgeViewModel @Inject constructor(
 
     private fun selectSortOrder(order: IngredientSortOrder) = intent {
         applyMutation(FridgeMutation.SelectSortOrder(order))
-        // TODO order 처리
+        loadIngredients()
     }
 
     private fun addIngredient() = intent {
@@ -76,6 +76,7 @@ class FridgeViewModel @Inject constructor(
             getFridgeIngredients(
                 storageLocation = (state.selectedStorageFilter as? StorageLocationFilter.Specific)?.location,
                 category = (state.selectedCategoryFilter as? CategoryFilter.Specific)?.category,
+                sortOrder = state.selectedSortOrder,
             ).onSuccess { items ->
                 applyMutation(FridgeMutation.ShowIngredients(items.map { it.toUiModel() }))
             }.onFailure {
