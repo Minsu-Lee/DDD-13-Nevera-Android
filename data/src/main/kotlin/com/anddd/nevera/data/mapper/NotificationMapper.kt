@@ -57,10 +57,17 @@ internal fun AppNotification.toEntity(): NotificationEntity = NotificationEntity
 internal fun NotificationTimeResponse.toDomain(): NotificationTime =
     NotificationTime(hour = notificationHour, minute = notificationMinute)
 
-internal fun NotificationSettingsResponse.toDomain(): NotificationSettings =
-    NotificationSettings(enabled = notificationEnabled, hour = notificationHour, minute = notificationMinute)
+internal fun NotificationSettingsResponse.toDomain(): NotificationSettings {
+    return NotificationSettings(
+        enabled = notificationEnabled,
+        hour = notificationHour,
+        minute = notificationMinute
+    )
+}
 
-private fun String.toAppNotificationType(): AppNotificationType = when (this) {
-    "DEFAULT", "default" -> AppNotificationType.DEFAULT
-    else -> AppNotificationType.DEFAULT // TODO: 서버 타입 추가 시 분기 확장
+private fun String.toAppNotificationType(): AppNotificationType {
+    return when (this) {
+        "DEFAULT", "default" -> AppNotificationType.DEFAULT
+        else -> AppNotificationType.DEFAULT // TODO: 서버 타입 추가 시 분기 확장
+    }
 }

@@ -7,6 +7,7 @@ import com.anddd.nevera.domain.model.notification.UpdateNotificationTimeError
 
 private object NotificationTimeErrorCode {
     const val MEMBER_NOT_FOUND = 2041
+    const val INVALID_NOTIFICATION_ENABLED = 3001
     const val INVALID_NOTIFICATION_TIME = 3001
     const val INVALID_NOTIFICATION_MINUTE = 4081
 }
@@ -19,6 +20,15 @@ internal fun NetworkError.toGetNotificationTimeError(): GetNotificationTimeError
     else -> GetNotificationTimeError.Common(toCommonError())
 }
 
+internal fun NetworkError.toUpdateNotificationEnabledError(): UpdateNotificationEnabledError = when (this) {
+    is NetworkError.HttpError -> when (code) {
+        NotificationTimeErrorCode.INVALID_NOTIFICATION_ENABLED -> UpdateNotificationEnabledError.InvalidNotificationEnabled
+        NotificationTimeErrorCode.MEMBER_NOT_FOUND -> UpdateNotificationEnabledError.MemberNotFound
+        else -> UpdateNotificationEnabledError.Common(toCommonError())
+    }
+    else -> UpdateNotificationEnabledError.Common(toCommonError())
+}
+
 internal fun NetworkError.toUpdateNotificationTimeError(): UpdateNotificationTimeError = when (this) {
     is NetworkError.HttpError -> when (code) {
         NotificationTimeErrorCode.INVALID_NOTIFICATION_TIME -> UpdateNotificationTimeError.InvalidNotificationTime
@@ -27,12 +37,4 @@ internal fun NetworkError.toUpdateNotificationTimeError(): UpdateNotificationTim
         else -> UpdateNotificationTimeError.Common(toCommonError())
     }
     else -> UpdateNotificationTimeError.Common(toCommonError())
-}
-
-internal fun NetworkError.toUpdateNotificationEnabledError(): UpdateNotificationEnabledError = when (this) {
-    is NetworkError.HttpError -> when (code) {
-        NotificationTimeErrorCode.MEMBER_NOT_FOUND -> UpdateNotificationEnabledError.MemberNotFound
-        else -> UpdateNotificationEnabledError.Common(toCommonError())
-    }
-    else -> UpdateNotificationEnabledError.Common(toCommonError())
 }

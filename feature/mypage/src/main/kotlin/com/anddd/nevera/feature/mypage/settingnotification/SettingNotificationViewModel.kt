@@ -53,26 +53,33 @@ class SettingNotificationViewModel @Inject constructor(
             .onSuccess {
                 applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(it.enabled))
                 applyMutation(SettingNotificationMutation.AlarmTimeUpdated(it.hour, it.minute))
+            }.onFailure {
+                postSideEffect(SettingNotificationSideEffect.ShowLoadAlarmTimeError)
             }
-            .onFailure { postSideEffect(SettingNotificationSideEffect.ShowLoadAlarmTimeError) }
     }
 
     private fun onExpiryAlarmToggled(enabled: Boolean, isSystemNotificationEnabled: Boolean) = intent {
         when {
-            enabled && !isSystemNotificationEnabled ->
+            enabled && !isSystemNotificationEnabled -> {
                 postSideEffect(SettingNotificationSideEffect.ShowPermissionDeniedDialog)
-            else -> {
+            } else -> {
                 updateNotificationEnabled(enabled)
-                    .onSuccess { applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(it.enabled)) }
-                    .onFailure { postSideEffect(SettingNotificationSideEffect.ShowUpdateNotificationEnabledError) }
+                    .onSuccess {
+                        applyMutation(SettingNotificationMutation.ExpiryAlarmUpdated(it.enabled))
+                    }.onFailure {
+                        postSideEffect(SettingNotificationSideEffect.ShowUpdateNotificationEnabledError)
+                    }
             }
         }
     }
 
     private fun onAlarmTimeSelected(hour: Int, minute: Int) = intent {
         updateNotificationTime(hour, minute)
-            .onSuccess { applyMutation(SettingNotificationMutation.AlarmTimeUpdated(it.hour, it.minute)) }
-            .onFailure { postSideEffect(SettingNotificationSideEffect.ShowUpdateAlarmTimeError) }
+            .onSuccess {
+                applyMutation(SettingNotificationMutation.AlarmTimeUpdated(it.hour, it.minute))
+            }.onFailure {
+                postSideEffect(SettingNotificationSideEffect.ShowUpdateAlarmTimeError)
+            }
     }
 
     override suspend fun Syntax<SettingNotificationUiState, SettingNotificationSideEffect>.applyMutation(

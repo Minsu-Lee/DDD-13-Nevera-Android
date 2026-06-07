@@ -9,6 +9,9 @@ import javax.inject.Inject
 class UpdateNotificationEnabledUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository,
 ) {
-    suspend operator fun invoke(enabled: Boolean): NeveraResult<NotificationSettings, UpdateNotificationEnabledError> =
-        notificationRepository.updateNotificationEnabled(enabled)
+    suspend operator fun invoke(
+        enabled: Boolean
+    ): NeveraResult<NotificationSettings, UpdateNotificationEnabledError> {
+        return notificationRepository.updateNotificationEnabled(enabled)
+    }
 }

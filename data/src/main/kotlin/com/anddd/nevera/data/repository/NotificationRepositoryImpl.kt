@@ -70,7 +70,9 @@ internal class NotificationRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun updateNotificationEnabled(enabled: Boolean): NeveraResult<NotificationSettings, UpdateNotificationEnabledError> {
+    override suspend fun updateNotificationEnabled(
+        enabled: Boolean
+    ): NeveraResult<NotificationSettings, UpdateNotificationEnabledError> {
         return apiCall {
             val request = UpdateNotificationEnabledRequest(enabled)
             remoteDataSource.updateNotificationEnabled(request)
