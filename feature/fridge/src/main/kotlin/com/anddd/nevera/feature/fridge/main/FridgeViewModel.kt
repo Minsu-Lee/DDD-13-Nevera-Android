@@ -11,7 +11,7 @@ import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
 import com.anddd.nevera.feature.fridge.main.model.FridgeMutation
 import com.anddd.nevera.feature.fridge.main.model.FridgeSideEffect
 import com.anddd.nevera.feature.fridge.main.model.FridgeUiState
-import com.anddd.nevera.feature.fridge.main.model.IngredientSortOrder
+import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
 import com.anddd.nevera.feature.fridge.main.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel

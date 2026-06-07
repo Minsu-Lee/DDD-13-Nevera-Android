@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.fridge.main.model
 
 import com.anddd.nevera.core.mvi.NeveraState
+import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 
 data class FridgeUiState(
     val isLoading: Boolean = false,
