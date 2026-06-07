@@ -1,5 +1,6 @@
 package com.anddd.nevera.domain.model.ingredient
 
+import java.time.Instant
 import java.time.LocalDate
 
 data class FridgeIngredient(
@@ -10,4 +11,5 @@ data class FridgeIngredient(
     val quantity: Int,
     val cost: Int,
     val expiryDate: LocalDate?,
+    val createdAt: Instant,
 )
