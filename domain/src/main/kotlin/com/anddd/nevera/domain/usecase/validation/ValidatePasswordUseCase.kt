@@ -17,12 +17,15 @@ class ValidatePasswordUseCase @Inject constructor() {
             if (password.none { it.isDigit() }) add(PasswordValidationError.MissingDigit)
             if (password.none { it in SPECIAL_CHARS }) add(PasswordValidationError.MissingSpecialChar)
             if (password.none { it in 'a'..'z' || it in 'A'..'Z' }) add(PasswordValidationError.MissingLetter)
-            if (password.any { it !in 'a'..'z' && it !in 'A'..'Z' && !it.isDigit() && it !in SPECIAL_CHARS }) add(PasswordValidationError.ContainsInvalidCharacter)
+            if (password.any { !isAllowedPasswordChar(it) }) add(PasswordValidationError.ContainsInvalidCharacter)
         }
 
         return if (errors.isEmpty()) PasswordValidationResult.Valid
         else PasswordValidationResult.Invalid(errors)
     }
+
+    private fun isAllowedPasswordChar(c: Char) =
+        c in 'a'..'z' || c in 'A'..'Z' || c.isDigit() || c in SPECIAL_CHARS
 
     companion object {
         private const val MIN_LENGTH = 8
