@@ -49,6 +49,16 @@ class ValidatePasswordUseCaseTest {
     }
 
     @Test
+    fun `한글만 입력된 비밀번호는 ContainsInvalidCharacter와 MissingLetter 에러를 반환한다`() {
+        val result = useCase("가나다라마바1!")
+
+        assertTrue(result is PasswordValidationResult.Invalid)
+        val errors = (result as PasswordValidationResult.Invalid).errors
+        assertTrue(errors.contains(PasswordValidationError.ContainsInvalidCharacter))
+        assertTrue(errors.contains(PasswordValidationError.MissingLetter))
+    }
+
+    @Test
     fun `영문자가 없으면 MissingLetter 에러를 반환한다`() {
         val result = useCase("12345678!")
 
