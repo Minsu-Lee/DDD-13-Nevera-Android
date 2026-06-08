@@ -40,6 +40,8 @@ class FridgeViewModel @Inject constructor(
             FridgeIntent.NotificationIconClicked -> navigateToNotification()
             is FridgeIntent.RescueClick -> showRescueBottomSheet(intent.item)
             is FridgeIntent.RescueConfirm -> rescueIngredient(intent.item, intent.ratio)
+            is FridgeIntent.DisposeClick -> showDisposeBottomSheet(intent.item)
+            is FridgeIntent.DisposeConfirm -> disposeIngredient(intent.item, intent.ratio)
         }
     }
 
@@ -68,6 +70,14 @@ class FridgeViewModel @Inject constructor(
 
     private fun rescueIngredient(item: FridgeIngredientUiModel, ratio: Float) = intent {
         // TODO: 구조 API 연동
+    }
+
+    private fun showDisposeBottomSheet(item: FridgeIngredientUiModel) = intent {
+        postSideEffect(FridgeSideEffect.ShowDisposeBottomSheet(item))
+    }
+
+    private fun disposeIngredient(item: FridgeIngredientUiModel, ratio: Float) = intent {
+        // TODO: 폐기 API 연동
     }
 
     private fun observeBadge() = intent {

@@ -10,4 +10,6 @@ sealed interface FridgeSideEffect : NeveraSideEffect {
     data object NavigateToNotification : FridgeSideEffect
 
     data class ShowRescueBottomSheet(val item: FridgeIngredientUiModel) : FridgeSideEffect
+
+    data class ShowDisposeBottomSheet(val item: FridgeIngredientUiModel) : FridgeSideEffect
 }

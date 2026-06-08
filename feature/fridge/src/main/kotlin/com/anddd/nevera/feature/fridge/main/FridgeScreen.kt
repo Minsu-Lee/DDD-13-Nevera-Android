@@ -23,6 +23,7 @@ import com.anddd.nevera.core.ui.component.NotificationPermissionDescriptionItem
 import com.anddd.nevera.core.ui.component.ReceiptCaptureModeBottomSheet
 import com.anddd.nevera.feature.fridge.R
 import com.anddd.nevera.feature.fridge.main.component.FridgeContent
+import com.anddd.nevera.feature.fridge.main.component.FridgeIngredientDisposeBottomSheet
 import com.anddd.nevera.feature.fridge.main.component.FridgeIngredientRescueBottomSheet
 import com.anddd.nevera.feature.fridge.main.model.FridgeIngredientUiModel
 import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
@@ -49,9 +50,14 @@ fun FridgeScreen(
     var showRescueConfirmDialog by remember { mutableStateOf(false) }
     var rescueTargetItem by remember { mutableStateOf<FridgeIngredientUiModel?>(null) }
     var pendingRescueRatio by remember { mutableFloatStateOf(1.0f) }
+    var showDisposeBottomSheet by remember { mutableStateOf(false) }
+    var showDisposeConfirmDialog by remember { mutableStateOf(false) }
+    var disposeTargetItem by remember { mutableStateOf<FridgeIngredientUiModel?>(null) }
+    var pendingDisposeRatio by remember { mutableFloatStateOf(1.0f) }
     var permissionHandled by remember { mutableStateOf(false) }
     val captureModeSheetState = rememberModalBottomSheetState()
     val rescueSheetState = rememberModalBottomSheetState()
+    val disposeSheetState = rememberModalBottomSheetState()
     val notificationPermissionSheetState = rememberModalBottomSheetState()
 
     viewModel.collectSideEffect { effect ->
@@ -65,6 +71,11 @@ fun FridgeScreen(
             is FridgeSideEffect.ShowRescueBottomSheet -> {
                 rescueTargetItem = effect.item
                 showRescueBottomSheet = true
+            }
+
+            is FridgeSideEffect.ShowDisposeBottomSheet -> {
+                disposeTargetItem = effect.item
+                showDisposeBottomSheet = true
             }
         }
     }
@@ -99,6 +110,36 @@ fun FridgeScreen(
                     viewModel.handleIntent(FridgeIntent.RescueConfirm(rescueTargetItem!!, pendingRescueRatio))
                 },
                 onNegative = { showRescueConfirmDialog = false },
+                negativeButtonColor = NeveraButtonColor.Secondary,
+            )
+        }
+    }
+
+    if (showDisposeBottomSheet && disposeTargetItem != null) {
+        FridgeIngredientDisposeBottomSheet(
+            item = disposeTargetItem!!,
+            sheetState = disposeSheetState,
+            onConfirmClick = { ratio ->
+                pendingDisposeRatio = ratio
+                showDisposeConfirmDialog = true
+            },
+            onDismissRequest = {
+                showDisposeConfirmDialog = false
+                showDisposeBottomSheet = false
+            },
+        )
+
+        if (showDisposeConfirmDialog) {
+            NeveraConfirmDialog(
+                title = stringResource(R.string.fridge_dispose_confirm_dialog_title),
+                positive = stringResource(R.string.fridge_dispose_sheet_confirm),
+                negative = stringResource(R.string.fridge_dispose_confirm_dialog_close),
+                onPositive = {
+                    showDisposeConfirmDialog = false
+                    showDisposeBottomSheet = false
+                    viewModel.handleIntent(FridgeIntent.DisposeConfirm(disposeTargetItem!!, pendingDisposeRatio))
+                },
+                onNegative = { showDisposeConfirmDialog = false },
                 negativeButtonColor = NeveraButtonColor.Secondary,
             )
         }

@@ -18,4 +18,8 @@ sealed interface FridgeIntent : NeveraIntent {
     data class RescueClick(val item: FridgeIngredientUiModel) : FridgeIntent
 
     data class RescueConfirm(val item: FridgeIngredientUiModel, val ratio: Float) : FridgeIntent
+
+    data class DisposeClick(val item: FridgeIngredientUiModel) : FridgeIntent
+
+    data class DisposeConfirm(val item: FridgeIngredientUiModel, val ratio: Float) : FridgeIntent
 }

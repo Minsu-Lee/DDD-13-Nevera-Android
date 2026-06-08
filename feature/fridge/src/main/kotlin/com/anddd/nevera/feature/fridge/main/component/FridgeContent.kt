@@ -109,7 +109,7 @@ internal fun FridgeContent(
                         FridgeIngredientItem(
                             item = item,
                             onRescueClick = { onIntent(FridgeIntent.RescueClick(item)) },
-                            onDisposeClick = {},
+                            onDisposeClick = { onIntent(FridgeIntent.DisposeClick(item)) },
                             onMoreClick = {},
                         )
                     }
