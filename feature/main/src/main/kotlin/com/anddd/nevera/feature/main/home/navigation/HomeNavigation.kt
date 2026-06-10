@@ -1,20 +1,23 @@
 package com.anddd.nevera.feature.main.home.navigation
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.anddd.nevera.feature.main.home.HomeScreen
+import kotlinx.serialization.Serializable
 
-const val HOME_ROUTE = "home/{userId}"
+@Serializable
+data object HomeRoute
 
-fun homeRoute(userId: String) = "home/$userId"
-
-fun NavGraphBuilder.homeScreen() {
-    composable(
-        route = HOME_ROUTE,
-        arguments = listOf(navArgument("userId") { type = NavType.StringType })
-    ) {
-        HomeScreen()
+fun NavGraphBuilder.homeScreen(
+    onNavigateToCamera: () -> Unit,
+    onNavigateToGallery: () -> Unit,
+    onNavigateToNotification: () -> Unit,
+) {
+    composable<HomeRoute> {
+        HomeScreen(
+            onNavigateToCamera = onNavigateToCamera,
+            onNavigateToGallery = onNavigateToGallery,
+            onNavigateToNotification = onNavigateToNotification,
+        )
     }
 }

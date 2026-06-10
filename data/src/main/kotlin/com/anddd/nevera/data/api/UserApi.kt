@@ -1,22 +1,21 @@
 package com.anddd.nevera.data.api
 
-import com.anddd.nevera.data.model.LoginRequest
-import com.anddd.nevera.data.model.LoginResponse
-import com.anddd.nevera.data.model.SnsLoginRequest
-import com.anddd.nevera.data.model.UserResponse
+import com.anddd.nevera.core.network.model.ApiResponse
+import com.anddd.nevera.data.model.user.OnboardingStatusResponse
+import com.anddd.nevera.data.model.user.ProfileResponse
+import com.anddd.nevera.data.model.user.UpdateNicknameRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.PUT
 
 internal interface UserApi {
 
-    @POST("auth/login")
-    suspend fun login(@Body request: LoginRequest): LoginResponse
+    @GET("api/v1/mypage/me/profile")
+    suspend fun getProfile(): ApiResponse<ProfileResponse>
 
-    @POST("auth/sns-login")
-    suspend fun snsLogin(@Body request: SnsLoginRequest): LoginResponse
+    @PUT("api/v1/mypage/nickname")
+    suspend fun updateNickname(@Body request: UpdateNicknameRequest): ApiResponse<ProfileResponse>
 
-    @GET("users/{userId}")
-    suspend fun getUser(@Path("userId") userId: String): UserResponse
+    @GET("api/v1/mypage/onboarding/complete")
+    suspend fun getOnboardingStatus(): ApiResponse<OnboardingStatusResponse>
 }

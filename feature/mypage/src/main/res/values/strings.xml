@@ -1,0 +1,24 @@
+<resources>
+    <string name="mypage_title">마이</string>
+    <string name="mypage_notification_icon_desc">알림</string>
+    <string name="mypage_settings_header">설정</string>
+    <string name="mypage_profile_image_desc">프로필 이미지</string>
+    <string name="setting_notification">알림 설정</string>
+    <string name="setting_account">계정 설정</string>
+    <string name="setting_app_info">앱 정보</string>
+    <string name="app_info_title">앱 정보</string>
+    <string name="app_info_terms">식구 이용약관</string>
+    <string name="app_info_privacy_policy">식구 개인정보처리방침</string>
+    <string name="app_info_version">앱 버전</string>
+
+    <!-- Setting Account -->
+    <string name="setting_account_title">계정 설정</string>
+    <string name="setting_account_logout">로그아웃</string>
+    <string name="setting_account_withdraw">계정 탈퇴</string>
+    <string name="setting_account_logout_dialog_title">계정을 로그아웃할까요?</string>
+    <string name="setting_account_logout_confirm">로그아웃</string>
+    <string name="setting_account_withdraw_dialog_title">계정을 탈퇴할까요?</string>
+    <string name="setting_account_withdraw_dialog_subtitle">탈퇴 시 모든 기록이 완전히 삭제되며\n다시 복구할 수 없어요</string>
+    <string name="setting_account_withdraw_confirm">탈퇴하기</string>
+    <string name="setting_account_dialog_dismiss">닫기</string>
+</resources>

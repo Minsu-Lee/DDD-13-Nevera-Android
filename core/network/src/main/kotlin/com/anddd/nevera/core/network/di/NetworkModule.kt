@@ -1,13 +1,16 @@
 package com.anddd.nevera.core.network.di
 
 import com.anddd.nevera.core.network.BuildConfig
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import timber.log.Timber
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -16,19 +19,32 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://api.example.com/"
+    private const val OKHTTP_TAG = "OkHttp"
     private const val TIMEOUT_SECONDS = 30L
+    private const val OCR_EXTRACT_READ_TIMEOUT_SECONDS = 300L
 
     private val loggingInterceptor: HttpLoggingInterceptor =
-        HttpLoggingInterceptor().apply {
+        HttpLoggingInterceptor { message ->
+            Timber.tag(OKHTTP_TAG).d(message)
+        }.apply {
+            // 헤더 데이터 마스킹 처리
+            redactHeader("Authorization")
+            redactHeader("Cookie")
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                     else HttpLoggingInterceptor.Level.NONE
         }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient =
+    fun provideGson(): Gson = Gson()
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        @AuthInterceptorQualifier authInterceptor: Interceptor
+    ): OkHttpClient =
         OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
@@ -37,10 +53,41 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): Retrofit =
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+    // OCR 분석은 서버 처리 시간이 길어 readTimeout을 별도로 확장
+    @Provides
+    @Singleton
+    @OcrExtractOkHttpClient
+    fun provideOcrExtractOkHttpClient(
+        @AuthInterceptorQualifier authInterceptor: Interceptor,
+    ): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .readTimeout(OCR_EXTRACT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .build()
+
+    @Provides
+    @Singleton
+    @OcrExtractRetrofit
+    fun provideOcrExtractRetrofit(
+        @OcrExtractOkHttpClient okHttpClient: OkHttpClient,
+        gson: Gson,
+    ): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 }

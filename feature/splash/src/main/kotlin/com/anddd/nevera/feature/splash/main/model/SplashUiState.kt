@@ -1,7 +1,5 @@
 package com.anddd.nevera.feature.splash.main.model
 
-sealed interface SplashUiState {
-    data object Loading : SplashUiState
-    data object NavigateToLogin : SplashUiState
-    data class NavigateToHome(val userId: String) : SplashUiState
-}
+import com.anddd.nevera.core.mvi.NeveraState
+
+data object SplashUiState : NeveraState

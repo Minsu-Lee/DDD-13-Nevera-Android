@@ -1,51 +1,45 @@
 package com.anddd.nevera.data.repository
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import com.anddd.nevera.data.datasource.TokenDataSource
+import com.anddd.nevera.domain.model.auth.LoginProvider
 import com.anddd.nevera.domain.repository.TokenRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-private val Context.sessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
-
 internal class TokenRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val tokenDataSource: TokenDataSource,
 ) : TokenRepository {
 
-    /**
-     * TODO :: DataSource로 분리하자, mock 도 고려해야지
-     */
-    private val dataStore = context.sessionDataStore
+    override suspend fun getAccessToken(): String? =
+        tokenDataSource.getAccessToken()
 
-    override suspend fun saveSession(token: String, userId: String) {
-        dataStore.edit { prefs ->
-            prefs[KEY_TOKEN] = token
-            prefs[KEY_USER_ID] = userId
-        }
+    override suspend fun setAccessToken(accessToken: String) =
+        tokenDataSource.setAccessToken(accessToken)
+
+    override suspend fun getRefreshToken(): String? =
+        tokenDataSource.getRefreshToken()
+
+    override suspend fun setRefreshToken(refreshToken: String) =
+        tokenDataSource.setRefreshToken(refreshToken)
+
+    override suspend fun setTokens(accessToken: String, refreshToken: String) {
+        tokenDataSource.setTokens(accessToken, refreshToken)
     }
 
-    override suspend fun getSession(): Pair<String?, String?> {
-        val prefs = dataStore.data.first()
-        return prefs[KEY_TOKEN] to prefs[KEY_USER_ID]
+    override suspend fun getProvider(): LoginProvider? {
+        return tokenDataSource.getProvider()
     }
 
-    override suspend fun getToken(): String? =
-        dataStore.data.first()[KEY_TOKEN]
-
-    override suspend fun getUserId(): String? =
-        dataStore.data.first()[KEY_USER_ID]
-
-    override suspend fun clearSession() {
-        dataStore.edit { it.clear() }
+    override suspend fun setProvider(provider: LoginProvider) {
+        tokenDataSource.setProvider(provider)
     }
 
-    companion object {
-        private val KEY_TOKEN = stringPreferencesKey("auth_token")
-        private val KEY_USER_ID = stringPreferencesKey("user_id")
+    override suspend fun setLoginInfo(
+        accessToken: String,
+        refreshToken: String,
+        provider: LoginProvider
+    ) {
+        tokenDataSource.setLoginInfo(accessToken, refreshToken, provider)
     }
+
+    override suspend fun clearLoginInfo() = tokenDataSource.clearLoginInfo()
 }

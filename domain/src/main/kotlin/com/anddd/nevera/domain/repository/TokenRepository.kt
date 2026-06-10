@@ -1,9 +1,19 @@
 package com.anddd.nevera.domain.repository
 
+import com.anddd.nevera.domain.model.auth.LoginProvider
+
 interface TokenRepository {
-    suspend fun saveSession(token: String, userId: String)
-    suspend fun getSession(): Pair<String?, String?>
-    suspend fun getToken(): String?
-    suspend fun getUserId(): String?
-    suspend fun clearSession()
+    suspend fun getAccessToken(): String?
+    suspend fun setAccessToken(accessToken: String)
+    suspend fun getRefreshToken(): String?
+    suspend fun setRefreshToken(refreshToken: String)
+    suspend fun setTokens(accessToken: String, refreshToken: String)
+    suspend fun getProvider(): LoginProvider?
+    suspend fun setProvider(provider: LoginProvider)
+    suspend fun setLoginInfo(
+        accessToken: String,
+        refreshToken: String,
+        provider: LoginProvider
+    )
+    suspend fun clearLoginInfo()
 }

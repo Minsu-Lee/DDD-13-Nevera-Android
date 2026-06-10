@@ -1,38 +1,33 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.serialization)
+    id("nevera.android.library")
+    id("nevera.android.hilt")
+    id("nevera.network")
 }
 
 android {
     namespace = "com.anddd.nevera.core.network"
-    compileSdk = 36
 
     defaultConfig {
-        minSdk = 30
         consumerProguardFiles("consumer-rules.pro")
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+    buildTypes {
+        debug {
+            // 테스트 서버 분리 시, 도메인 변경 필요
+            buildConfigField("String", "BASE_URL", "\"https://api.nevera.n-e.kr/\"")
+        }
+        release {
+            buildConfigField("String", "BASE_URL", "\"https://api.nevera.n-e.kr/\"")
+        }
     }
 
     buildFeatures {
-        // AGP 8.0부터는 BuildConfig가 기본 비활성화 상태
         buildConfig = true
     }
 }
 
 dependencies {
     implementation(project(":core:common"))
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
     implementation(libs.coroutines.android)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
+    implementation(libs.timber)
 }

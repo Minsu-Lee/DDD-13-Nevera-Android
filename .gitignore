@@ -36,7 +36,7 @@ gradle-app.setting
 # ======================
 *.jks
 *.keystore
-keystore/
+!keystore/debug.keystore
 /app/release/
 /app/debug/
 /app/qa/
@@ -45,7 +45,6 @@ keystore/
 # Secrets (보안 중요!)
 # ======================
 secrets.properties
-google-services.json
 GoogleService-Info.plist
 
 # ======================

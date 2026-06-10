@@ -1,19 +1,30 @@
 package com.anddd.nevera.data.mapper
 
-import com.anddd.nevera.data.model.LoginResponse
-import com.anddd.nevera.data.model.UserResponse
-import com.anddd.nevera.domain.model.LoginResult
-import com.anddd.nevera.domain.model.LoginType
-import com.anddd.nevera.domain.model.User
+import com.anddd.nevera.data.model.auth.MessageResponse
+import com.anddd.nevera.data.model.auth.TokenResponse
+import com.anddd.nevera.data.model.user.OnboardingStatusResponse
+import com.anddd.nevera.data.model.user.ProfileResponse
+import com.anddd.nevera.domain.model.auth.LoginResult
+import com.anddd.nevera.domain.model.common.MessageResult
+import com.anddd.nevera.domain.model.user.OnboardingStatus
+import com.anddd.nevera.domain.model.user.Profile
 
-internal fun UserResponse.toDomain(): User = User(
-    id = id,
-    name = name,
-    email = email
+internal fun TokenResponse.toDomain(): LoginResult = LoginResult(
+    accessToken = accessToken,
+    refreshToken = refreshToken
 )
 
-internal fun LoginResponse.toDomain(loginType: LoginType): LoginResult = LoginResult(
-    user = user.toDomain(),
-    token = token,
-    loginType = loginType
+internal fun MessageResponse.toDomain(): MessageResult = MessageResult(
+    message = message
+)
+
+internal fun ProfileResponse.toDomain(): Profile = Profile(
+    profileImageUrl = profileImageUrl,
+    nickname = nickname,
+    email = email,
+    hasWish = hasWish,
+)
+
+internal fun OnboardingStatusResponse.toDomain(): OnboardingStatus = OnboardingStatus(
+    isCompleteOnboarding = changedNickname,
 )
