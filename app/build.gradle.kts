@@ -33,6 +33,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk {
+                // 네이티브 크래시/ANR 분석을 위해 디버그 심볼을 App Bundle에 포함
+                debugSymbolLevel = "FULL"
+            }
         }
     }
 }
