@@ -11,6 +11,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigationBar
@@ -37,11 +38,24 @@ fun NeveraApp(
         mainViewModel.sideEffect.collect { action ->
             when (action) {
                 is DeeplinkAction.NavigateToIngredientDetail -> {
-                    val isCurrentTopLevel = topLevelDestinations.any { destination ->
-                        navController.currentDestination.matchesRoute(destination.screenRouteClass)
-                    }
-                    if (!isCurrentTopLevel) {
-                        navController.popBackStack()
+                    // 콜드 스타트 또는 FCM 알림의 CLEAR_TOP으로 Activity가 재생성되면 SplashRoute부터 시작하므로
+                    // HomeRoute가 백스택에 없을 수 있다.
+                    val hasHomeInBackStack = runCatching {
+                        navController.getBackStackEntry<HomeRoute>()
+                        true
+                    }.getOrDefault(false)
+                    if (hasHomeInBackStack) {
+                        val isCurrentTopLevel = topLevelDestinations.any { destination ->
+                            navController.currentDestination.matchesRoute(destination.screenRouteClass)
+                        }
+                        if (!isCurrentTopLevel) {
+                            navController.popBackStack()
+                        }
+                    } else {
+                        // HomeRoute를 백스택 루트로 세워야 Fridge 진입 후 백키로 Home에 도달할 수 있다.
+                        navController.navigate(HomeRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                        }
                     }
                     navController.navigate(TopLevelDestination.Fridge.route) {
                         popUpTo<HomeRoute> { saveState = true }
