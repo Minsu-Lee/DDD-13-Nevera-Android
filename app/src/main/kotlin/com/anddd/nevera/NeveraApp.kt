@@ -1,6 +1,5 @@
 package com.anddd.nevera
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -8,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -32,19 +31,28 @@ fun NeveraApp(
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
+    val topLevelDestinations = TopLevelDestination.entries
 
     LaunchedEffect(Unit) {
         mainViewModel.sideEffect.collect { action ->
             when (action) {
                 is DeeplinkAction.NavigateToIngredientDetail -> {
-                    // TODO: 냉장고 탭 구현 후 식재료(id) 포커스 네비게이션 추가
-                    Toast.makeText(navController.context, "냉장고 탭으로 이동", Toast.LENGTH_SHORT).show()
+                    val isCurrentTopLevel = topLevelDestinations.any { destination ->
+                        navController.currentDestination.matchesRoute(destination.screenRouteClass)
+                    }
+                    if (!isCurrentTopLevel) {
+                        navController.popBackStack()
+                    }
+                    navController.navigate(TopLevelDestination.Fridge.route) {
+                        popUpTo<HomeRoute> { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             }
         }
     }
 
-    val topLevelDestinations = TopLevelDestination.entries
     val isTopLevel = topLevelDestinations.any { destination ->
         currentDestination.matchesRoute(destination.screenRouteClass)
     }
