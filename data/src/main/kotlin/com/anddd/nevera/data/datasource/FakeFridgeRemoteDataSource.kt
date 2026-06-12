@@ -48,43 +48,36 @@ internal class FakeFridgeRemoteDataSource @Inject constructor() : FridgeRemoteDa
             OffsetDateTime.of(LocalDate.now().minusDays(7).atStartOfDay(), ZoneOffset.ofHours(9))
                 .format(formatter)
 
+        private fun mockItem(
+            id: Long,
+            name: String,
+            category: String,
+            location: String,
+            quantity: Int,
+            cost: Int,
+            daysUntilExpiry: Long,
+        ) = FridgeIngredientResponse(
+            id = id,
+            name = name,
+            category = category,
+            location = location,
+            quantity = quantity,
+            expirationDate = expiryDateOf(daysUntilExpiry),
+            dDay = daysUntilExpiry.toInt(),
+            cost = cost,
+            createdAt = createdAt(),
+        )
+
         val mockIngredients = listOf(
-            FridgeIngredientResponse(
-                id = 1L, name = "제주 햇당근", category = "VEGETABLE", location = "FRIDGE",
-                quantity = 2, expirationDate = expiryDateOf(28), dDay = 28, cost = 6500, createdAt = createdAt(),
-            ),
-            FridgeIngredientResponse(
-                id = 2L, name = "한돈 삼겹살", category = "MEATEGGS", location = "FRIDGE",
-                quantity = 1, expirationDate = expiryDateOf(-3), dDay = -3, cost = 24990, createdAt = createdAt(),
-            ),
-            FridgeIngredientResponse(
-                id = 3L, name = "서울우유 1L", category = "DAIRY", location = "FRIDGE",
-                quantity = 1, expirationDate = expiryDateOf(5), dDay = 5, cost = 3570, createdAt = createdAt(),
-            ),
-            FridgeIngredientResponse(
-                id = 4L, name = "동물복지 유정란", category = "MEATEGGS", location = "FRIDGE",
-                quantity = 10, expirationDate = expiryDateOf(4), dDay = 4, cost = 8900, createdAt = createdAt(),
-            ),
-            FridgeIngredientResponse(
-                id = 5L, name = "새우", category = "SEA", location = "FREEZER",
-                quantity = 3, expirationDate = expiryDateOf(0), dDay = 0, cost = 12000, createdAt = createdAt(),
-            ),
-            FridgeIngredientResponse(
-                id = 6L, name = "청포도", category = "FRUIT", location = "FRIDGE",
-                quantity = 1, expirationDate = expiryDateOf(14), dDay = 14, cost = 4500, createdAt = createdAt(),
-            ),
-            FridgeIngredientResponse(
-                id = 7L, name = "간장", category = "SAUCE", location = "PANTRY",
-                quantity = 1, expirationDate = expiryDateOf(180), dDay = 180, cost = 2800, createdAt = createdAt(),
-            ),
-            FridgeIngredientResponse(
-                id = 8L, name = "콜라 1.5L", category = "DRINK", location = "PANTRY",
-                quantity = 2, expirationDate = expiryDateOf(90), dDay = 90, cost = 1800, createdAt = createdAt(),
-            ),
-            FridgeIngredientResponse(
-                id = 9L, name = "두부", category = "PROCESSED", location = "FRIDGE",
-                quantity = 1, expirationDate = expiryDateOf(1), dDay = 1, cost = 1500, createdAt = createdAt(),
-            ),
+            mockItem(1L, "제주 햇당근", "VEGETABLE", "FRIDGE", quantity = 2, cost = 6500, daysUntilExpiry = 28),
+            mockItem(2L, "한돈 삼겹살", "MEATEGGS", "FRIDGE", quantity = 1, cost = 24990, daysUntilExpiry = -3),
+            mockItem(3L, "서울우유 1L", "DAIRY", "FRIDGE", quantity = 1, cost = 3570, daysUntilExpiry = 5),
+            mockItem(4L, "동물복지 유정란", "MEATEGGS", "FRIDGE", quantity = 10, cost = 8900, daysUntilExpiry = 4),
+            mockItem(5L, "새우", "SEA", "FREEZER", quantity = 3, cost = 12000, daysUntilExpiry = 0),
+            mockItem(6L, "청포도", "FRUIT", "FRIDGE", quantity = 1, cost = 4500, daysUntilExpiry = 14),
+            mockItem(7L, "간장", "SAUCE", "PANTRY", quantity = 1, cost = 2800, daysUntilExpiry = 180),
+            mockItem(8L, "콜라 1.5L", "DRINK", "PANTRY", quantity = 2, cost = 1800, daysUntilExpiry = 90),
+            mockItem(9L, "두부", "PROCESSED", "FRIDGE", quantity = 1, cost = 1500, daysUntilExpiry = 1),
         )
     }
 }

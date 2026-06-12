@@ -15,14 +15,6 @@
 
     <!-- IngredientItemCard -->
     <string name="ingredient_item_checkbox_description">식재료 선택</string>
-    <string name="ingredient_item_label_quantity">수량</string>
-    <string name="ingredient_item_label_cost">금액</string>
-    <string name="ingredient_item_label_category">카테고리</string>
-    <string name="ingredient_item_label_location">보관 방법</string>
-    <string name="ingredient_item_label_expiry">유통기한</string>
-    <string name="ingredient_item_placeholder_select">선택</string>
-    <string name="ingredient_item_placeholder_date">날짜 선택</string>
-    <string name="ingredient_item_cost_unit">원</string>
 
     <!-- OcrScanningDialog -->
     <string name="ocr_scanning_title_reading_receipt">영수증을 읽는 중...</string>

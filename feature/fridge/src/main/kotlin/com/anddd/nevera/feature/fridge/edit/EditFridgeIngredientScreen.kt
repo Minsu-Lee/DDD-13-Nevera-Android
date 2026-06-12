@@ -3,6 +3,9 @@ package com.anddd.nevera.feature.fridge.edit
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anddd.nevera.feature.fridge.edit.component.EditFridgeIngredientContent
@@ -18,6 +21,10 @@ fun EditFridgeIngredientScreen(
     val uiState by viewModel.collectAsState()
     val context = LocalContext.current
 
+    var showCategorySheet by remember { mutableStateOf(false) }
+    var showStorageLocationSheet by remember { mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(false) }
+
     viewModel.collectSideEffect { effect ->
         when (effect) {
             EditFridgeIngredientSideEffect.NavigateBack -> onNavigateBack()
@@ -30,5 +37,20 @@ fun EditFridgeIngredientScreen(
         uiState = uiState,
         onIntent = viewModel::handleIntent,
         onNavigateBack = onNavigateBack,
+        onCategoryClick = { showCategorySheet = true },
+        onStorageLocationClick = { showStorageLocationSheet = true },
+        onDateClick = { showDatePicker = true },
     )
+
+    if (showCategorySheet) {
+        // TODO: CategoryBottomSheet 연동
+    }
+
+    if (showStorageLocationSheet) {
+        // TODO: StorageLocationBottomSheet 연동
+    }
+
+    if (showDatePicker) {
+        // TODO: DatePicker 연동
+    }
 }
