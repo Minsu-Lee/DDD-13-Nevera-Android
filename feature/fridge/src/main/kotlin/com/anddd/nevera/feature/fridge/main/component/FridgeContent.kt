@@ -3,6 +3,7 @@ package com.anddd.nevera.feature.fridge.main.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -60,7 +61,7 @@ internal fun FridgeContent(
             )
         },
         containerColor = NeveraTheme.colors.surfacePrimary,
-        contentWindowInsets = WindowInsets(0),
+        contentWindowInsets = WindowInsets.navigationBars,
     ) { innerPadding ->
         Box(
             modifier = Modifier
