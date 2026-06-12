@@ -70,4 +70,14 @@
     <string name="fridge_dispose_confirm_dialog_title">식재료를 변경할까요?</string>
     <string name="fridge_dispose_confirm_dialog_close">닫기</string>
 
+    <!-- 식재료 수정 -->
+    <string name="edit_fridge_ingredient_title">내 식재료</string>
+    <string name="edit_fridge_ingredient_confirm">수정하기</string>
+    <string name="edit_fridge_ingredient_quantity">수량</string>
+    <string name="edit_fridge_ingredient_cost">금액</string>
+    <string name="edit_fridge_ingredient_cost_unit">원</string>
+    <string name="edit_fridge_ingredient_category">카테고리</string>
+    <string name="edit_fridge_ingredient_storage_location">보관 방법</string>
+    <string name="edit_fridge_ingredient_expiry_date">유통기한</string>
+
 </resources>

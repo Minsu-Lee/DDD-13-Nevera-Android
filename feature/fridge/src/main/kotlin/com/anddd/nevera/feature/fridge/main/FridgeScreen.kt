@@ -41,6 +41,7 @@ fun FridgeScreen(
     onNavigateToCamera: () -> Unit,
     onNavigateToGallery: () -> Unit,
     onNavigateToNotification: () -> Unit,
+    onNavigateToEditIngredient: (Long) -> Unit,
     viewModel: FridgeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -77,6 +78,8 @@ fun FridgeScreen(
                 disposeTargetItem = effect.item
                 showDisposeBottomSheet = true
             }
+
+            is FridgeSideEffect.NavigateToEditIngredient -> onNavigateToEditIngredient(effect.ingredientId)
         }
     }
 

@@ -22,4 +22,6 @@ sealed interface FridgeIntent : NeveraIntent {
     data class DisposeClick(val item: FridgeIngredientUiModel) : FridgeIntent
 
     data class DisposeConfirm(val item: FridgeIngredientUiModel, val ratio: Float) : FridgeIntent
+
+    data class IngredientMoreClick(val item: FridgeIngredientUiModel) : FridgeIntent
 }

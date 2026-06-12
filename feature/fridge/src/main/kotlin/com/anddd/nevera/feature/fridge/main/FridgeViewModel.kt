@@ -42,6 +42,7 @@ class FridgeViewModel @Inject constructor(
             is FridgeIntent.RescueConfirm -> rescueIngredient(intent.item, intent.ratio)
             is FridgeIntent.DisposeClick -> showDisposeBottomSheet(intent.item)
             is FridgeIntent.DisposeConfirm -> disposeIngredient(intent.item, intent.ratio)
+            is FridgeIntent.IngredientMoreClick -> navigateToEditIngredient(intent.item)
         }
     }
 
@@ -78,6 +79,10 @@ class FridgeViewModel @Inject constructor(
 
     private fun disposeIngredient(item: FridgeIngredientUiModel, ratio: Float) = intent {
         // TODO: 폐기 API 연동
+    }
+
+    private fun navigateToEditIngredient(item: FridgeIngredientUiModel) = intent {
+        postSideEffect(FridgeSideEffect.NavigateToEditIngredient(item.id))
     }
 
     private fun observeBadge() = intent {

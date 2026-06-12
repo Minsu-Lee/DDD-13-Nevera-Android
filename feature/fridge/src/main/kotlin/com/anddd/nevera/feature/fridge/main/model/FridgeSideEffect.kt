@@ -12,4 +12,6 @@ sealed interface FridgeSideEffect : NeveraSideEffect {
     data class ShowRescueBottomSheet(val item: FridgeIngredientUiModel) : FridgeSideEffect
 
     data class ShowDisposeBottomSheet(val item: FridgeIngredientUiModel) : FridgeSideEffect
+
+    data class NavigateToEditIngredient(val ingredientId: Long) : FridgeSideEffect
 }
