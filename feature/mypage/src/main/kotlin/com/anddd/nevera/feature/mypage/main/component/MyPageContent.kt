@@ -46,7 +46,7 @@ internal fun MyPageContent(
                 ),
             )
         },
-        contentWindowInsets = WindowInsets.navigationBars,
+        contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
         Box(
             modifier = Modifier

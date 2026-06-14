@@ -128,7 +128,7 @@ private fun NotificationContent(
                 ),
             )
         },
-        contentWindowInsets = WindowInsets.navigationBars,
+        contentWindowInsets = WindowInsets(0),
     ) { contentPadding ->
         LazyColumn(
             modifier = Modifier

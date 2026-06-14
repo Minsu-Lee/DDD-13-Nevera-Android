@@ -60,7 +60,7 @@ internal fun HomeContent(
             )
         },
         containerColor = NeveraTheme.colors.surfacePrimary,
-        contentWindowInsets = WindowInsets.navigationBars,
+        contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
         Box(
             modifier = Modifier
