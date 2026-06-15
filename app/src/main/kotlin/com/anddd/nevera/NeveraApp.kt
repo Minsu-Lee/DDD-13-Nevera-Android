@@ -52,11 +52,12 @@ fun NeveraApp(
                         true
                     }.getOrDefault(false)
                     if (hasHomeInBackStack) {
-                        val isCurrentTopLevel = topLevelDestinations.any { destination ->
-                            navController.currentDestination.matchesRoute(destination.screenRouteClass)
-                        }
-                        if (!isCurrentTopLevel) {
-                            navController.popBackStack()
+                        // top-level 화면이 아닌 화면에서 알림을 받으면, top-level에 도달할 때까지 pop한다.
+                        while (navController.currentDestination?.let { dest ->
+                                topLevelDestinations.none { dest.matchesRoute(it.screenRouteClass) }
+                            } == true
+                        ) {
+                            if (!navController.popBackStack()) break
                         }
                     } else {
                         // HomeRoute를 백스택 루트로 세워야 Fridge 진입 후 백키로 Home에 도달할 수 있다.
