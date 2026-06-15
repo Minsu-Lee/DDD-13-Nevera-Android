@@ -51,7 +51,6 @@ internal fun HomeContent(
             )
         },
         floatingActionButton = {
-            // TODO LeadingIcon + Text Button 구현 및 교체
             NeveraFilledButton(
                 label = stringResource(R.string.home_fab_label),
                 onClick = { onIntent(HomeIntent.AddIngredientClick) },
