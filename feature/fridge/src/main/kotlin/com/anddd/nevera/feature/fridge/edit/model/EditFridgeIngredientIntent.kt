@@ -12,4 +12,8 @@ sealed interface EditFridgeIngredientIntent : NeveraIntent {
     data class UpdateStorageLocation(val location: StorageLocation) : EditFridgeIngredientIntent
     data class UpdateExpiryDate(val date: LocalDate) : EditFridgeIngredientIntent
     data object ConfirmClick : EditFridgeIngredientIntent
+    data object CloseClick : EditFridgeIngredientIntent
+    data object CategoryFieldClick : EditFridgeIngredientIntent
+    data object StorageLocationFieldClick : EditFridgeIngredientIntent
+    data object ExpiryDateFieldClick : EditFridgeIngredientIntent
 }

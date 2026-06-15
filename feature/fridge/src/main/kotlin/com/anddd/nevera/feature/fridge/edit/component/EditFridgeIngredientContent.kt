@@ -3,10 +3,10 @@ package com.anddd.nevera.feature.fridge.edit.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,10 +33,6 @@ import com.anddd.nevera.core.ui.R as CoreUiR
 internal fun EditFridgeIngredientContent(
     uiState: EditFridgeIngredientUiState,
     onIntent: (EditFridgeIngredientIntent) -> Unit,
-    onNavigateBack: () -> Unit,
-    onCategoryClick: () -> Unit,
-    onStorageLocationClick: () -> Unit,
-    onDateClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -45,7 +41,9 @@ internal fun EditFridgeIngredientContent(
         topBar = {
             NeveraAppBar(
                 title = stringResource(R.string.edit_fridge_ingredient_title),
-                navigation = NeveraAppBarNavigation.Close(onClick = onNavigateBack),
+                navigation = NeveraAppBarNavigation.Close(onClick = {
+                    onIntent(EditFridgeIngredientIntent.CloseClick)
+                }),
             )
         },
         bottomBar = {
@@ -93,7 +91,7 @@ internal fun EditFridgeIngredientContent(
             DropdownFieldRow(
                 label = stringResource(CoreUiR.string.field_label_category),
                 value = uiState.category.displayName(),
-                onClick = onCategoryClick,
+                onClick = { onIntent(EditFridgeIngredientIntent.CategoryFieldClick) },
             )
 
             Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap8))
@@ -101,14 +99,14 @@ internal fun EditFridgeIngredientContent(
             DropdownFieldRow(
                 label = stringResource(CoreUiR.string.field_label_storage_location),
                 value = uiState.storageLocation.displayName(),
-                onClick = onStorageLocationClick,
+                onClick = { onIntent(EditFridgeIngredientIntent.StorageLocationFieldClick) },
             )
 
             Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap8))
 
             ExpiryDateFieldRow(
                 expiryDate = uiState.expiryDate,
-                onClick = onDateClick,
+                onClick = { onIntent(EditFridgeIngredientIntent.ExpiryDateFieldClick) },
             )
         }
     }

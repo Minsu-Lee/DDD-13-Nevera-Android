@@ -40,6 +40,10 @@ class EditFridgeIngredientViewModel @Inject constructor(
             is EditFridgeIngredientIntent.UpdateStorageLocation -> onUpdateStorageLocation(intent.location)
             is EditFridgeIngredientIntent.UpdateExpiryDate -> onUpdateExpiryDate(intent.date)
             EditFridgeIngredientIntent.ConfirmClick -> onConfirmClick()
+            EditFridgeIngredientIntent.CloseClick -> intent { postSideEffect(EditFridgeIngredientSideEffect.NavigateBack) }
+            EditFridgeIngredientIntent.CategoryFieldClick -> intent { postSideEffect(EditFridgeIngredientSideEffect.ShowCategorySheet) }
+            EditFridgeIngredientIntent.StorageLocationFieldClick -> intent { postSideEffect(EditFridgeIngredientSideEffect.ShowStorageLocationSheet) }
+            EditFridgeIngredientIntent.ExpiryDateFieldClick -> intent { postSideEffect(EditFridgeIngredientSideEffect.ShowDatePicker) }
         }
     }
 
