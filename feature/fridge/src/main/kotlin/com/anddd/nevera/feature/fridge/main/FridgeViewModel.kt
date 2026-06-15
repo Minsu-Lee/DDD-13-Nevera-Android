@@ -5,6 +5,7 @@ import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientsUseCase
+import com.anddd.nevera.domain.usecase.ingredient.ObserveIngredientFocusRequestUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
 import com.anddd.nevera.feature.fridge.main.model.CategoryFilter
@@ -16,7 +17,11 @@ import com.anddd.nevera.feature.fridge.main.model.FridgeUiState
 import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
 import com.anddd.nevera.feature.fridge.main.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeoutOrNull
+import java.time.LocalDate
 import org.orbitmvi.orbit.syntax.Syntax
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,10 +29,12 @@ class FridgeViewModel @Inject constructor(
     private val getFridgeIngredients: GetFridgeIngredientsUseCase,
     private val observeUnreadNotification: ObserveUnreadNotificationUseCase,
     private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
+    private val observeIngredientFocusRequest: ObserveIngredientFocusRequestUseCase,
 ) : NeveraViewModel<FridgeUiState, FridgeSideEffect, FridgeIntent, FridgeMutation>(FridgeUiState()) {
 
     init {
         observeBadge()
+        observeFocusRequests()
         intent { loadIngredients() }
     }
 
@@ -91,9 +98,32 @@ class FridgeViewModel @Inject constructor(
         }
     }
 
+    private fun observeFocusRequests() = intent {
+        observeIngredientFocusRequest().collect { ingredientId ->
+            focusIngredient(ingredientId)
+        }
+    }
+
     private fun navigateToNotification() = intent {
         markAllNotificationsAsRead()
         postSideEffect(FridgeSideEffect.NavigateToNotification)
+    }
+
+    private fun focusIngredient(ingredientId: Long) = intent {
+        // 포커스 요청 도착 시점에 식재료 목록이 아직 로드되지 않았을 수 있으므로,
+        // 목록이 채워질 때까지 대기한 뒤 인덱스를 조회한다.
+        // 냉장고가 실제로 비어있는 경우 무한 대기로 코루틴이 누수되지 않도록 타임아웃을 둔다.
+        val ingredients = withTimeoutOrNull(FOCUS_WAIT_TIMEOUT_MS) {
+            container.stateFlow.first { it.ingredients.isNotEmpty() }
+        }?.ingredients.orEmpty()
+
+        val index = ingredients.indexOfFirst { it.id == ingredientId }
+        if (index >= 0) {
+            postSideEffect(FridgeSideEffect.ScrollToIngredient(index))
+        } else {
+            // TODO: 실 API 연동 시 추가 페이지 요청 후 재시도
+            Timber.w("포커스할 식재료를 찾을 수 없음: id=$ingredientId")
+        }
     }
 
     private suspend fun Syntax<FridgeUiState, FridgeSideEffect>.loadIngredients() {
@@ -130,5 +160,9 @@ class FridgeViewModel @Inject constructor(
             is FridgeMutation.SelectSortOrder -> reduce { state.copy(selectedSortOrder = mutation.order) }
             is FridgeMutation.BadgeUpdated -> reduce { state.copy(hasUnreadNotification = mutation.hasUnread) }
         }
+    }
+
+    companion object {
+        private const val FOCUS_WAIT_TIMEOUT_MS = 5_000L
     }
 }
