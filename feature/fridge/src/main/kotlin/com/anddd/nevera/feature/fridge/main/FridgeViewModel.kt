@@ -2,6 +2,7 @@ package com.anddd.nevera.feature.fridge.main
 
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
+import com.anddd.nevera.domain.usecase.ingredient.ObserveIngredientFocusRequestUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
 import com.anddd.nevera.feature.fridge.main.model.FridgeIngredientUiModel
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class FridgeViewModel @Inject constructor(
     private val observeUnreadNotification: ObserveUnreadNotificationUseCase,
     private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
-    private val fridgeFocusEventBus: FridgeFocusEventBus,
+    private val observeIngredientFocusRequest: ObserveIngredientFocusRequestUseCase,
 ) :
     NeveraViewModel<FridgeUiState, FridgeSideEffect, FridgeIntent, FridgeMutation>(FridgeUiState()) {
 
@@ -76,7 +77,7 @@ class FridgeViewModel @Inject constructor(
     }
 
     private fun observeFocusRequests() = intent {
-        fridgeFocusEventBus.focusRequests.collect { ingredientId ->
+        observeIngredientFocusRequest().collect { ingredientId ->
             focusIngredient(ingredientId)
         }
     }

@@ -1,4 +1,4 @@
-package com.anddd.nevera.feature.fridge.main
+package com.anddd.nevera.domain.usecase.ingredient
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +11,7 @@ import javax.inject.Singleton
  * FridgeViewModel이 [focusRequests]를 구독해 해당 식재료로 스크롤한다.
  */
 @Singleton
-class FridgeFocusEventBus @Inject constructor() {
+class IngredientFocusEventBus @Inject constructor() {
 
     private val focusChannel = Channel<Long>(Channel.BUFFERED)
 
