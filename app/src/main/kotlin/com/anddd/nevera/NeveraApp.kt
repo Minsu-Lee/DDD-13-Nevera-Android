@@ -18,10 +18,12 @@ import com.anddd.nevera.core.designsystem.component.navigationbar.NeveraNavigati
 import com.anddd.nevera.domain.model.deeplink.DeeplinkAction
 import com.anddd.nevera.feature.auth.main.google.GoogleAuthClient
 import com.anddd.nevera.feature.main.home.navigation.HomeRoute
+import com.anddd.nevera.feature.splash.main.navigation.SplashRoute
 import com.anddd.nevera.navigation.NeveraNavHost
 import com.anddd.nevera.navigation.TopLevelDestination
 import com.anddd.nevera.navigation.toNavigationBarItem
 import kotlin.reflect.KClass
+import kotlinx.coroutines.flow.first
 
 
 @Composable
@@ -38,6 +40,11 @@ fun NeveraApp(
         mainViewModel.sideEffect.collect { action ->
             when (action) {
                 is DeeplinkAction.NavigateToIngredientDetail -> {
+                    // SplashViewModel의 자동 로그인 분기(최소 2초 대기)가 끝나기 전에 네비게이션하면,
+                    // 이후 Splash의 onNavigateToHome/onNavigateToLogin이 화면을 덮어쓴다.
+                    navController.currentBackStackEntryFlow
+                        .first { entry -> !entry.destination.hasRoute(SplashRoute::class) }
+
                     // 콜드 스타트 또는 FCM 알림의 CLEAR_TOP으로 Activity가 재생성되면 SplashRoute부터 시작하므로
                     // HomeRoute가 백스택에 없을 수 있다.
                     val hasHomeInBackStack = runCatching {
