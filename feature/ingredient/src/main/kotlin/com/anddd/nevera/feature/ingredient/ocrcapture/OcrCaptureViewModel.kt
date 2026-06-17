@@ -37,14 +37,14 @@ class OcrCaptureViewModel @Inject constructor(
         }
     }
 
-    override fun handleIntent(action: OcrCaptureIntent) {
-        when (action) {
+    override fun handleIntent(intent: OcrCaptureIntent) {
+        when (intent) {
             OcrCaptureIntent.Close -> onClose()
             OcrCaptureIntent.OpenGallery -> onOpenGallery()
             OcrCaptureIntent.EnsureGalleryIfNeeded -> onEnsureGalleryIfNeeded()
             OcrCaptureIntent.TakePicture -> onTakePicture()
             OcrCaptureIntent.SwapCamera -> onSwapCamera()
-            is OcrCaptureIntent.SelectImage -> onSelectImage(action.uri)
+            is OcrCaptureIntent.SelectImage -> onSelectImage(intent.uri)
             OcrCaptureIntent.OpenCameraSettings -> onOpenCameraSettings()
         }
     }
