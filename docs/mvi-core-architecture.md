@@ -187,7 +187,7 @@ abstract class NeveraViewModel<
         },
     )
 
-    abstract fun handleIntent(action: INTENT)
+    abstract fun handleIntent(intent: INTENT)
 
     protected abstract suspend fun Syntax<STATE, SIDE_EFFECT>.applyMutation(
         mutation: MUTATION,
