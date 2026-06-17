@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +22,7 @@ import com.anddd.nevera.feature.mypage.main.model.MyPageIntent
 import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
 import com.anddd.nevera.feature.mypage.main.model.ProfileUiModel
 import com.anddd.nevera.feature.mypage.main.model.SettingItem
+import kotlinx.collections.immutable.persistentListOf
 import com.anddd.nevera.feature.mypage.R as MyPageR
 
 @Composable
@@ -83,7 +83,7 @@ private fun MyPageContentPreview() {
         MyPageContent(
             uiState = MyPageUiState(
                 profile = ProfileUiModel("hong@example.com"),
-                settingItems = listOf(
+                settingItems = persistentListOf(
                     SettingItem.Notification,
                     SettingItem.Account,
                     SettingItem.AppInfo,
