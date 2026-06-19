@@ -53,4 +53,6 @@ interface IngredientRepository {
         offset: Int,
         limit: Int,
     ): NeveraResult<List<Ingredient>, CommonError>
+
+    fun observeFridgeIngredients(): Flow<List<FridgeIngredient>>
 }

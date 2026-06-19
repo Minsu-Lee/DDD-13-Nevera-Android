@@ -33,8 +33,12 @@ import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.domain.repository.IngredientRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 internal class IngredientRepositoryImpl @Inject constructor(
@@ -44,6 +48,9 @@ internal class IngredientRepositoryImpl @Inject constructor(
     private val fridgeRemoteDataSource: FridgeRemoteDataSource,
     private val apiCall: ApiCallExecutor,
 ) : IngredientRepository {
+
+    private val _fridgeIngredients = MutableStateFlow<List<FridgeIngredient>>(emptyList())
+    val fridgeIngredient: StateFlow<List<FridgeIngredient>> = _fridgeIngredients.asStateFlow()
 
     override suspend fun createOcrJob(): NeveraResult<OcrJobId, OcrExtractError> {
         return apiCall {
@@ -103,7 +110,13 @@ internal class IngredientRepositoryImpl @Inject constructor(
         apiCall {
             ingredientRemoteDataSource.editIngredient(id = id, request = input.toRequest())
         }.map(
-            transformSuccess = { it.toDomain() },
+            transformSuccess = { response ->
+                val updated = response.toDomain()
+                _fridgeIngredients.update { current ->
+                    current.map { if (it.id == updated.id) updated else it }
+                }
+                updated
+            },
             transformFailure = { it.toEditIngredientError() },
         )
 
@@ -123,9 +136,15 @@ internal class IngredientRepositoryImpl @Inject constructor(
                 size = size,
             )
         }.map(
-            transformSuccess = { it.content.map { dto -> dto.toDomain() } },
+            transformSuccess = { response ->
+                val items = response.content.map { dto -> dto.toDomain() }
+                _fridgeIngredients.value = items
+                items
+            },
             transformFailure = { it.toCommonError() },
         )
+
+    override fun observeFridgeIngredients(): Flow<List<FridgeIngredient>> = _fridgeIngredients.asStateFlow()
 
     override suspend fun getFridgeIngredientById(id: Long): NeveraResult<FridgeIngredient, CommonError> =
         apiCall {
