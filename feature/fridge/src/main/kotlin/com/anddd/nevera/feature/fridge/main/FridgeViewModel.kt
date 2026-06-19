@@ -5,6 +5,7 @@ import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientsUseCase
+import com.anddd.nevera.domain.usecase.ingredient.ObserveFridgeIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.ObserveIngredientFocusRequestUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
@@ -31,11 +32,13 @@ class FridgeViewModel @Inject constructor(
     private val observeUnreadNotification: ObserveUnreadNotificationUseCase,
     private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
     private val observeIngredientFocusRequest: ObserveIngredientFocusRequestUseCase,
+    private val observeFridgeIngredient: ObserveFridgeIngredientsUseCase,
 ) : NeveraViewModel<FridgeUiState, FridgeSideEffect, FridgeIntent, FridgeMutation>(FridgeUiState()) {
 
     init {
         observeBadge()
         observeFocusRequests()
+        observeIngredient()
         intent { loadIngredients() }
     }
 
@@ -99,6 +102,12 @@ class FridgeViewModel @Inject constructor(
         }
     }
 
+    private fun observeIngredient() = intent {
+        observeFridgeIngredient().collect { items ->
+            applyMutation(FridgeMutation.ShowIngredients(items.map { it.toUiModel() }))
+        }
+    }
+
     private fun observeFocusRequests() = intent {
         observeIngredientFocusRequest().collect { ingredientId ->
             focusIngredient(ingredientId)
@@ -134,9 +143,7 @@ class FridgeViewModel @Inject constructor(
                 storageLocation = (state.selectedStorageFilter as? StorageLocationFilter.Specific)?.location,
                 category = (state.selectedCategoryFilter as? CategoryFilter.Specific)?.category,
                 sortOrder = state.selectedSortOrder,
-            ).onSuccess { items ->
-                applyMutation(FridgeMutation.ShowIngredients(items.map { it.toUiModel() }))
-            }.onFailure {
+            ).onFailure {
                 postSideEffect(FridgeSideEffect.ShowToast("데이터를 불러오지 못했습니다."))
             }
         } finally {

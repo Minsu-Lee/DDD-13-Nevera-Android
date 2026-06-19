@@ -34,7 +34,6 @@ import com.anddd.nevera.domain.repository.IngredientRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -50,7 +49,6 @@ internal class IngredientRepositoryImpl @Inject constructor(
 ) : IngredientRepository {
 
     private val _fridgeIngredients = MutableStateFlow<List<FridgeIngredient>>(emptyList())
-    val fridgeIngredient: StateFlow<List<FridgeIngredient>> = _fridgeIngredients.asStateFlow()
 
     override suspend fun createOcrJob(): NeveraResult<OcrJobId, OcrExtractError> {
         return apiCall {
