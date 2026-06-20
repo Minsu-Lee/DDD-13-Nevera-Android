@@ -112,8 +112,16 @@ internal class IngredientRepositoryImpl @Inject constructor(
                 val updated = response.toDomain()
                 _fridgeIngredients.update { current ->
                     val index = current.indexOfFirst { it.id == updated.id }
-                    if (index < 0) current
-                    else current.toMutableList().also { it[index] = updated }
+                    if (index < 0) return@update current
+                    val existing = current[index]
+                    // 필터 키가 바뀌면 해당 항목을 캐시에서 제거, 안 바뀌면 교체
+                    if (existing.storageLocation != updated.storageLocation ||
+                        existing.category != updated.category
+                    ) {
+                        current.toMutableList().also { it.removeAt(index) }
+                    } else {
+                        current.toMutableList().also { it[index] = updated }
+                    }
                 }
                 updated
             },
