@@ -15,6 +15,7 @@ import com.anddd.nevera.data.mapper.error.toOcrExtractError
 import com.anddd.nevera.data.mapper.error.toRegisterIngredientError
 import com.anddd.nevera.data.mapper.toApiString
 import com.anddd.nevera.data.mapper.toDomain
+import com.anddd.nevera.data.mapper.toProcessIngredientError
 import com.anddd.nevera.data.mapper.toProgressResult
 import com.anddd.nevera.data.mapper.toRequest
 import com.anddd.nevera.domain.model.common.CommonError
@@ -23,11 +24,15 @@ import com.anddd.nevera.domain.model.ingredient.EditIngredientInput
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.FridgeIngredient
 import com.anddd.nevera.domain.model.ingredient.Ingredient
+import com.anddd.nevera.domain.model.ingredient.IngredientProcessResult
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.domain.model.ingredient.OcrExtractError
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.ingredient.OcrJobId
 import com.anddd.nevera.domain.model.ingredient.OcrProgressResult
+import com.anddd.nevera.domain.model.ingredient.ProcessIngredientError
+import com.anddd.nevera.domain.model.ingredient.ProcessRatio
+import com.anddd.nevera.domain.model.ingredient.ProcessType
 import com.anddd.nevera.domain.model.ingredient.RegisterIngredientError
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import com.anddd.nevera.domain.repository.IngredientRepository
@@ -185,4 +190,29 @@ internal class IngredientRepositoryImpl @Inject constructor(
             transformFailure = { it.toCommonError() },
         )
     }
+
+    override suspend fun processIngredient(
+        inventoryId: Long,
+        processType: ProcessType,
+        ratio: ProcessRatio,
+    ): NeveraResult<IngredientProcessResult, ProcessIngredientError> =
+        apiCall {
+            fridgeRemoteDataSource.processIngredient(
+                inventoryId = inventoryId,
+                status = processType.toApiString(),
+                ratio = ratio.value,
+            )
+        }.map(
+            transformSuccess = { response ->
+                val result = response.toDomain()
+                // 누적 처리율 100% 달성 시 캐시에서 해당 항목 제거
+                if (result.completed) {
+                    _fridgeIngredients.update { current ->
+                        current.filter { it.id != inventoryId }
+                    }
+                }
+                result
+            },
+            transformFailure = { it.toProcessIngredientError() },
+        )
 }

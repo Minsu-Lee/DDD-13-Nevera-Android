@@ -3,7 +3,9 @@ package com.anddd.nevera.data.api
 import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.data.model.fridge.FridgeIngredientResponse
 import com.anddd.nevera.data.model.fridge.FridgeIngredientsResponse
+import com.anddd.nevera.data.model.fridge.ProcessIngredientResponse
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -22,4 +24,11 @@ internal interface FridgeApi {
     suspend fun getFridgeIngredientById(
         @Path("inventoryId") id: Long,
     ): ApiResponse<FridgeIngredientResponse>
+
+    @PATCH("api/v1/fridge/{inventoryId}/process")
+    suspend fun processIngredient(
+        @Path("inventoryId") inventoryId: Long,
+        @Query("status") status: String,
+        @Query("ratio") ratio: Int,
+    ): ApiResponse<ProcessIngredientResponse>
 }
