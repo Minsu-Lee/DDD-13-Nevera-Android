@@ -205,10 +205,19 @@ internal class IngredientRepositoryImpl @Inject constructor(
         }.map(
             transformSuccess = { response ->
                 val result = response.toDomain()
-                // 누적 처리율 100% 달성 시 캐시에서 해당 항목 제거
                 if (result.completed) {
+                    // 완료: 캐시에서 항목 제거
                     _fridgeIngredients.update { current ->
                         current.filter { it.id != inventoryId }
+                    }
+                } else {
+                    // 부분 처리: 잔여 금액으로 cost 갱신
+                    _fridgeIngredients.update { current ->
+                        val index = current.indexOfFirst { it.id == inventoryId }
+                        if (index < 0) return@update current
+                        current.toMutableList().also {
+                            it[index] = it[index].copy(cost = result.remainingAmount)
+                        }
                     }
                 }
                 result
