@@ -7,11 +7,15 @@ import com.anddd.nevera.domain.model.ingredient.EditIngredientInput
 import com.anddd.nevera.domain.model.ingredient.FoodCategory
 import com.anddd.nevera.domain.model.ingredient.FridgeIngredient
 import com.anddd.nevera.domain.model.ingredient.Ingredient
+import com.anddd.nevera.domain.model.ingredient.IngredientProcessResult
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
 import com.anddd.nevera.domain.model.ingredient.OcrExtractError
 import com.anddd.nevera.domain.model.ingredient.OcrIngredient
 import com.anddd.nevera.domain.model.ingredient.OcrJobId
 import com.anddd.nevera.domain.model.ingredient.OcrProgressResult
+import com.anddd.nevera.domain.model.ingredient.ProcessIngredientError
+import com.anddd.nevera.domain.model.ingredient.ProcessRatio
+import com.anddd.nevera.domain.model.ingredient.ProcessType
 import com.anddd.nevera.domain.model.ingredient.RegisterIngredientError
 import com.anddd.nevera.domain.model.ingredient.StorageLocation
 import kotlinx.coroutines.flow.Flow
@@ -55,4 +59,10 @@ interface IngredientRepository {
     ): NeveraResult<List<Ingredient>, CommonError>
 
     fun observeFridgeIngredients(): Flow<List<FridgeIngredient>>
+
+    suspend fun processIngredient(
+        inventoryId: Long,
+        processType: ProcessType,
+        ratio: ProcessRatio,
+    ): NeveraResult<IngredientProcessResult, ProcessIngredientError>
 }

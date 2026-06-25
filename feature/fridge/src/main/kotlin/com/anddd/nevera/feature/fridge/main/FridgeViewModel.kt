@@ -3,9 +3,13 @@ package com.anddd.nevera.feature.fridge.main
 import com.anddd.nevera.core.common.onFailure
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.model.ingredient.IngredientSortOrder
+import com.anddd.nevera.domain.model.ingredient.ProcessIngredientError
+import com.anddd.nevera.domain.model.ingredient.ProcessRatio
+import com.anddd.nevera.domain.model.ingredient.ProcessType
 import com.anddd.nevera.domain.usecase.ingredient.GetFridgeIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.ObserveFridgeIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.ObserveIngredientFocusRequestUseCase
+import com.anddd.nevera.domain.usecase.ingredient.ProcessIngredientUseCase
 import com.anddd.nevera.domain.usecase.notification.MarkAllNotificationsAsReadUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
 import com.anddd.nevera.feature.fridge.main.model.CategoryFilter
@@ -32,6 +36,7 @@ class FridgeViewModel @Inject constructor(
     private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
     private val observeIngredientFocusRequest: ObserveIngredientFocusRequestUseCase,
     private val observeFridgeIngredients: ObserveFridgeIngredientsUseCase,
+    private val processIngredient: ProcessIngredientUseCase,
 ) : NeveraViewModel<FridgeUiState, FridgeSideEffect, FridgeIntent, FridgeMutation>(FridgeUiState()) {
 
     init {
@@ -80,7 +85,13 @@ class FridgeViewModel @Inject constructor(
     }
 
     private fun rescueIngredient(item: FridgeIngredientUiModel, ratio: Float) = intent {
-        // TODO: 구조 API 연동
+        processIngredient(
+            inventoryId = item.id,
+            processType = ProcessType.Consumed,
+            ratio = ratio.toProcessRatio(),
+        ).onFailure { error ->
+            postSideEffect(FridgeSideEffect.ShowToast(error.toMessage()))
+        }
     }
 
     private fun showDisposeBottomSheet(item: FridgeIngredientUiModel) = intent {
@@ -88,7 +99,13 @@ class FridgeViewModel @Inject constructor(
     }
 
     private fun disposeIngredient(item: FridgeIngredientUiModel, ratio: Float) = intent {
-        // TODO: 폐기 API 연동
+        processIngredient(
+            inventoryId = item.id,
+            processType = ProcessType.Wasted,
+            ratio = ratio.toProcessRatio(),
+        ).onFailure { error ->
+            postSideEffect(FridgeSideEffect.ShowToast(error.toMessage()))
+        }
     }
 
     private fun navigateToEditIngredient(item: FridgeIngredientUiModel) = intent {
@@ -172,4 +189,19 @@ class FridgeViewModel @Inject constructor(
     companion object {
         private const val FOCUS_WAIT_TIMEOUT_MS = 5_000L
     }
+}
+
+private fun Float.toProcessRatio(): ProcessRatio = when {
+    this <= 0.25f -> ProcessRatio.Quarter
+    this <= 0.50f -> ProcessRatio.Half
+    this <= 0.75f -> ProcessRatio.ThreeQuarters
+    else -> ProcessRatio.Full
+}
+
+private fun ProcessIngredientError.toMessage(): String = when (this) {
+    ProcessIngredientError.AlreadyCompleted -> "이미 처리가 완료된 식재료예요."
+    ProcessIngredientError.ProcessRatioExceeded -> "처리 비율이 초과됐어요."
+    ProcessIngredientError.InventoryNotFound -> "식재료를 찾을 수 없어요."
+    ProcessIngredientError.InventoryForbidden -> "권한이 없어요."
+    else -> "처리 중 오류가 발생했어요."
 }

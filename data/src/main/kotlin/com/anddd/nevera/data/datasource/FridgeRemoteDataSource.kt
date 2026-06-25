@@ -3,6 +3,7 @@ package com.anddd.nevera.data.datasource
 import com.anddd.nevera.core.network.model.ApiResponse
 import com.anddd.nevera.data.model.fridge.FridgeIngredientResponse
 import com.anddd.nevera.data.model.fridge.FridgeIngredientsResponse
+import com.anddd.nevera.data.model.fridge.ProcessIngredientResponse
 
 internal interface FridgeRemoteDataSource {
 
@@ -15,4 +16,10 @@ internal interface FridgeRemoteDataSource {
     ): ApiResponse<FridgeIngredientsResponse>
 
     suspend fun getFridgeIngredientById(id: Long): ApiResponse<FridgeIngredientResponse>
+
+    suspend fun processIngredient(
+        inventoryId: Long,
+        status: String,
+        ratio: Int,
+    ): ApiResponse<ProcessIngredientResponse>
 }
