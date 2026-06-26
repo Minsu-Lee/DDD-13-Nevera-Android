@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.gestures.AnchoredDraggableDefaults
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
@@ -138,6 +139,19 @@ internal fun FridgeIngredientItem(
                     state = draggableState,
                     orientation = Orientation.Horizontal,
                     flingBehavior = flingBehavior,
+                )
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {
+                        scope.launch {
+                            if (draggableState.currentValue == SwipeState.Revealed) {
+                                draggableState.animateTo(SwipeState.Settled)
+                            } else {
+                                draggableState.animateTo(SwipeState.Revealed)
+                            }
+                        }
+                    },
                 )
                 .background(NeveraTheme.colors.surfacePrimary)
                 .padding(
