@@ -1,6 +1,7 @@
 package com.anddd.nevera.feature.mypage.main.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ internal fun ProfileContent(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .border(1.dp, NeveraTheme.colors.borderNormal)
             .padding(NeveraTheme.spacing.padding16),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(NeveraTheme.spacing.gap12)
