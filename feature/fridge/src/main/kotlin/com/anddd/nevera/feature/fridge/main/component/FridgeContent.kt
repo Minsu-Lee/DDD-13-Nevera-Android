@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -29,13 +31,21 @@ import com.anddd.nevera.feature.fridge.main.model.FridgeIngredientUiModel
 import com.anddd.nevera.feature.fridge.main.model.FridgeIntent
 import com.anddd.nevera.feature.fridge.main.model.FridgeUiState
 import com.anddd.nevera.feature.fridge.main.model.StorageLocationFilter
+import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDate
+
+/**
+ * 식재료 아이템 목록([uiState.ingredients]) 앞에 위치한 고정 아이템 개수.
+ * 특정 식재료로 스크롤할 때 인덱스 보정에 사용한다.
+ */
+internal const val FRIDGE_LIST_HEADER_ITEM_COUNT = 5
 
 @Composable
 internal fun FridgeContent(
     uiState: FridgeUiState,
     onIntent: (FridgeIntent) -> Unit,
     modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
 ) {
     Scaffold(
         modifier = modifier,
@@ -67,7 +77,7 @@ internal fun FridgeContent(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                 item {
                     Spacer(modifier = Modifier.height(NeveraTheme.spacing.gap16))
                 }
@@ -108,9 +118,9 @@ internal fun FridgeContent(
                     items(uiState.ingredients, key = { it.id }) { item ->
                         FridgeIngredientItem(
                             item = item,
-                            onRescueClick = {},
-                            onDisposeClick = {},
-                            onMoreClick = {},
+                            onRescueClick = { onIntent(FridgeIntent.RescueClick(item)) },
+                            onDisposeClick = { onIntent(FridgeIntent.DisposeClick(item)) },
+                            onMoreClick = { onIntent(FridgeIntent.IngredientMoreClick(item)) },
                         )
                     }
                 }
@@ -122,7 +132,7 @@ internal fun FridgeContent(
     }
 }
 
-private val mockIngredients = listOf(
+private val mockIngredients = persistentListOf(
     FridgeIngredientUiModel(id = 1L, name = "제주 햇당근", category = FoodCategory.Veg, quantity = 1, cost = 6500, expiryDate = LocalDate.now().plusDays(28)),
     FridgeIngredientUiModel(id = 2L, name = "삼겹살", category = FoodCategory.MeatEggs, quantity = 1, cost = 0, expiryDate = LocalDate.now().minusDays(3)),
     FridgeIngredientUiModel(id = 3L, name = "서울우유 1L", category = FoodCategory.Dairy, quantity = 2, cost = 3200, expiryDate = LocalDate.now().plusDays(5)),

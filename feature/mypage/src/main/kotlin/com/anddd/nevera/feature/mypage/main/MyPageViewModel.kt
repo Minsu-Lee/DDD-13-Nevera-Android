@@ -13,6 +13,7 @@ import com.anddd.nevera.feature.mypage.main.model.MyPageUiState
 import com.anddd.nevera.feature.mypage.main.model.SettingItem
 import com.anddd.nevera.feature.mypage.main.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.syntax.Syntax
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ class MyPageViewModel @Inject constructor(
     private val markAllNotificationsAsRead: MarkAllNotificationsAsReadUseCase,
 ) : NeveraViewModel<MyPageUiState, MyPageSideEffect, MyPageIntent, MyPageMutation>(
     MyPageUiState(
-        settingItems = listOf(
+        settingItems = persistentListOf(
             SettingItem.Notification,
             SettingItem.Account,
             SettingItem.AppInfo,

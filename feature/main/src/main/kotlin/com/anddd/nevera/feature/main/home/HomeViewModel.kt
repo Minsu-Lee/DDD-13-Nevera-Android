@@ -5,8 +5,11 @@ import com.anddd.nevera.core.common.onSuccess
 import com.anddd.nevera.core.mvi.NeveraViewModel
 import com.anddd.nevera.domain.model.home.HomeSummary
 import com.anddd.nevera.domain.usecase.home.GetHomeSummaryUseCase
+import com.anddd.nevera.domain.usecase.home.ObserveHomeSummaryUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetDisposedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.ingredient.GetRescuedIngredientsUseCase
+import com.anddd.nevera.domain.usecase.ingredient.ObserveDisposedIngredientsUseCase
+import com.anddd.nevera.domain.usecase.ingredient.ObserveRescuedIngredientsUseCase
 import com.anddd.nevera.domain.usecase.notification.ObserveUnreadNotificationUseCase
 import com.anddd.nevera.domain.usecase.user.GetOnboardingStatusUseCase
 import com.anddd.nevera.domain.usecase.user.UpdateNicknameUseCase
@@ -32,8 +35,11 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getHomeSummary: GetHomeSummaryUseCase,
+    private val observeHomeSummary: ObserveHomeSummaryUseCase,
     private val getRescuedIngredients: GetRescuedIngredientsUseCase,
     private val getDisposedIngredients: GetDisposedIngredientsUseCase,
+    private val observeRescuedIngredients: ObserveRescuedIngredientsUseCase,
+    private val observeDisposedIngredients: ObserveDisposedIngredientsUseCase,
     private val updateNickname: UpdateNicknameUseCase,
     private val getOnboardingStatus: GetOnboardingStatusUseCase,
     private val createWish: CreateWishUseCase,
@@ -49,6 +55,9 @@ class HomeViewModel @Inject constructor(
 
     init {
         observeBadge()
+        observeSummary()
+        subscribeRescuedIngredients()
+        subscribeDisposalIngredients()
         load()
     }
 
@@ -71,6 +80,34 @@ class HomeViewModel @Inject constructor(
             is HomeIntent.UpdateWishConfirmed -> onUpdateWishConfirmed(intent.id, intent.name, intent.goalAmount)
 
             HomeIntent.NotificationIconClicked -> onNotificationIconClick()
+        }
+    }
+
+    private fun observeSummary() = intent {
+        observeHomeSummary().collect { summary ->
+            applyHomeSummary(summary)
+        }
+    }
+
+    private fun subscribeRescuedIngredients() = intent {
+        observeRescuedIngredients().collect { ingredients ->
+            applyMutation(
+                HomeMutation.ShowRescuedIngredients(
+                    ingredients = ingredients.toUiModel(),
+                    hasMore = ingredients.size == INGREDIENT_PAGINATION_LIMIT,
+                )
+            )
+        }
+    }
+
+    private fun subscribeDisposalIngredients() = intent {
+        observeDisposedIngredients().collect { ingredients ->
+            applyMutation(
+                HomeMutation.ShowDisposalIngredients(
+                    ingredients = ingredients.toUiModel(),
+                    hasMore = ingredients.size == INGREDIENT_PAGINATION_LIMIT,
+                )
+            )
         }
     }
 
@@ -110,7 +147,6 @@ class HomeViewModel @Inject constructor(
             }
 
         summaryResult
-            .onSuccess { summary -> applyHomeSummary(summary) }
             .onFailure {
                 // TODO 네트워크 에러 처리
             }
@@ -219,7 +255,7 @@ class HomeViewModel @Inject constructor(
     private fun onCreateWishConfirmed(name: String, goalAmount: Long) = intent {
         createWish(name, goalAmount)
             .onSuccess {
-                getHomeSummary().onSuccess { summary -> applyHomeSummary(summary) }
+                getHomeSummary()
                 postSideEffect(HomeSideEffect.ShowWishCreatedToast)
             }
             .onFailure {
@@ -234,7 +270,7 @@ class HomeViewModel @Inject constructor(
     private fun onUpdateWishConfirmed(id: Long, name: String, goalAmount: Long) = intent {
         updateWish(id, name, goalAmount)
             .onSuccess {
-                getHomeSummary().onSuccess { summary -> applyHomeSummary(summary) }
+                getHomeSummary()
                 postSideEffect(HomeSideEffect.ShowWishUpdatedToast)
             }
             .onFailure {
