@@ -45,6 +45,8 @@ fun CostFieldRow(
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(text = formatCost(cost)))
     }
+    // true → false 전환 시에만 clearFocus (초기 컴포지션 시 오발 방지)
+    var previousImeVisible by remember { mutableStateOf(imeVisible) }
 
     LaunchedEffect(cost) {
         val formatted = formatCost(cost)
@@ -53,9 +55,9 @@ fun CostFieldRow(
         }
     }
 
-    // 키보드 스와이프 다운 시 포커스 해제
     LaunchedEffect(imeVisible) {
-        if (!imeVisible) focusManager.clearFocus()
+        if (!imeVisible && previousImeVisible) focusManager.clearFocus()
+        previousImeVisible = imeVisible
     }
 
     Row(
@@ -69,7 +71,9 @@ fun CostFieldRow(
         NeveraTextField(
             value = textFieldValue,
             onValueChange = { newValue ->
-                val rawDigits = newValue.text.filter { it.isDigit() }.take(9)
+                val rawDigits = newValue.text.filter { it.isDigit() }
+                // 9자리 초과 시 변경 무시 — 중간 편집으로 뒷자리가 삭제되는 문제 방지
+                if (rawDigits.length > 9) return@NeveraTextField
                 val newCost = rawDigits.toIntOrNull() ?: 0
                 val formatted = formatCost(newCost)
                 val digitsBeforeCursor = newValue.text.take(newValue.selection.start).count { it.isDigit() }
