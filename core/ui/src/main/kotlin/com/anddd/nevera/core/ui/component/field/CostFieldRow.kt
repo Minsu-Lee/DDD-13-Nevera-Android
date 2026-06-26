@@ -42,10 +42,6 @@ fun CostFieldRow(
     val focusManager = LocalFocusManager.current
     val imeVisible = WindowInsets.isImeVisible
 
-    val formatCost: (Int) -> String = { value ->
-        if (value == 0) "" else NumberFormat.getNumberInstance(Locale.KOREA).format(value)
-    }
-
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(text = formatCost(cost)))
     }
@@ -95,6 +91,9 @@ fun CostFieldRow(
         )
     }
 }
+
+private fun formatCost(cost: Int): String =
+    if (cost == 0) "" else NumberFormat.getNumberInstance(Locale.KOREA).format(cost)
 
 private fun adjustCursorToFormatted(digitsBeforeCursor: Int, formatted: String): Int {
     var digitCount = 0
