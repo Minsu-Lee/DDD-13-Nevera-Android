@@ -100,7 +100,7 @@ internal fun FridgeContent(
                 item {
                     FridgeIngredientListHeader(
                         totalCount = uiState.totalCount,
-                        selectedStorageFilter = uiState.selectedStorageFilter,
+                        selectedCategoryFilter = uiState.selectedCategoryFilter,
                         selectedSortOrder = uiState.selectedSortOrder,
                         onSortOrderSelected = { onIntent(FridgeIntent.SelectSortOrder(it)) },
                         modifier = Modifier.padding(top = NeveraTheme.spacing.gap8),
