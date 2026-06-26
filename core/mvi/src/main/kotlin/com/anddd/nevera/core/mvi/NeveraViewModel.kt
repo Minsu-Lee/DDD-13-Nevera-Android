@@ -39,7 +39,7 @@ abstract class NeveraViewModel<
      * UI로부터 수신한 Intent를 처리한다.
      * 내부적으로 비즈니스 로직을 수행한 뒤 [applyMutation]을 호출해 State를 갱신한다.
      */
-    abstract fun handleIntent(action: INTENT)
+    abstract fun handleIntent(intent: INTENT)
 
     /**
      * [MUTATION]을 받아 현재 State를 새로운 State로 변환한다.
